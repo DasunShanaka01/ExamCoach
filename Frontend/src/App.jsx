@@ -7,6 +7,7 @@ import TeacherDashboard from './pages/TeacherDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
+import StudentList from './pages/StudentList';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         {/* Admin Management Routes */}
         <Route path="/admin/teachers" element={<TeacherList />} />
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
+        <Route path="/admin/students" element={<StudentList />} />
       </Routes>
     </div>
   );
