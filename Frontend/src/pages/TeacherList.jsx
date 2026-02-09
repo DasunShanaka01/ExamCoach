@@ -86,6 +86,12 @@ const TeacherList = () => {
         setIsEditing(false);
     };
 
+    const handleEditClick = (teacher, e) => {
+        e.stopPropagation();
+        handleRowClick(teacher);
+        setIsEditing(true);
+    };
+
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedTeacher(null);
@@ -192,6 +198,7 @@ const TeacherList = () => {
                                             <td>{teacher.subject}</td>
                                             <td>{teacher.contactNo}</td>
                                             <td>
+                                                <button onClick={(e) => handleEditClick(teacher, e)} className="btn-edit">Edit</button>
                                                 <button onClick={(e) => handleDelete(teacher._id, e)} className="btn-danger">Delete</button>
                                             </td>
                                         </tr>
