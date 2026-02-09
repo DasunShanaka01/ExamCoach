@@ -33,7 +33,7 @@ const Login = () => {
                 } else if (data.user.role === 'teacher') {
                     navigate('/teacher/dashboard');
                 } else {
-                    navigate('/student/dashboard');
+                    navigate('/student/home');
                 }
             } else {
                 setError(data.error);
