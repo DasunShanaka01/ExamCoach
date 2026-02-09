@@ -20,6 +20,10 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
+// Auth Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/teachers', require('./routes/teacherRoutes'));
+
 // Start server
 const PORT = process.env.PORT || 5000;
 
