@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 const AddTeacher = () => {
     const navigate = useNavigate();
@@ -64,80 +65,84 @@ const AddTeacher = () => {
     };
 
     return (
-        <div className="dashboard-container">
-            <header className="dashboard-header">
-                <h1>Add New Teacher</h1>
-                <Link to="/admin/teachers" className="btn-secondary">Back to List</Link>
-            </header>
+        <div className="layout-container">
+            <Sidebar role="admin" />
+            <div className="main-content">
+                <div className="dashboard-container">
+                    <header className="dashboard-header">
+                        <h1>Add New Teacher</h1>
+                    </header>
 
-            <div className="form-container">
-                {error && <div className="error-message">{error}</div>}
-                <form onSubmit={handleSubmit} className="teacher-form">
-                    <div className="form-section">
-                        <h3>Personal Information</h3>
-                        <div className="form-group">
-                            <label>Profile Picture</label>
-                            <input type="file" onChange={handleFileChange} accept="image/*" />
-                        </div>
-                        <div className="form-group">
-                            <label>Full Name</label>
-                            <input type="text" name="name" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Email</label>
-                            <input type="email" name="email" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Password</label>
-                            <input type="password" name="password" onChange={handleChange} required minLength="6" />
-                        </div>
-                        <div className="form-group">
-                            <label>Date of Birth</label>
-                            <input type="date" name="dob" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Gender</label>
-                            <select name="gender" onChange={handleChange} required>
-                                <option value="">Select Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div className="form-group">
-                            <label>Address</label>
-                            <textarea name="address" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Contact Number</label>
-                            <input type="tel" name="contactNo" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>NIC</label>
-                            <input type="text" name="nic" onChange={handleChange} required />
-                        </div>
-                    </div>
+                    <div className="form-container">
+                        {error && <div className="error-message">{error}</div>}
+                        <form onSubmit={handleSubmit} className="teacher-form">
+                            <div className="form-section">
+                                <h3>Personal Information</h3>
+                                <div className="form-group">
+                                    <label>Profile Picture</label>
+                                    <input type="file" onChange={handleFileChange} accept="image/*" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" name="name" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Password</label>
+                                    <input type="password" name="password" onChange={handleChange} required minLength="6" />
+                                </div>
+                                <div className="form-group">
+                                    <label>Date of Birth</label>
+                                    <input type="date" name="dob" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Gender</label>
+                                    <select name="gender" onChange={handleChange} required>
+                                        <option value="">Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Address</label>
+                                    <textarea name="address" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Contact Number</label>
+                                    <input type="tel" name="contactNo" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>NIC</label>
+                                    <input type="text" name="nic" onChange={handleChange} required />
+                                </div>
+                            </div>
 
-                    <div className="form-section">
-                        <h3>Professional Information</h3>
-                        <div className="form-group">
-                            <label>Subject</label>
-                            <input type="text" name="subject" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Qualification</label>
-                            <input type="text" name="qualification" onChange={handleChange} required />
-                        </div>
-                        <div className="form-group">
-                            <label>Experience (Years/Description)</label>
-                            <input type="text" name="experience" onChange={handleChange} required />
-                        </div>
-                    </div>
+                            <div className="form-section">
+                                <h3>Professional Information</h3>
+                                <div className="form-group">
+                                    <label>Subject</label>
+                                    <input type="text" name="subject" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Qualification</label>
+                                    <input type="text" name="qualification" onChange={handleChange} required />
+                                </div>
+                                <div className="form-group">
+                                    <label>Experience (Years/Description)</label>
+                                    <input type="text" name="experience" onChange={handleChange} required />
+                                </div>
+                            </div>
 
-                    <div className="form-actions">
-                        <button type="submit" className="btn-primary">Add Teacher</button>
+                            <div className="form-actions">
+                                <button type="submit" className="btn-primary">Add Teacher</button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     );

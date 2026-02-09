@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Sidebar from '../components/Sidebar';
 
 const TeacherList = () => {
     const [teachers, setTeachers] = useState([]);
@@ -56,45 +57,49 @@ const TeacherList = () => {
     };
 
     return (
-        <div className="dashboard-container">
-            <header className="dashboard-header">
-                <h1>Manage Teachers</h1>
-                <Link to="/admin/dashboard" className="btn-secondary">Back to Dashboard</Link>
-            </header>
+        <div className="layout-container">
+            <Sidebar role="admin" />
+            <div className="main-content">
+                <div className="dashboard-container">
+                    <header className="dashboard-header">
+                        <h1>Manage Teachers</h1>
+                    </header>
 
-            <div className="action-bar">
-                <Link to="/admin/add-teacher" className="btn-primary">Add New Teacher</Link>
-            </div>
+                    <div className="action-bar">
+                        <Link to="/admin/add-teacher" className="btn-primary">Add New Teacher</Link>
+                    </div>
 
-            {loading ? <p>Loading...</p> : error ? <p className="error-message">{error}</p> : (
-                <div className="table-responsive">
-                    <table className="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Subject</th>
-                                <th>Contact</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {teachers.map(teacher => (
-                                <tr key={teacher._id}>
-                                    <td>{teacher.name}</td>
-                                    <td>{teacher.user?.email || 'N/A'}</td>
-                                    <td>{teacher.subject}</td>
-                                    <td>{teacher.contactNo}</td>
-                                    <td>
-                                        <button onClick={() => handleDelete(teacher._id)} className="btn-danger">Delete</button>
-                                        {/* Add Edit button link here if needed */}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                    {loading ? <p>Loading...</p> : error ? <p className="error-message">{error}</p> : (
+                        <div className="table-responsive">
+                            <table className="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Subject</th>
+                                        <th>Contact</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {teachers.map(teacher => (
+                                        <tr key={teacher._id}>
+                                            <td>{teacher.name}</td>
+                                            <td>{teacher.user?.email || 'N/A'}</td>
+                                            <td>{teacher.subject}</td>
+                                            <td>{teacher.contactNo}</td>
+                                            <td>
+                                                <button onClick={() => handleDelete(teacher._id)} className="btn-danger">Delete</button>
+                                                {/* Add Edit button link here if needed */}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 };
