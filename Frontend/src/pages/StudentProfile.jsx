@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentNavbar from '../components/StudentNavbar';
+import Footer from '../components/Footer';
 
 const StudentProfile = () => {
     const navigate = useNavigate();
@@ -269,7 +270,7 @@ const StudentProfile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 flex flex-col">
             <StudentNavbar />
             <div className="max-w-4xl mx-auto p-8">
                 <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -633,6 +634,7 @@ const StudentProfile = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import StudentNavbar from '../components/StudentNavbar';
+import Footer from '../components/Footer';
 
 const StudentHome = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 flex flex-col">
             <StudentNavbar />
-            <div className="max-w-7xl mx-auto px-8 py-12">
+            <div className="max-w-7xl mx-auto px-8 py-12 flex-1">
                 <header className="mb-12">
                     <h1 className="text-4xl font-bold text-gray-800 mb-2">
                         Welcome back, <span className="text-blue-600">{user?.name}</span>! 👋
@@ -57,7 +58,7 @@ const StudentHome = () => {
                             My Courses
                         </h2>
                         <p className="text-gray-600 text-sm">
-                            View and access your enrolled courses.
+                            Access your enrolled courses and continue learning.
                         </p>
                         <div className="mt-4 pt-4 border-t border-gray-100">
                             <p className="text-sm font-semibold text-green-600">0 Active Courses</p>
@@ -102,7 +103,7 @@ const StudentHome = () => {
                     </div>
                 </div>
 
-                {/* Quick Links */}
+                {/* Quick Links and Announcements */}
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white rounded-xl shadow-md p-6">
                         <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
@@ -135,6 +136,7 @@ const StudentHome = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
