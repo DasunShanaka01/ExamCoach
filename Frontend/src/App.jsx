@@ -8,6 +8,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
+import AdminCoursePortal from './pages/AdminCoursePortal';
+import CourseExplorer from './pages/CourseExplorer';
+import TeacherMaterials from './pages/TeacherMaterials';
 
 const App = () => {
   return (
@@ -19,8 +22,11 @@ const App = () => {
 
         {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
         <Route path="/student/home" element={<StudentHome />} />
+        <Route path="/student/courses" element={<CourseExplorer />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/materials" element={<TeacherMaterials />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/courses" element={<AdminCoursePortal />} />
 
         {/* Admin Management Routes */}
         <Route path="/admin/teachers" element={<TeacherList />} />

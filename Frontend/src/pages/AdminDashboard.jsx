@@ -68,6 +68,29 @@ const AdminDashboard = () => {
                                     </p>
                                 </Link>
 
+                                {/* Course Management */}
+                                <Link
+                                    to="/admin/courses"
+                                    className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-amber-300"
+                                >
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
+                                            📚
+                                        </div>
+                                        <span className="text-gray-400 group-hover:text-amber-600 transition-colors">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-amber-600 transition-colors">
+                                        Course Management
+                                    </h3>
+                                    <p className="text-gray-600 text-sm">
+                                        Create streams, subjects, and assign teachers.
+                                    </p>
+                                </Link>
+
                                 {/* Analytics Card */}
                                 <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white">
                                     <div className="flex items-center justify-between mb-4">
