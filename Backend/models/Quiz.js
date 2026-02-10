@@ -34,7 +34,7 @@ const quizSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher',
-        required: true
+        default: null
     },
     timeLimit: {
         type: Number, // in minutes

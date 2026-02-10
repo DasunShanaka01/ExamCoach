@@ -50,6 +50,10 @@ exports.getKuppi = async (req, res) => {
 // @access  Private/Teacher
 exports.uploadKuppi = async (req, res) => {
     try {
+        console.log('Upload kuppi request received');
+        console.log('Request body:', req.body);
+        console.log('Request files:', req.files);
+
         // Temporarily disable teacher check for testing
         // const teacher = await Teacher.findOne({ user: req.user.id });
 
@@ -61,8 +65,11 @@ exports.uploadKuppi = async (req, res) => {
         // }
 
         // Extract file URLs from uploaded files
-        const videoUrl = req.files.video ? req.files.video[0].path : req.body.videoUrl;
-        const thumbnailUrl = req.files.thumbnail ? req.files.thumbnail[0].path : req.body.thumbnailUrl;
+        const videoUrl = req.files && req.files.video ? req.files.video[0].path : req.body.videoUrl;
+        const thumbnailUrl = req.files && req.files.thumbnail ? req.files.thumbnail[0].path : req.body.thumbnailUrl;
+
+        console.log('Video URL:', videoUrl);
+        console.log('Thumbnail URL:', thumbnailUrl);
 
         if (!videoUrl) {
             return res.status(400).json({
@@ -81,10 +88,15 @@ exports.uploadKuppi = async (req, res) => {
             uploadedBy: null // Temporarily set to null for testing
         };
 
+        console.log('Creating kuppi with data:', kuppiData);
+
         const kuppi = await Kuppi.create(kuppiData);
+
+        console.log('Kuppi created successfully:', kuppi);
 
         res.status(201).json({ success: true, data: kuppi });
     } catch (err) {
+        console.error('Error in uploadKuppi:', err);
         res.status(500).json({ success: false, error: err.message });
     }
 };
@@ -103,14 +115,18 @@ exports.updateKuppi = async (req, res) => {
             });
         }
 
-        // Check if teacher owns this kuppi
-        const teacher = await Teacher.findOne({ user: req.user.id });
-        if (kuppi.uploadedBy.toString() !== teacher._id.toString()) {
-            return res.status(403).json({ 
-                success: false, 
-                error: 'Not authorized to update this kuppi' 
-            });
+        // Temporarily handle unauthenticated requests for testing
+        if (req.user && req.user.id) {
+            // Check if teacher owns this kuppi
+            const teacher = await Teacher.findOne({ user: req.user.id });
+            if (kuppi.uploadedBy.toString() !== teacher._id.toString()) {
+                return res.status(403).json({ 
+                    success: false, 
+                    error: 'Not authorized to update this kuppi' 
+                });
+            }
         }
+        // For testing without auth, allow updates
 
         kuppi = await Kuppi.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
@@ -137,15 +153,19 @@ exports.deleteKuppi = async (req, res) => {
             });
         }
 
-        // Check if teacher owns this kuppi or is admin
-        const teacher = await Teacher.findOne({ user: req.user.id });
-        if (req.user.role !== 'admin' && 
-            kuppi.uploadedBy.toString() !== teacher._id.toString()) {
-            return res.status(403).json({ 
-                success: false, 
-                error: 'Not authorized to delete this kuppi' 
-            });
+        // Temporarily handle unauthenticated requests for testing
+        if (req.user && req.user.id) {
+            // Check if teacher owns this kuppi or is admin
+            const teacher = await Teacher.findOne({ user: req.user.id });
+            if (req.user.role !== 'admin' && 
+                kuppi.uploadedBy.toString() !== teacher._id.toString()) {
+                return res.status(403).json({ 
+                    success: false, 
+                    error: 'Not authorized to delete this kuppi' 
+                });
+            }
         }
+        // For testing without auth, allow deletion
 
         await kuppi.deleteOne();
 

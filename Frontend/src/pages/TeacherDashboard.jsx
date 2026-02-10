@@ -22,11 +22,11 @@ const TeacherDashboard = () => {
                                 <h3>Create Quiz</h3>
                                 <p>Create quizzes for students to practice.</p>
                             </div>
-                            <div className="card">
+                            <div className="card" onClick={() => navigate('/teacher/view-kuppis')}>
                                 <h3>My Kuppi Sessions</h3>
                                 <p>Manage your uploaded sessions.</p>
                             </div>
-                            <div className="card">
+                            <div className="card" onClick={() => navigate('/teacher/view-quizzes')}>
                                 <h3>My Quizzes</h3>
                                 <p>View and manage your quizzes.</p>
                             </div>

@@ -9,6 +9,7 @@ const UploadKuppi = () => {
         title: '',
         description: '',
         subject: '',
+        videoUrl: '', // For testing without file upload
         duration: ''
     });
     const [videoFile, setVideoFile] = useState(null);
@@ -62,13 +63,13 @@ const UploadKuppi = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!videoFile) {
-            alert('Please select a video file to upload');
+        // For testing: allow either file upload OR video URL
+        if (!videoFile && !formData.videoUrl) {
+            alert('Please either select a video file or provide a video URL');
             return;
         }
 
         setLoading(true);
-        setUploadProgress(0);
 
         try {
             const submitData = new FormData();
@@ -78,13 +79,21 @@ const UploadKuppi = () => {
             submitData.append('description', formData.description);
             submitData.append('subject', formData.subject);
             submitData.append('duration', formData.duration);
+            
+            // Add video URL if no file selected (for testing)
+            if (!videoFile && formData.videoUrl) {
+                submitData.append('videoUrl', formData.videoUrl);
+            }
 
-            // Add files
-            submitData.append('video', videoFile);
+            // Add files if selected
+            if (videoFile) {
+                submitData.append('video', videoFile);
+            }
             if (thumbnailFile) {
                 submitData.append('thumbnail', thumbnailFile);
             }
 
+            console.log('Sending kuppi data...');
             const data = await kuppiAPI.uploadKuppi(submitData);
 
             if (data.success) {
@@ -94,6 +103,7 @@ const UploadKuppi = () => {
                 alert(data.error || 'Upload failed');
             }
         } catch (error) {
+            console.error('Upload error:', error);
             alert('Upload failed: ' + error.message);
         } finally {
             setLoading(false);
@@ -141,18 +151,28 @@ const UploadKuppi = () => {
                         </div>
                         
                         <div className="form-group">
-                            <label>Video File *</label>
+                            <label>Video File (or use Video URL below)</label>
                             <input
                                 type="file"
                                 accept="video/*"
                                 onChange={handleVideoChange}
-                                required
                             />
                             {videoFile && (
                                 <small className="file-info">
                                     Selected: {videoFile.name} ({(videoFile.size / (1024 * 1024)).toFixed(2)} MB)
                                 </small>
                             )}
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>Or Video URL (for testing)</label>
+                            <input
+                                type="url"
+                                name="videoUrl"
+                                value={formData.videoUrl}
+                                onChange={handleInputChange}
+                                placeholder="https://example.com/video.mp4"
+                            />
                         </div>
                         
                         <div className="form-group">

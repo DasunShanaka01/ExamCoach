@@ -1,7 +1,7 @@
 // API Base URL
 const API_BASE_URL = process.env.NODE_ENV === 'production'
   ? '' // Relative URLs for production
-  : 'http://localhost:5000'; // Full URL for development
+  : ''; // Relative URLs for development (proxied by Vite)
 
 // Helper function to get auth token
 const getAuthToken = () => localStorage.getItem('token');

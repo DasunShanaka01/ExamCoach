@@ -25,7 +25,7 @@ router.route('/:id')
 
 // Teacher only routes
 router.route('/')
-    .post(authorize('teacher'), validateQuizCreation, createQuiz);
+    .post(validateQuizCreation, createQuiz);
 
 router.route('/:id')
     .put(authorize('teacher'), updateQuiz)

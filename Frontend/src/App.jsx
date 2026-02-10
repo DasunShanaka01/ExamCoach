@@ -9,6 +9,10 @@ import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
 import UploadKuppi from './pages/UploadKuppi';
 import CreateQuiz from './pages/CreateQuiz';
+import ViewQuizzes from './pages/ViewQuizzes';
+import ViewKuppis from './pages/ViewKuppis';
+import WatchKuppi from './pages/WatchKuppi';
+import TakeQuiz from './pages/TakeQuiz';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -25,10 +29,22 @@ const App = () => {
             <StudentHome />
           </ProtectedRoute>
         } />
+        <Route path="/student/watch-kuppi/:id" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <WatchKuppi />
+          </ProtectedRoute>
+        } />
+        <Route path="/student/take-quiz/:id" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <TakeQuiz />
+          </ProtectedRoute>
+        } />
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         {/* Teacher Routes - Temporarily unprotected for testing */}
         <Route path="/teacher/upload-kuppi" element={<UploadKuppi />} />
         <Route path="/teacher/create-quiz" element={<CreateQuiz />} />
+        <Route path="/teacher/view-quizzes" element={<ViewQuizzes />} />
+        <Route path="/teacher/view-kuppis" element={<ViewKuppis />} />
         <Route path="/admin/dashboard" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminDashboard />

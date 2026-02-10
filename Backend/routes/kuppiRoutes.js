@@ -22,7 +22,6 @@ router.route('/')
 // Teacher only routes
 router.route('/')
     .post(
-        authorize('teacher'), 
         uploadVideo.fields([
             { name: 'video', maxCount: 1 },
             { name: 'thumbnail', maxCount: 1 }

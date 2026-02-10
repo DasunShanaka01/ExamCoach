@@ -27,7 +27,8 @@ const kuppiSchema = new mongoose.Schema({
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher',
-        required: true
+
+        default: null
     },
     isActive: {
         type: Boolean,
