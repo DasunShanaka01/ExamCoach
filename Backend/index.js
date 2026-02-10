@@ -25,6 +25,13 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/teachers', require('./routes/teacherRoutes'));
 app.use('/api/students', require('./routes/studentRoutes'));
 
+// Kuppi Routes
+const kuppiRoutes = require('./routes/kuppiRoutes');
+const quizRoutes = require('./routes/quizRoutes');
+
+app.use('/api/kuppi', kuppiRoutes);
+app.use('/api/quizzes', quizRoutes);
+
 // Start server
 const PORT = process.env.PORT || 5000;
 

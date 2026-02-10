@@ -1,5 +1,6 @@
 
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { logout } from '../services/api';
 
 const Sidebar = ({ role }) => {
     const navigate = useNavigate();
@@ -7,9 +8,7 @@ const Sidebar = ({ role }) => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
+        logout(); // This will clear localStorage and redirect to login
     };
 
     const isActive = (path) => {
