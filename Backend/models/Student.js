@@ -21,6 +21,12 @@ const studentSchema = new mongoose.Schema({
         type: String,
         enum: ['Male', 'Female', 'Other']
     },
+    phone: {
+        type: String
+    },
+    address: {
+        type: String
+    },
     profilePic: {
         type: String, // URL to the image
         default: 'default-profile.png'

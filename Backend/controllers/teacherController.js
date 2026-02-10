@@ -30,6 +30,66 @@ exports.getTeacher = async (req, res) => {
     }
 };
 
+// @desc    Get teacher profile by user ID
+// @route   GET /api/teachers/profile/:userId
+// @access  Private (Teacher themselves)
+exports.getTeacherProfile = async (req, res) => {
+    try {
+        const teacher = await Teacher.findOne({ user: req.params.userId }).populate('user', 'name email');
+
+        if (!teacher) {
+            return res.status(404).json({ success: false, error: 'Teacher profile not found' });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: teacher
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Update teacher profile
+// @route   PUT /api/teachers/profile/:userId
+// @access  Private (Teacher themselves)
+exports.updateTeacherProfile = async (req, res) => {
+    try {
+        const { name, subject, qualification, experience, phone, bio, profilePic } = req.body;
+
+        // Find teacher by user ID
+        const teacher = await Teacher.findOne({ user: req.params.userId });
+
+        if (!teacher) {
+            return res.status(404).json({ success: false, error: 'Teacher profile not found' });
+        }
+
+        // Update User name if provided
+        if (name) {
+            await User.findByIdAndUpdate(req.params.userId, { name });
+        }
+
+        // Update Teacher fields
+        if (subject) teacher.subject = subject;
+        if (qualification) teacher.qualification = qualification;
+        if (experience !== undefined) teacher.experience = experience;
+        if (phone) teacher.phone = phone;
+        if (bio) teacher.bio = bio;
+        if (profilePic) teacher.profilePic = profilePic;
+
+        await teacher.save();
+
+        const updatedTeacher = await Teacher.findById(teacher._id).populate('user', 'name email');
+
+        res.status(200).json({
+            success: true,
+            data: updatedTeacher
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
 // @desc    Update teacher
 // @route   PUT /api/teachers/:id
 // @access  Private/Admin
