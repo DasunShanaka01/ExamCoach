@@ -1,8 +1,36 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const StudentNavbar = () => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
+    const [profilePic, setProfilePic] = useState('');
+
+    useEffect(() => {
+        const fetchProfilePic = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token || !user) return;
+
+                const response = await fetch(`http://localhost:5000/api/students/profile/${user.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.data.profilePic) {
+                        setProfilePic(data.data.profilePic);
+                    }
+                }
+            } catch (err) {
+                console.error('Error fetching profile picture:', err);
+            }
+        };
+
+        fetchProfilePic();
+    }, [user?.id]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -50,8 +78,18 @@ const StudentNavbar = () => {
 
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                        {user?.name?.charAt(0) || 'U'}
+                    <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
+                        {profilePic ? (
+                            <img
+                                src={profilePic}
+                                alt="Profile"
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                                {user?.name?.charAt(0) || 'U'}
+                            </div>
+                        )}
                     </div>
                     <span className="font-medium text-gray-800">{user?.name}</span>
                 </div>
