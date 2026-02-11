@@ -12,7 +12,7 @@ cloudinary.config({
 });
 
 // Initialize the new Google GenAI Client
-const genAI = new GoogleGenAI({ apiKey: "AIzaSyDfE8tWlUALV9QSYDLtgTpMx7B4FvP9e7A" });
+const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 console.log("-----------------------------------------");
 console.log("AI QUIZ CONTROLLER LOADED - timestamp: " + Date.now());
 console.log("Model: gemini-2.5-flash");
