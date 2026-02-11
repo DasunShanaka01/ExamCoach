@@ -37,7 +37,7 @@ exports.generateQuiz = async (req, res) => {
     let filePath = null;
 
     try {
-        const { numQuestions = 5, difficulty = 'Normal', textInput } = req.body;
+        const { numQuestions = 5, difficulty = 'Normal', textInput, language = 'English' } = req.body;
         let content = textInput || "";
 
         // Handle File Upload
@@ -73,19 +73,20 @@ exports.generateQuiz = async (req, res) => {
             **Settings:**
             - **Number of Questions:** ${numQuestions}
             - **Difficulty Level:** ${difficulty}
+            - **Output Language:** ${language} (Translate questions and answers if necessary)
             
             **Input Text:**
             ${content}
 
-            **Output Format:**
+            ** Output Format:**
             Return a valid JSON array of objects.
             Each object must have:
-            {
-                "question": "The question text",
+        {
+            "question": "The question text",
                 "options": ["Option A", "Option B", "Option C", "Option D"],
-                "correctAnswer": "The correct option text",
-                "explanation": "Brief explanation"
-            }
+                    "correctAnswer": "The correct option text",
+                        "explanation": "Brief explanation"
+        }
         `;
 
         // Use the new SDK method

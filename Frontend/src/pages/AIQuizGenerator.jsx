@@ -25,6 +25,7 @@ const AIQuizGenerator = () => {
     const [file, setFile] = useState(null);
     const [numQuestions, setNumQuestions] = useState(5);
     const [difficulty, setDifficulty] = useState('Normal');
+    const [language, setLanguage] = useState('English'); // New Language State
 
     // Quiz State
     const [quizData, setQuizData] = useState([]);
@@ -82,6 +83,7 @@ const AIQuizGenerator = () => {
         if (textInput) formData.append('textInput', textInput);
         formData.append('numQuestions', numQuestions);
         formData.append('difficulty', difficulty);
+        formData.append('language', language); // Send Language to Backend
 
         try {
             const token = localStorage.getItem('token');
@@ -197,8 +199,8 @@ const AIQuizGenerator = () => {
                         <button
                             onClick={() => setView('generator')}
                             className={`flex-1 py-4 text-center font-semibold transition-colors ${view === 'generator'
-                                ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50'
-                                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                    ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
                             📝 Generate Quiz
@@ -206,8 +208,8 @@ const AIQuizGenerator = () => {
                         <button
                             onClick={() => setView('history')}
                             className={`flex-1 py-4 text-center font-semibold transition-colors ${view === 'history'
-                                ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50'
-                                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                                    ? 'text-violet-600 border-b-2 border-violet-600 bg-violet-50'
+                                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
                             📜 Quiz History
@@ -273,7 +275,7 @@ const AIQuizGenerator = () => {
                                                     <label className="block text-sm font-semibold text-gray-700 uppercase tracking-wide">
                                                         2. Quiz Settings
                                                     </label>
-                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                                         <div>
                                                             <label className="block text-sm text-gray-600 mb-2">Number of Questions</label>
                                                             <input
@@ -296,6 +298,17 @@ const AIQuizGenerator = () => {
                                                                 <option value="Normal">Normal</option>
                                                                 <option value="Hard">Hard</option>
                                                                 <option value="Expert">Expert</option>
+                                                            </select>
+                                                        </div>
+                                                        <div>
+                                                            <label className="block text-sm text-gray-600 mb-2">Language</label>
+                                                            <select
+                                                                value={language}
+                                                                onChange={(e) => setLanguage(e.target.value)}
+                                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+                                                            >
+                                                                <option value="English">English</option>
+                                                                <option value="Sinhala">Sinhala (සිංහල)</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -465,9 +478,9 @@ const AIQuizGenerator = () => {
                                                             </td>
                                                             <td className="p-4">
                                                                 <span className={`px-2 py-1 rounded text-xs font-bold ${item.difficulty === 'Expert' ? 'bg-red-100 text-red-700' :
-                                                                    item.difficulty === 'Hard' ? 'bg-orange-100 text-orange-700' :
-                                                                        item.difficulty === 'Normal' ? 'bg-blue-100 text-blue-700' :
-                                                                            'bg-green-100 text-green-700'
+                                                                        item.difficulty === 'Hard' ? 'bg-orange-100 text-orange-700' :
+                                                                            item.difficulty === 'Normal' ? 'bg-blue-100 text-blue-700' :
+                                                                                'bg-green-100 text-green-700'
                                                                     }`}>
                                                                     {item.difficulty}
                                                                 </span>
