@@ -27,22 +27,30 @@ const mapLinksToMaterials = (links = []) => links.map((link) => ({
 }));
 
 const detectResourceType = ({ resourceType, format, originalName }) => {
-    const fallback = (resourceType && ['image', 'video', 'raw'].includes(resourceType)) ? resourceType : null;
+    if (resourceType && ['image', 'video', 'raw'].includes(resourceType)) {
+        return resourceType;
+    }
     const ext = (format || originalName || '').toLowerCase().split('.').pop();
     if (['mp4', 'mov', 'avi', 'mkv'].includes(ext)) return 'video';
     if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(ext)) return 'image';
     // default documents to raw
     if (['pdf', 'doc', 'docx', 'ppt', 'pptx'].includes(ext)) return 'raw';
-    return fallback || 'raw';
+    return 'raw';
 };
 
 const buildCloudinaryUrl = ({ publicId, url, resourceType, format }) => {
     const safeFormat = (format || '').replace('.', '') || undefined;
     if (publicId) {
+        // If raw file already has extension in publicId, don't double it
+        let fmt = safeFormat;
+        if (resourceType === 'raw' && safeFormat && publicId.toLowerCase().endsWith(`.${safeFormat}`)) {
+            fmt = undefined;
+        }
+
         // Always rebuild using publicId to avoid stale/broken stored URLs
         return cloudinary.url(publicId, {
             resource_type: resourceType || 'raw',
-            format: safeFormat,
+            format: fmt,
             secure: true
         });
     }

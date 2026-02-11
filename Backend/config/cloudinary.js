@@ -22,10 +22,28 @@ const profileStorage = new CloudinaryStorage({
 // Course materials (documents, slides, videos)
 const materialStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'examcoach_materials',
-        resource_type: 'auto',
-        allowed_formats: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'mkv', 'jpg', 'jpeg', 'png']
+    params: async (req, file) => {
+        const original = (file?.originalname || '').toLowerCase();
+        const ext = original.split('.').pop();
+        const videoExts = ['mp4', 'mov', 'avi', 'mkv'];
+        const imageExts = ['jpg', 'jpeg', 'png'];
+        const isVideo = ext && videoExts.includes(ext);
+        const isImage = ext && imageExts.includes(ext);
+        const resourceType = isVideo ? 'video' : (isImage ? 'image' : 'raw');
+
+        const params = {
+            folder: 'examcoach_materials',
+            resource_type: resourceType,
+            allowed_formats: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'mkv', 'jpg', 'jpeg', 'png']
+        };
+
+        if (resourceType === 'raw') {
+            const nameName = (file.originalname || 'file').replace(/\.[^/.]+$/, "").replace(/[^a-z0-9]/gi, '_');
+            params.public_id = `${nameName}_${Date.now()}`;
+            if (ext) params.public_id += `.${ext}`;
+        }
+
+        return params;
     }
 });
 
