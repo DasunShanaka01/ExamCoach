@@ -83,7 +83,7 @@ exports.getLessonsForSubject = async (req, res) => {
     try {
         const lessons = await Lesson.find({ subject: req.params.subjectId })
             .populate({ path: 'createdBy', select: 'name' })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: 1 });
 
         const normalized = lessons.map((lesson) => {
             const obj = lesson.toObject();

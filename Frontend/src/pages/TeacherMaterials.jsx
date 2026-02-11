@@ -91,7 +91,7 @@ const TeacherMaterials = () => {
             if (isEdit) {
                 setLessons(lessons.map((l) => (l._id === editingId ? data.data : l)));
             } else {
-                setLessons([data.data, ...lessons]);
+                setLessons([...lessons, data.data]);
             }
             setLessonForm({ title: '', description: '' });
             setFiles([]);
