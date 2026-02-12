@@ -1,8 +1,47 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 const TopNavbar = ({ role, pageName }) => {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user'));
+    const [profilePic, setProfilePic] = useState('');
+
+    useEffect(() => {
+        const fetchProfilePic = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token || !user) return;
+
+                // Determine API endpoint based on role
+                let endpoint = '';
+                if (role === 'teacher') {
+                    endpoint = `http://localhost:5000/api/teachers/profile/${user.id}`;
+                } else if (role === 'admin') {
+                    // Admins don't have a profile picture endpoint, so skip
+                    return;
+                }
+
+                if (!endpoint) return;
+
+                const response = await fetch(endpoint, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.data.profilePic) {
+                        setProfilePic(data.data.profilePic);
+                    }
+                }
+            } catch (err) {
+                console.error('Error fetching profile picture:', err);
+            }
+        };
+
+        fetchProfilePic();
+    }, [user?.id, role]);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -33,8 +72,18 @@ const TopNavbar = ({ role, pageName }) => {
                             <p className="text-sm font-medium text-gray-800">{user?.name}</p>
                             <p className="text-xs text-gray-500 capitalize">{role}</p>
                         </div>
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold shadow-md">
-                            {user?.name?.charAt(0) || 'U'}
+                        <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-gray-200 shadow-md">
+                            {profilePic ? (
+                                <img
+                                    src={profilePic}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold">
+                                    {user?.name?.charAt(0) || 'U'}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

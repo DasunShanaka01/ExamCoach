@@ -145,7 +145,7 @@ const TeacherList = () => {
     };
 
     const getProfilePicUrl = (picPath) => {
-        if (!picPath) return 'https://via.placeholder.com/100';
+        if (!picPath) return null;
         if (picPath.startsWith('http')) return picPath;
         return `http://localhost:5000/${picPath}`;
     };
@@ -378,12 +378,19 @@ const TeacherList = () => {
                                 ) : (
                                     <div>
                                         <div className="text-center mb-6">
-                                            <img
-                                                src={getProfilePicUrl(selectedTeacher.profilePic)}
-                                                alt="Profile"
-                                                className="w-32 h-32 rounded-full object-cover border-4 border-blue-100 mx-auto shadow-lg"
-                                                onError={(e) => { e.target.src = 'https://via.placeholder.com/120'; }}
-                                            />
+                                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-100 mx-auto shadow-lg">
+                                                {selectedTeacher.profilePic ? (
+                                                    <img
+                                                        src={getProfilePicUrl(selectedTeacher.profilePic)}
+                                                        alt="Profile"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-4xl font-bold">
+                                                        {selectedTeacher.name?.charAt(0) || 'T'}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="bg-gray-50 p-4 rounded-lg">
