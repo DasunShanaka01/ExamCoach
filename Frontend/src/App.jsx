@@ -34,7 +34,7 @@ const App = () => {
 
         {/* Admin Management Routes */}
         <Route path="/admin/teachers" element={<TeacherList />} />
-        <Route path="/admin/add-teacher" element={<AddTeacher />} />
+        <Route path="/admin/add-teacher" element={<AddTeacher />} /> what if student have multiple exam dates how to handle that 
         <Route path="/admin/students" element={<StudentList />} />
       </Routes>
     </div>

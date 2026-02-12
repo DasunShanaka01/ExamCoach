@@ -1,10 +1,34 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import StudentNavbar from '../components/StudentNavbar';
 import Footer from '../components/Footer';
 
 const StudentHome = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate();
+    const [studyPlan, setStudyPlan] = useState(null);
+
+    useEffect(() => {
+        fetchStudyPlan();
+    }, []);
+
+    const fetchStudyPlan = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/study-plan', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                setStudyPlan(data.data);
+            }
+        } catch (err) {
+            // Silently fail - user might not have a study plan yet
+            console.log('No study plan found');
+        }
+    };
 
 
     return (
