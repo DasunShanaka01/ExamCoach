@@ -31,11 +31,18 @@ const QuizSchema = new mongoose.Schema({
         required: true
     },
     questions: [{
+        type: {
+            type: String,
+            required: true,
+            enum: ['MCQ', 'TrueFalse', 'MultiSelect', 'FillBlanks', 'ShortAnswer', 'Essay']
+        },
         question: { type: String, required: true },
         options: [{ type: String }],
-        correctAnswer: { type: String, required: true },
+        correctAnswer: { type: mongoose.Schema.Types.Mixed, required: true },
         explanation: { type: String },
-        userAnswer: { type: String }
+        userAnswer: { type: mongoose.Schema.Types.Mixed }, // Can be string or array
+        maxMarks: { type: Number, default: 1 },
+        obtainedMarks: { type: Number, default: 0 }
     }],
     createdAt: {
         type: Date,

@@ -37,7 +37,7 @@ exports.generateQuiz = async (req, res) => {
     let filePath = null;
 
     try {
-        const { numQuestions = 5, difficulty = 'Normal', textInput, language = 'English' } = req.body;
+        const { numQuestions = 5, difficulty = 'Normal', textInput, language = 'English', selectedTypes = ['MCQ'] } = req.body;
         let content = textInput || "";
 
         // Handle File Upload
@@ -68,25 +68,29 @@ exports.generateQuiz = async (req, res) => {
         }
 
         const prompt = `
-            You are an expert teacher. Create a multiple-choice quiz based on the following text content.
+            You are an expert teacher. Create a quiz based on the following text content.
             
             **Settings:**
             - **Number of Questions:** ${numQuestions}
             - **Difficulty Level:** ${difficulty}
-            - **Output Language:** ${language} (Translate questions and answers if necessary)
+            - **Output Language:** ${language} (Translate questions/answers if necessary)
+            - **Question Types:** ${Array.isArray(selectedTypes) ? selectedTypes.join(', ') : selectedTypes} (Mix these types)
             
             **Input Text:**
             ${content}
 
-            ** Output Format:**
+            **Output Format:**
             Return a valid JSON array of objects.
-            Each object must have:
-        {
-            "question": "The question text",
-                "options": ["Option A", "Option B", "Option C", "Option D"],
-                    "correctAnswer": "The correct option text",
-                        "explanation": "Brief explanation"
-        }
+            Each object MUST have a "type" field matching one of: 'MCQ', 'TrueFalse', 'MultiSelect', 'FillBlanks', 'ShortAnswer', 'Essay'.
+            
+            Structure guide:
+            - **MCQ / TrueFalse**: { type: "MCQ", question: "...", options: ["A", "B", "C", "D"], correctAnswer: "content of correct option", explanation: "..." }
+            - **MultiSelect**: { type: "MultiSelect", question: "...", options: ["A", "B", ...], correctAnswer: ["Option A", "Option C"], explanation: "..." } (Correct Answer IS AN ARRAY)
+            - **FillBlanks**: { type: "FillBlanks", question: "The capital of France is ______", correctAnswer: "Paris", explanation: "..." } (No options)
+            - **ShortAnswer**: { type: "ShortAnswer", question: "...", correctAnswer: "Key phrase", explanation: "..." } (No options)
+            - **Essay**: { type: "Essay", question: "...", correctAnswer: "Key points expected in answer...", explanation: "..." } (No options)
+            
+            Ensure the JSON is valid and strictly follows this array structure.
         `;
 
         // Use the new SDK method
