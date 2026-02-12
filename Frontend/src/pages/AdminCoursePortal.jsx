@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import LessonView from '../components/LessonView'; // Imported LessonView
 
 const api = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -13,6 +14,13 @@ const AdminCoursePortal = () => {
 	const [error, setError] = useState('');
 	const [subjectForm, setSubjectForm] = useState({ name: '', stream: '', teacher: '', description: '' });
 	const [editingId, setEditingId] = useState('');
+	// New State for Lesson Management
+	const [viewingSubject, setViewingSubject] = useState(null);
+	const [lessons, setLessons] = useState([]);
+	const [lessonForm, setLessonForm] = useState({ title: '', description: '', link: '' });
+	const [lessonFiles, setLessonFiles] = useState([]);
+	const [editingLessonId, setEditingLessonId] = useState(''); // Added editingLessonId
+
 	const presetStreams = [
 		'Physical Science',
 		'Biological Science',
@@ -95,6 +103,105 @@ const AdminCoursePortal = () => {
 		loadData();
 	}, [token, fetchBaseHeaders]);
 
+	useEffect(() => {
+		if (!viewingSubject) return;
+		const fetchLessons = async () => {
+			try {
+				const res = await fetch(`${api}/api/subjects/${viewingSubject._id}/lessons`, {
+					// We can reuse fetchBaseHeaders here since GET doesn't use Content-Type usually, or it's JSON
+					headers: fetchBaseHeaders
+				});
+				const data = await parseJsonSafe(res);
+				if (!data.success) throw new Error(data.error || 'Failed to load lessons');
+				setLessons(data.data || []);
+			} catch (err) {
+				setError(err.message);
+			}
+		};
+		fetchLessons();
+	}, [viewingSubject, fetchBaseHeaders]);
+
+	const handleLessonSubmit = async (e) => {
+		e.preventDefault();
+		if (!viewingSubject) return;
+		try {
+			const formData = new FormData();
+			formData.append('title', lessonForm.title);
+			formData.append('description', lessonForm.description);
+			if (lessonForm.link) {
+				formData.append('materialLinks', JSON.stringify([lessonForm.link]));
+			}
+			for (let i = 0; i < lessonFiles.length; i++) {
+				formData.append('materials', lessonFiles[i]);
+			}
+			
+			// Remove Content-Type so browser sets boundary for multipart
+			const headers = { ...fetchBaseHeaders };
+			delete headers['Content-Type'];
+
+			const isEdit = Boolean(editingLessonId);
+			const url = isEdit ? `${api}/api/lessons/${editingLessonId}` : `${api}/api/subjects/${viewingSubject._id}/lessons`;
+			const method = isEdit ? 'PUT' : 'POST';
+
+			const res = await fetch(url, {
+				method,
+				headers,
+				body: formData
+			});
+			
+			const data = await parseJsonSafe(res);
+			if (!data.success) throw new Error(data.error || 'Failed to save lesson');
+			
+			// Refresh lessons from server
+			const refreshRes = await fetch(`${api}/api/subjects/${viewingSubject._id}/lessons`, { headers: fetchBaseHeaders });
+			const refreshData = await parseJsonSafe(refreshRes);
+			
+			setLessons(refreshData.data || []);
+			setLessonForm({ title: '', description: '', link: '' });
+			setLessonFiles([]);
+			setEditingLessonId(''); // Reset editing state
+			// Reset file input
+			const fileInput = document.getElementById('lessonFileInput');
+			if (fileInput) fileInput.value = '';
+			setError('');
+		} catch (err) {
+			setError(err.message);
+		}
+	};
+
+	const handleEditLesson = (lesson) => {
+		setEditingLessonId(lesson._id);
+		setLessonForm({
+			title: lesson.title || '',
+			description: lesson.description || '',
+			link: (lesson.materials && lesson.materials.find(m => m.isLink)?.url) || ''
+		});
+		window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to form
+	};
+
+	const handleCancelLessonEdit = () => {
+		setEditingLessonId('');
+		setLessonForm({ title: '', description: '', link: '' });
+		setLessonFiles([]);
+		const fileInput = document.getElementById('lessonFileInput');
+		if (fileInput) fileInput.value = '';
+	};
+
+	const handleDeleteLesson = async (lessonId) => {
+		if (!window.confirm('Delete this lesson?')) return;
+		try {
+			const res = await fetch(`${api}/api/lessons/${lessonId}`, {
+				method: 'DELETE',
+				headers: fetchBaseHeaders
+			});
+			const data = await parseJsonSafe(res);
+			if (!data.success) throw new Error(data.error || 'Failed to delete lesson');
+			setLessons(lessons.filter(l => l._id !== lessonId));
+		} catch (err) {
+			setError(err.message);
+		}
+	};
+
 	const handleSubjectSubmit = async (e) => {
 		e.preventDefault();
 		try {
@@ -169,9 +276,23 @@ const AdminCoursePortal = () => {
 					<div className="max-w-7xl mx-auto">
 						<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
 							<div>
-								<h1 className="text-3xl font-bold text-gray-800">Course Management</h1>
-								<p className="text-gray-600">Create streams, subjects, and assign teachers.</p>
+								<h1 className="text-3xl font-bold text-gray-800">
+									{viewingSubject ? `Lessons: ${viewingSubject.name}` : 'Course Management'}
+								</h1>
+								<p className="text-gray-600">
+									{viewingSubject 
+										? `Manage lessons and materials for ${viewingSubject.name}` 
+										: 'Create streams, subjects, and assign teachers.'}
+								</p>
 							</div>
+							{viewingSubject && (
+								<button
+									onClick={() => { setViewingSubject(null); setLessons([]); setError(''); }}
+									className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+								>
+									← Back to Courses
+								</button>
+							)}
 						</div>
 
 						{error && (
@@ -183,6 +304,81 @@ const AdminCoursePortal = () => {
 						{loading ? (
 							<div className="flex justify-center items-center h-64">
 								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+							</div>
+						) : viewingSubject ? (
+							<div className="grid grid-cols-1 gap-6">
+								{/* Lesson Creator */}
+								<div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+									<h2 className="text-xl font-semibold text-gray-800 mb-4">{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
+									<form className="grid grid-cols-1 gap-4" onSubmit={handleLessonSubmit}>
+										<div>
+											<label className="block text-sm font-semibold text-gray-700 mb-2">Lesson Title</label>
+											<input
+												type="text"
+												value={lessonForm.title}
+												onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
+												required
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+												placeholder="Week 1: Introduction"
+											/>
+										</div>
+										<div>
+											<label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+											<textarea
+												value={lessonForm.description}
+												onChange={(e) => setLessonForm({ ...lessonForm, description: e.target.value })}
+												rows="2"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+												placeholder="Overview of the lesson..."
+											/>
+										</div>
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+											<div>
+												<label className="block text-sm font-semibold text-gray-700 mb-2">
+													{editingLessonId ? 'Replace Materials (Optional)' : 'Upload Materials (Files)'}
+												</label>
+												<input
+													type="file"
+													id="lessonFileInput"
+													multiple
+													onChange={(e) => setLessonFiles(e.target.files)}
+													className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 mb-1"
+												/>
+												<p className="text-xs text-gray-500">Supported: PDF, Doc, Video, Images</p>
+											</div>
+											<div>
+												<label className="block text-sm font-semibold text-gray-700 mb-2">Add Link (Optional)</label>
+												<input
+													type="url"
+													value={lessonForm.link}
+													onChange={(e) => setLessonForm({ ...lessonForm, link: e.target.value })}
+													className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+													placeholder="https://zoom.us/..."
+												/>
+											</div>
+										</div>
+										<div className="flex justify-end mt-2 gap-3">
+											{editingLessonId && (
+												<button 
+													type="button" 
+													onClick={handleCancelLessonEdit}
+													className="px-6 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium transition"
+												>
+													Cancel
+												</button>
+											)}
+											<button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition">
+												{editingLessonId ? 'Update Lesson' : 'Add Lesson'}
+											</button>
+										</div>
+									</form>
+								</div>
+								
+								{/* Lesson List */}
+								<div>
+									<h2 className="text-xl font-semibold text-gray-800 mb-4">Existing Lessons</h2>
+									<LessonView lessons={lessons} onDelete={handleDeleteLesson} onEdit={handleEditLesson} />
+								</div>
 							</div>
 						) : (
 							<div className="grid grid-cols-1 gap-6">
@@ -280,6 +476,12 @@ const AdminCoursePortal = () => {
 																		<p className="font-medium text-gray-900">{subj.teacher?.name || 'N/A'}</p>
 																		<p className="text-xs text-gray-500">{subj.teacher?.user?.email}</p>
 																		<div className="mt-2 flex gap-2 justify-end">
+																			<button
+																				onClick={() => { setViewingSubject(subj); setError(''); }}
+																				className="px-3 py-1 text-sm rounded bg-green-50 text-green-700 hover:bg-green-100"
+																			>
+																				View Lessons
+																			</button>
 																			<button
 																				onClick={() => handleEditClick(subj)}
 																				className="px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
