@@ -25,8 +25,18 @@ const CourseExplorer = () => {
 				if (!subjectData.success) throw new Error(subjectData.error || 'Failed to load subjects');
 				setStreams(streamData.data || []);
 				setSubjects(subjectData.data || []);
-				if (subjectData.data?.length) setSelectedSubject(subjectData.data[0]._id);
-				if (streamData.data?.length) setSelectedStream(streamData.data[0]._id);
+				
+				// Set initial stream if available
+				if (streamData.data?.length) {
+					const initialStreamId = streamData.data[0]._id;
+					setSelectedStream(initialStreamId);
+
+					// Filter subjects for this initial stream
+					const initialStreamSubjects = (subjectData.data || []).filter(s => s.stream?._id === initialStreamId);
+					if (initialStreamSubjects.length) {
+						setSelectedSubject(initialStreamSubjects[0]._id);
+					}
+				}
 				setError('');
 			} catch (err) {
 				setError(err.message);
@@ -56,6 +66,17 @@ const CourseExplorer = () => {
 		if (!selectedStream) return subjects;
 		return subjects.filter((s) => s.stream?._id === selectedStream);
 	}, [subjects, selectedStream]);
+
+	useEffect(() => {
+		if (filteredSubjects.length > 0) {
+			const currentSubj = filteredSubjects.find((s) => s._id === selectedSubject);
+			if (!currentSubj) {
+				setSelectedSubject(filteredSubjects[0]._id);
+			}
+		} else {
+			setSelectedSubject('');
+		}
+	}, [filteredSubjects, selectedSubject]);
 
 	return (
 		<div className="min-h-screen bg-gray-50">
