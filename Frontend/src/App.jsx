@@ -12,6 +12,7 @@ import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
 import CreateStudyPlan from './pages/CreateStudyPlan';
 import StudyPlanResult from './pages/StudyPlanResult';
+import CalendarCallback from './pages/CalendarCallback';
 
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/student/home" element={<StudentHome />} />
         <Route path="/student/create-plan" element={<CreateStudyPlan />} />
         <Route path="/student/view-plan" element={<StudyPlanResult />} />
+        <Route path="/calendar-callback" element={<CalendarCallback />} />
 
         <Route path="/student/profile" element={<StudentProfile />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
@@ -34,7 +36,7 @@ const App = () => {
 
         {/* Admin Management Routes */}
         <Route path="/admin/teachers" element={<TeacherList />} />
-        <Route path="/admin/add-teacher" element={<AddTeacher />} /> what if student have multiple exam dates how to handle that 
+        <Route path="/admin/add-teacher" element={<AddTeacher />} /> what if student have multiple exam dates how to handle that
         <Route path="/admin/students" element={<StudentList />} />
       </Routes>
     </div>

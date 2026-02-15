@@ -94,6 +94,40 @@ const createStudyPlan = async (req, res) => {
             daysUntilNextExam: nextExamDays
         });
 
+        // Auto-sync to Google Calendar if connected
+        try {
+            const Student = require('../models/Student');
+            const calendarService = require('../services/calendarService');
+
+            const student = await Student.findOne({ user: req.user.id }).select('+googleAccessToken +googleRefreshToken');
+
+            if (student && student.googleCalendarConnected) {
+                // Check if token needs refresh
+                let tokens = {
+                    access_token: student.googleAccessToken,
+                    refresh_token: student.googleRefreshToken,
+                    expiry_date: student.googleTokenExpiry
+                };
+
+                if (new Date() >= new Date(student.googleTokenExpiry)) {
+                    // Refresh token
+                    const newTokens = await calendarService.refreshAccessToken(student.googleRefreshToken);
+                    tokens = newTokens;
+
+                    // Update student with new tokens
+                    student.googleAccessToken = newTokens.access_token;
+                    student.googleTokenExpiry = new Date(newTokens.expiry_date);
+                    await student.save();
+                }
+
+                // Sync to calendar
+                await calendarService.createStudyPlanEvents(tokens, plan);
+            }
+        } catch (calendarError) {
+            console.error('Calendar sync error:', calendarError);
+            // Don't fail the whole request if calendar sync fails
+        }
+
         res.status(201).json({
             success: true,
             data: plan

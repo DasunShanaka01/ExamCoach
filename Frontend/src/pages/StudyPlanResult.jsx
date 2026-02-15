@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import StudentNavbar from '../components/StudentNavbar';
+import GoogleCalendarConnect from '../components/GoogleCalendarConnect';
 
 const StudyPlanResult = () => {
     const [plan, setPlan] = useState(null);
@@ -11,6 +12,7 @@ const StudyPlanResult = () => {
     const [studyMinutes, setStudyMinutes] = useState(0);
     const [isEditing, setIsEditing] = useState(false);
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('user'));
 
     useEffect(() => {
         fetchPlan();
@@ -230,6 +232,9 @@ const StudyPlanResult = () => {
                         </div>
                     </div>
                 )}
+
+                {/* Google Calendar Integration */}
+                <GoogleCalendarConnect studentId={user?.profile?._id} studyPlanId={plan?._id} />
 
                 {/* Daily Schedule and Stats - Moved to Top */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
