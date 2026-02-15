@@ -7,6 +7,7 @@ import StudentProfile from './pages/StudentProfile';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminQuizAnalytics from './pages/AdminQuizAnalytics';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
@@ -32,6 +33,7 @@ const App = () => {
         <Route path="/admin/teachers" element={<TeacherList />} />
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
         <Route path="/admin/students" element={<StudentList />} />
+        <Route path="/admin/analytics" element={<AdminQuizAnalytics />} />
       </Routes>
     </div>
   );

@@ -2,6 +2,7 @@ const { GoogleGenAI } = require("@google/genai");
 const fs = require('fs');
 const pdf = require('pdf-parse');
 const Quiz = require('../models/Quiz');
+const User = require('../models/User');
 const cloudinary = require('cloudinary').v2;
 
 // Configure Cloudinary
@@ -225,5 +226,72 @@ exports.getQuizHistory = async (req, res) => {
             success: false,
             error: 'Failed to fetch quiz history'
         });
+    }
+};
+
+// @desc    Get Quiz Analytics for Admin
+// @route   GET /api/quiz/admin/stats
+// @access  Private (Admin)
+exports.getAdminAnalytics = async (req, res) => {
+    try {
+        const totalQuizzes = await Quiz.countDocuments();
+
+        // Use aggregation for detailed stats
+        const stats = await Quiz.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    avgScorePercent: { $avg: { $multiply: [{ $divide: ["$score", "$totalQuestions"] }, 100] } },
+                    totalQuestions: { $sum: "$totalQuestions" },
+                    avgQuestionsPerQuiz: { $avg: "$totalQuestions" }
+                }
+            }
+        ]);
+
+        // Difficulty Distribution
+        const difficultyDist = await Quiz.aggregate([
+            { $group: { _id: "$difficulty", count: { $sum: 1 } } }
+        ]);
+
+        // Recent Activities (last 10)
+        const recentQuizzes = await Quiz.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .populate('student', 'name email')
+            .select('score totalQuestions difficulty createdAt student');
+
+        // Pass Rate (Score >= 60%)
+        // We can do this efficiently with aggregate
+        const passedStats = await Quiz.aggregate([
+            {
+                $project: {
+                    percentage: { $divide: ["$score", "$totalQuestions"] }
+                }
+            },
+            {
+                $match: { percentage: { $gte: 0.6 } } // Assuming 60% pass mark
+            },
+            { $count: "passed" }
+        ]);
+
+        const passedCount = passedStats.length > 0 ? passedStats[0].passed : 0;
+        const passRate = totalQuizzes > 0 ? ((passedCount / totalQuizzes) * 100).toFixed(1) : 0;
+
+        res.status(200).json({
+            success: true,
+            totalQuizzes,
+            avgScore: stats.length > 0 ? stats[0].avgScorePercent.toFixed(1) : 0,
+            totalQuestionsGenerated: stats.length > 0 ? stats[0].totalQuestions : 0,
+            passRate: passRate,
+            difficultyDistribution: difficultyDist.reduce((acc, curr) => {
+                acc[curr._id] = curr.count;
+                return acc;
+            }, {}),
+            recentActivity: recentQuizzes
+        });
+
+    } catch (err) {
+        console.error("Admin Analytics Error:", err);
+        res.status(500).json({ success: false, error: 'Server Error' });
     }
 };

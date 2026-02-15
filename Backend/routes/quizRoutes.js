@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
-const { protect } = require('../middleware/authMiddleware');
-const { generateQuiz, saveQuizResult, getQuizHistory } = require('../controllers/quizController');
+const { protect, authorize } = require('../middleware/authMiddleware');
+const { generateQuiz, saveQuizResult, getQuizHistory, getAdminAnalytics } = require('../controllers/quizController');
 
 // Ensure uploads directory exists
 if (!fs.existsSync('uploads')) {
@@ -27,5 +27,10 @@ router.post('/save', protect, saveQuizResult);
 // @route   GET /api/quiz/history
 // @access  Private (Student)
 router.get('/history', protect, getQuizHistory);
+
+// @desc    Get Quiz Analytics (Admin)
+// @route   GET /api/quiz/admin/stats
+// @access  Private (Admin)
+router.get('/admin/stats', protect, authorize('admin'), getAdminAnalytics);
 
 module.exports = router;

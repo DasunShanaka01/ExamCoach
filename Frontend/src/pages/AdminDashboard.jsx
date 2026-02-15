@@ -69,14 +69,17 @@ const AdminDashboard = () => {
                                 </Link>
 
                                 {/* Analytics Card */}
-                                <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white">
+                                <Link
+                                    to="/admin/analytics"
+                                    className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white"
+                                >
                                     <div className="flex items-center justify-between mb-4">
                                         <div className="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center text-3xl shadow-lg">
                                             <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                             </svg>
                                         </div>
-                                        <span className="text-white text-opacity-80">
+                                        <span className="text-white text-opacity-80 group-hover:scale-110 transition-transform">
                                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                                             </svg>
@@ -86,12 +89,9 @@ const AdminDashboard = () => {
                                         System Analytics
                                     </h3>
                                     <p className="text-white text-opacity-90 text-sm">
-                                        View performance metrics and reports.
+                                        View quiz performance metrics and reports.
                                     </p>
-                                    <div className="mt-4 pt-4 border-t border-white border-opacity-20">
-                                        <p className="text-sm text-white text-opacity-80">Coming Soon</p>
-                                    </div>
-                                </div>
+                                </Link>
 
                                 {/* Quick Stats */}
                                 <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
