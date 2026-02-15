@@ -10,6 +10,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
+import AILearningLabPage from './pages/AILearningLabPage';
 
 const App = () => {
   return (
@@ -22,6 +23,7 @@ const App = () => {
         {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
         <Route path="/student/home" element={<StudentHome />} />
         <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/ai_learning_lab" element={<AILearningLabPage />} />
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
