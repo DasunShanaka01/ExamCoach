@@ -2,13 +2,14 @@ import { useState } from 'react';
 
 const AILearningLab = () => {
     const [text, setText] = useState('');
+    const [file, setFile] = useState(null);
     const [summary, setSummary] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const handleSummarize = async () => {
-        if (!text.trim()) {
-            setError('Please enter some text to summarize.');
+        if (!text.trim() && !file) {
+            setError('Please enter text or upload a PDF to summarize.');
             return;
         }
 
@@ -16,13 +17,14 @@ const AILearningLab = () => {
         setError(null);
         setSummary('');
 
+        const formData = new FormData();
+        if (text) formData.append('text', text);
+        if (file) formData.append('file', file);
+
         try {
-            const response = await fetch('http://localhost:5001/api/ai/summarize', {
+            const response = await fetch('http://localhost:5000/api/ai/summarize', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ text }),
+                body: formData,
             });
 
             const data = await response.json();
@@ -50,7 +52,7 @@ const AILearningLab = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="flex flex-col">
                     <label htmlFor="inputText" className="block text-sm font-medium text-gray-700 mb-2">
-                        Enter text to summarize:
+                        Enter text or upload a PDF to summarize:
                     </label>
                     <textarea
                         id="inputText"
@@ -60,6 +62,23 @@ const AILearningLab = () => {
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                     ></textarea>
+
+                    <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Or upload a PDF document:
+                        </label>
+                        <input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => setFile(e.target.files[0])}
+                            className="block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-md file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-blue-50 file:text-blue-700
+                                hover:file:bg-blue-100"
+                        />
+                    </div>
 
                     <div className="mt-4">
                         <button
