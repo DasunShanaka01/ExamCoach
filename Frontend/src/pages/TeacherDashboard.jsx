@@ -1,37 +1,134 @@
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import TopNavbar from '../components/TopNavbar';
 
 const TeacherDashboard = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="layout-container">
+        <div className="flex min-h-screen bg-gray-50">
             <Sidebar role="teacher" />
-            <div className="main-content">
-                <div className="dashboard-container">
-                    <header className="dashboard-header">
-                        <h1>Teacher Dashboard</h1>
-                    </header>
-                    <main className="dashboard-content">
-                        <div className="grid-container">
-                            <div className="card" onClick={() => navigate('/teacher/upload-kuppi')}>
-                                <h3>Upload Kuppi Session</h3>
-                                <p>Upload video sessions for students.</p>
+            <div className="flex-1 ml-64">
+                <TopNavbar role="teacher" pageName="Dashboard" />
+                <div className="p-8">
+                    <div className="max-w-7xl mx-auto">
+                        <header className="mb-8">
+                            <h1 className="text-4xl font-bold text-gray-800 mb-2">Teacher Dashboard</h1>
+                            <p className="text-gray-600">Welcome back! Manage your classes and students.</p>
+                        </header>
+
+                        <main>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {/* Upload Kuppi Card */}
+                                <div className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-blue-300 cursor-pointer"
+                                     onClick={() => navigate('/teacher/upload-kuppi')}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
+                                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-400 group-hover:text-blue-600 transition-colors">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                                        Upload Kuppi Session
+                                    </h3>
+                                    <p className="text-gray-600 text-sm">
+                                        Upload video sessions for students.
+                                    </p>
+                                </div>
+
+                                {/* Create Quiz Card */}
+                                <div className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-green-300 cursor-pointer"
+                                     onClick={() => navigate('/teacher/create-quiz')}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
+                                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-400 group-hover:text-green-600 transition-colors">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition-colors">
+                                        Create Quiz
+                                    </h3>
+                                    <p className="text-gray-600 text-sm">
+                                        Create quizzes for students to practice.
+                                    </p>
+                                </div>
+
+                                {/* My Kuppi Sessions Card */}
+                                <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white cursor-pointer"
+                                     onClick={() => navigate('/teacher/view-kuppis')}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center text-3xl shadow-lg">
+                                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <span className="text-white text-opacity-80">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2">
+                                        My Kuppi Sessions
+                                    </h3>
+                                    <p className="text-white text-opacity-90 text-sm">
+                                        Manage your uploaded sessions.
+                                    </p>
+                                </div>
+
+                                {/* My Quizzes Card */}
+                                <div className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-orange-300 cursor-pointer"
+                                     onClick={() => navigate('/teacher/view-quizzes')}>
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
+                                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                            </svg>
+                                        </div>
+                                        <span className="text-gray-400 group-hover:text-orange-600 transition-colors">
+                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-orange-600 transition-colors">
+                                        My Quizzes
+                                    </h3>
+                                    <p className="text-gray-600 text-sm">
+                                        View and manage your quizzes.
+                                    </p>
+                                </div>
+
+                                {/* Schedule */}
+                                <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 md:col-span-2">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-lg font-bold text-gray-800">Today's Schedule</h3>
+                                        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
+                                            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                                            <p className="text-sm text-gray-600">No classes scheduled for today</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="card" onClick={() => navigate('/teacher/create-quiz')}>
-                                <h3>Create Quiz</h3>
-                                <p>Create quizzes for students to practice.</p>
-                            </div>
-                            <div className="card" onClick={() => navigate('/teacher/view-kuppis')}>
-                                <h3>My Kuppi Sessions</h3>
-                                <p>Manage your uploaded sessions.</p>
-                            </div>
-                            <div className="card" onClick={() => navigate('/teacher/view-quizzes')}>
-                                <h3>My Quizzes</h3>
-                                <p>View and manage your quizzes.</p>
-                            </div>
-                        </div>
-                    </main>
+                        </main>
+                    </div>
                 </div>
             </div>
         </div>

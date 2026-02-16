@@ -2,7 +2,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import RegisterStudent from './pages/RegisterStudent';
 import StudentHome from './pages/StudentHome';
+import StudentProfile from './pages/StudentProfile';
 import TeacherDashboard from './pages/TeacherDashboard';
+import TeacherProfile from './pages/TeacherProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
@@ -23,10 +25,15 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterStudent />} />
 
-        {/* Protected Routes */}
+        {/* Protected Student Routes */}
         <Route path="/student/home" element={
           <ProtectedRoute allowedRoles={['student']}>
             <StudentHome />
+          </ProtectedRoute>
+        } />
+        <Route path="/student/profile" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentProfile />
           </ProtectedRoute>
         } />
         <Route path="/student/watch-kuppi/:id" element={
@@ -39,12 +46,16 @@ const App = () => {
             <TakeQuiz />
           </ProtectedRoute>
         } />
+
+        {/* Teacher Routes */}
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-        {/* Teacher Routes - Temporarily unprotected for testing */}
+        <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/teacher/upload-kuppi" element={<UploadKuppi />} />
         <Route path="/teacher/create-quiz" element={<CreateQuiz />} />
         <Route path="/teacher/view-quizzes" element={<ViewQuizzes />} />
         <Route path="/teacher/view-kuppis" element={<ViewKuppis />} />
+
+        {/* Admin Routes */}
         <Route path="/admin/dashboard" element={
           <ProtectedRoute allowedRoles={['admin']}>
             <AdminDashboard />

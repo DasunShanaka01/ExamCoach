@@ -44,6 +44,12 @@ const teacherSchema = new mongoose.Schema({
         type: Date,
         required: [true, 'Please add date of birth']
     },
+    phone: {
+        type: String
+    },
+    bio: {
+        type: String
+    },
     profilePic: {
         type: String,
         default: 'default-profile.png'
