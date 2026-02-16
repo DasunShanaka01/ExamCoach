@@ -37,7 +37,70 @@ exports.getQuiz = async (req, res) => {
             });
         }
 
-        res.status(200).json({ success: true, data: quiz });
+        // Strip sensitive fields for students, but keep for teachers editing
+        const quizObj = quiz.toObject();
+        if (req.query.includeCredentials !== 'true') {
+            const hasCredentials = !!(quizObj.enrollmentKey || quizObj.quizPassword);
+            delete quizObj.enrollmentKey;
+            delete quizObj.quizPassword;
+            quizObj.hasCredentials = hasCredentials;
+        }
+
+        res.status(200).json({ success: true, data: quizObj });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Verify quiz access (enrollment key + password)
+// @route   POST /api/quizzes/:id/verify
+// @access  Private/Student
+exports.verifyQuizAccess = async (req, res) => {
+    try {
+        const quiz = await Quiz.findById(req.params.id);
+
+        if (!quiz) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Quiz not found' 
+            });
+        }
+
+        const { enrollmentKey, quizPassword } = req.body;
+
+        // If quiz has no enrollment key/password set, allow access
+        if (!quiz.enrollmentKey && !quiz.quizPassword) {
+            return res.status(200).json({ success: true, message: 'Access granted' });
+        }
+
+        // Check enrollment time window
+        if (quiz.enrollmentStartTime && quiz.enrollmentEndTime) {
+            const now = new Date();
+            if (now < new Date(quiz.enrollmentStartTime) || now > new Date(quiz.enrollmentEndTime)) {
+                return res.status(403).json({ 
+                    success: false, 
+                    error: 'Enrollment period is closed for this quiz' 
+                });
+            }
+        }
+
+        // Verify enrollment key
+        if (quiz.enrollmentKey && quiz.enrollmentKey !== enrollmentKey) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Invalid enrollment key' 
+            });
+        }
+
+        // Verify quiz password
+        if (quiz.quizPassword && quiz.quizPassword !== quizPassword) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Invalid quiz password' 
+            });
+        }
+
+        res.status(200).json({ success: true, message: 'Access granted' });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
@@ -162,31 +225,35 @@ exports.submitQuizAttempt = async (req, res) => {
             });
         }
 
-        // Temporarily handle unauthenticated requests for testing
-        let studentId = null;
-        if (req.user && req.user.id) {
-            const student = await Student.findOne({ user: req.user.id });
-            if (!student) {
-                return res.status(404).json({ 
-                    success: false, 
-                    error: 'Student profile not found' 
-                });
-            }
-            studentId = student._id;
-        } else {
-            // For testing without auth, create or find a test student
-            let testStudent = await Student.findOne({ email: 'test@student.com' });
-            if (!testStudent) {
-                testStudent = await Student.create({
-                    name: 'Test Student',
-                    email: 'test@student.com',
-                    grade: 'Test'
-                });
-            }
-            studentId = testStudent._id;
+        // Require authenticated user
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Not authorized. Please log in.' 
+            });
         }
 
-        const { answers, timeTaken } = req.body;
+        const student = await Student.findOne({ user: req.user.id });
+        if (!student) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Student profile not found. Please complete your profile first.' 
+            });
+        }
+        const studentId = student._id;
+
+        // Check max attempts
+        if (quiz.maxAttempts && quiz.maxAttempts > 0) {
+            const existingAttempts = await QuizAttempt.countDocuments({ student: studentId, quiz: quiz._id });
+            if (existingAttempts >= quiz.maxAttempts) {
+                return res.status(403).json({
+                    success: false,
+                    error: `You have used all ${quiz.maxAttempts} attempt(s) for this quiz.`
+                });
+            }
+        }
+
+        const { answers, timeTaken, tabSwitchCount } = req.body;
 
         // Calculate score
         let correctAnswers = 0;
@@ -210,19 +277,68 @@ exports.submitQuizAttempt = async (req, res) => {
             score,
             totalQuestions: quiz.questions.length,
             percentage,
-            timeTaken
+            timeTaken,
+            tabSwitchCount: tabSwitchCount || 0
         });
+
+        // Check if all attempts used after this submission
+        const totalAttemptsMade = await QuizAttempt.countDocuments({ student: studentId, quiz: quiz._id });
+        const allAttemptsUsed = quiz.maxAttempts > 0 && totalAttemptsMade >= quiz.maxAttempts;
+
+        // If all attempts used, include questions with explanations and correct answers
+        const responseData = {
+            attempt,
+            results: {
+                score,
+                totalQuestions: quiz.questions.length,
+                percentage,
+                attemptsMade: totalAttemptsMade,
+                maxAttempts: quiz.maxAttempts || 1,
+                allAttemptsUsed
+            }
+        };
+
+        if (allAttemptsUsed) {
+            responseData.results.questions = quiz.questions.map((q, i) => ({
+                question: q.question,
+                options: q.options,
+                correctAnswer: q.correctAnswer,
+                explanation: q.explanation || '',
+                studentAnswer: processedAnswers[i]?.selectedAnswer,
+                isCorrect: processedAnswers[i]?.isCorrect
+            }));
+        }
 
         res.status(201).json({ 
             success: true, 
-            data: {
-                attempt,
-                results: {
-                    score,
-                    totalQuestions: quiz.questions.length,
-                    percentage
-                }
-            }
+            data: responseData
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Get all attempts for a specific quiz (teacher view)
+// @route   GET /api/quizzes/:id/attempts
+// @access  Private/Teacher
+exports.getQuizAttempts = async (req, res) => {
+    try {
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) {
+            return res.status(404).json({ success: false, error: 'Quiz not found' });
+        }
+
+        const attempts = await QuizAttempt.find({ quiz: req.params.id })
+            .populate({
+                path: 'student',
+                select: 'firstName lastName profilePic',
+            })
+            .sort({ completedAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            count: attempts.length,
+            data: attempts
         });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -234,26 +350,15 @@ exports.submitQuizAttempt = async (req, res) => {
 // @access  Private/Student
 exports.getStudentAttempts = async (req, res) => {
     try {
-        // Temporarily handle unauthenticated requests for testing
-        let studentId = null;
-        if (req.user && req.user.id) {
-            const student = await Student.findOne({ user: req.user.id });
-            if (!student) {
-                return res.status(404).json({ 
-                    success: false, 
-                    error: 'Student profile not found' 
-                });
-            }
-            studentId = student._id;
-        } else {
-            // For testing without auth, use test student
-            const testStudent = await Student.findOne({ email: 'test@student.com' });
-            if (testStudent) {
-                studentId = testStudent._id;
-            }
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ 
+                success: false, 
+                error: 'Not authorized. Please log in.' 
+            });
         }
 
-        if (!studentId) {
+        const student = await Student.findOne({ user: req.user.id });
+        if (!student) {
             return res.status(200).json({ 
                 success: true, 
                 count: 0, 
@@ -261,14 +366,50 @@ exports.getStudentAttempts = async (req, res) => {
             });
         }
         
-        const attempts = await QuizAttempt.find({ student: studentId })
-            .populate('quiz', 'title subject')
+        const attempts = await QuizAttempt.find({ student: student._id })
+            .populate('quiz', 'title subject maxAttempts')
             .sort({ completedAt: -1 });
 
         res.status(200).json({ 
             success: true, 
             count: attempts.length, 
             data: attempts 
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Get student's attempts for a specific quiz
+// @route   GET /api/quizzes/:id/my-attempts
+// @access  Private/Student
+exports.getMyAttemptsForQuiz = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ success: false, error: 'Not authorized.' });
+        }
+
+        const student = await Student.findOne({ user: req.user.id });
+        if (!student) {
+            return res.status(200).json({ success: true, count: 0, data: [], maxAttempts: 1 });
+        }
+
+        const quiz = await Quiz.findById(req.params.id);
+        if (!quiz) {
+            return res.status(404).json({ success: false, error: 'Quiz not found' });
+        }
+
+        const attempts = await QuizAttempt.find({ student: student._id, quiz: quiz._id })
+            .sort({ completedAt: -1 });
+
+        const allUsed = quiz.maxAttempts > 0 && attempts.length >= quiz.maxAttempts;
+
+        res.status(200).json({ 
+            success: true, 
+            count: attempts.length,
+            maxAttempts: quiz.maxAttempts || 1,
+            allAttemptsUsed: allUsed,
+            data: attempts
         });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });

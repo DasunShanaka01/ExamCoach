@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentNavbar from '../components/StudentNavbar';
 import Footer from '../components/Footer';
-import { kuppiAPI, quizAPI } from '../services/api';
+import { quizAPI } from '../services/api';
 
 const StudentHome = () => {
-    const [kuppis, setKuppis] = useState([]);
     const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -20,12 +19,7 @@ const StudentHome = () => {
     const fetchContent = async () => {
         try {
             setLoading(true);
-            const [kuppisResponse, quizzesResponse] = await Promise.all([
-                kuppiAPI.getKuppis(),
-                quizAPI.getQuizzes()
-            ]);
-
-            setKuppis(kuppisResponse.data || []);
+            const quizzesResponse = await quizAPI.getQuizzes();
             setQuizzes(quizzesResponse.data || []);
         } catch (err) {
             setError('Failed to load content. Please try again.');
@@ -33,10 +27,6 @@ const StudentHome = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleWatchKuppi = (kuppiId) => {
-        navigate(`/student/watch-kuppi/${kuppiId}`);
     };
 
     const handleTakeQuiz = (quizId) => {
@@ -144,56 +134,16 @@ const StudentHome = () => {
                     </div>
                 </div>
 
-                {/* Available Videos Section */}
-                <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                        <span className="text-2xl">📹</span>
-                        Available Video Sessions
-                    </h3>
-                    {kuppis.length === 0 ? (
-                        <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                            <p className="text-gray-600">No video sessions available at the moment.</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {kuppis.map((kuppi) => (
-                                <div key={kuppi._id} className="group bg-gray-50 p-4 rounded-lg hover:bg-blue-50 transition-colors">
-                                    {kuppi.thumbnailUrl ? (
-                                        <img
-                                            src={kuppi.thumbnailUrl}
-                                            alt={kuppi.title}
-                                            className="w-full h-36 object-cover rounded-lg mb-3"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-36 bg-gray-200 rounded-lg mb-3 flex items-center justify-center text-3xl">
-                                            📹
-                                        </div>
-                                    )}
-                                    <h4 className="font-bold text-gray-800">{kuppi.title}</h4>
-                                    <p className="text-sm text-gray-600 mt-1">{kuppi.description}</p>
-                                    <div className="text-xs text-gray-500 mt-2 space-y-1">
-                                        <p>By: {kuppi.uploadedBy?.name}</p>
-                                        <p>Subject: {kuppi.uploadedBy?.subject}</p>
-                                        <p>Views: {kuppi.views || 0}</p>
-                                    </div>
-                                    <button
-                                        className="mt-3 w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                                        onClick={() => handleWatchKuppi(kuppi._id)}
-                                    >
-                                        Watch Video
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
                 {/* Available Quizzes Section */}
                 <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-                    <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                        <span className="text-2xl">📝</span>
-                        Available Quizzes
+                    <h3 className="text-2xl font-bold text-gray-800 mb-6 flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                            <span className="text-2xl">📝</span>
+                            Available Quizzes
+                        </span>
+                        <button onClick={() => navigate('/student/quizzes')} className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                            View All Quizzes & Results →
+                        </button>
                     </h3>
                     {quizzes.length === 0 ? (
                         <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">

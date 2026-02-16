@@ -6,36 +6,40 @@ const {
     updateQuiz,
     deleteQuiz,
     submitQuizAttempt,
-    getStudentAttempts
+    getStudentAttempts,
+    verifyQuizAccess,
+    getQuizAttempts,
+    getMyAttemptsForQuiz
 } = require('../controllers/quizController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { validateQuizCreation } = require('../middleware/validationMiddleware');
 
 const router = express.Router();
 
-// Temporarily disable authentication for testing
-// router.use(protect);
-
-// Public routes for authenticated users
+// Public quiz listing
 router.route('/')
-    .get(getQuizzes);
-
-router.route('/:id')
-    .get(getQuiz);
-
-// Teacher only routes
-router.route('/')
+    .get(getQuizzes)
     .post(validateQuizCreation, createQuiz);
 
-router.route('/:id')
-    .put(authorize('teacher'), updateQuiz)
-    .delete(authorize('teacher', 'admin'), deleteQuiz);
-
-// Student quiz attempt routes
-router.route('/:id/attempt')
-    .post(authorize('student'), submitQuizAttempt);
-
+// Student attempts (must be before /:id routes)
 router.route('/attempts')
-    .get(authorize('student'), getStudentAttempts);
+    .get(protect, getStudentAttempts);
+
+router.route('/:id')
+    .get(getQuiz)
+    .put(updateQuiz)
+    .delete(deleteQuiz);
+
+router.route('/:id/verify')
+    .post(protect, verifyQuizAccess);
+
+router.route('/:id/attempt')
+    .post(protect, submitQuizAttempt);
+
+router.route('/:id/attempts')
+    .get(getQuizAttempts);
+
+router.route('/:id/my-attempts')
+    .get(protect, getMyAttemptsForQuiz);
 
 module.exports = router;

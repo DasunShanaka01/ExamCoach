@@ -45,33 +45,39 @@ export const logout = () => {
 
 // Helper function for API requests
 const apiRequest = async (endpoint, options = {}) => {
-  // Temporarily disable token requirement for testing
-  // const token = getAuthToken();
-
-  // if (!token || isTokenExpired(token)) {
-  //   handleLogout();
-  //   throw new Error('Session expired. Please login again.');
-  // }
+  const token = getAuthToken();
+  
+  // DEBUG: Log token status
+  console.log(`[API] ${options.method || 'GET'} ${endpoint} — Token: ${token ? token.substring(0, 20) + '...' : 'NONE'}`);
 
   const defaultHeaders = {
-    // ...(token && { 'Authorization': `Bearer ${token}` })
+    ...(token && { 'Authorization': `Bearer ${token}` })
   };
 
+  const { headers: optionHeaders, ...restOptions } = options;
+
   const config = {
+    ...restOptions,
     headers: {
       ...defaultHeaders,
-      ...options.headers
-    },
-    ...options
+      ...optionHeaders
+    }
   };
+
+  // DEBUG: Log final headers
+  console.log('[API] Final headers:', JSON.stringify(config.headers));
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
 
   if (response.status === 401) {
-    // For testing, don't logout on 401
-    // handleLogout();
-    // throw new Error('Session expired. Please login again.');
-    console.warn('401 Unauthorized - but continuing for testing');
+    // Only auto-logout if this wasn't a login/register attempt
+    const isAuthEndpoint = endpoint.startsWith('/api/auth/login') || 
+                            endpoint.startsWith('/api/auth/register');
+    if (!isAuthEndpoint) {
+      console.warn('401 Unauthorized on', endpoint);
+    }
+    const errorData = await response.json().catch(() => ({ error: 'Unauthorized' }));
+    throw new Error(errorData.error || 'Unauthorized');
   }
 
   if (!response.ok) {
@@ -138,6 +144,9 @@ export const quizAPI = {
   // Get single quiz
   getQuiz: (id) => apiRequest(`/api/quizzes/${id}`),
 
+  // Get single quiz with credentials (for teacher editing)
+  getQuizFull: (id) => apiRequest(`/api/quizzes/${id}?includeCredentials=true`),
+
   // Create quiz
   createQuiz: (quizData) => apiRequest('/api/quizzes', {
     method: 'POST',
@@ -164,8 +173,21 @@ export const quizAPI = {
     body: JSON.stringify(attemptData)
   }),
 
+  // Verify quiz access (enrollment key + password)
+  verifyQuizAccess: (quizId, credentials) => apiRequest(`/api/quizzes/${quizId}/verify`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+  }),
+
   // Get student's quiz attempts
-  getStudentAttempts: () => apiRequest('/api/quizzes/attempts')
+  getStudentAttempts: () => apiRequest('/api/quizzes/attempts'),
+
+  // Get all attempts for a specific quiz (teacher view)
+  getQuizAttempts: (quizId) => apiRequest(`/api/quizzes/${quizId}/attempts`),
+
+  // Get student attempt count for a specific quiz
+  getMyAttemptsForQuiz: (quizId) => apiRequest(`/api/quizzes/${quizId}/my-attempts`)
 };
 
 // Teacher API calls

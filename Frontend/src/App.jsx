@@ -9,12 +9,13 @@ import AdminDashboard from './pages/AdminDashboard';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
-import UploadKuppi from './pages/UploadKuppi';
 import CreateQuiz from './pages/CreateQuiz';
 import ViewQuizzes from './pages/ViewQuizzes';
-import ViewKuppis from './pages/ViewKuppis';
-import WatchKuppi from './pages/WatchKuppi';
 import TakeQuiz from './pages/TakeQuiz';
+import StudentQuizzes from './pages/StudentQuizzes';
+import TeacherQuizzes from './pages/TeacherQuizzes';
+import QuizAttempts from './pages/QuizAttempts';
+import UpdateQuiz from './pages/UpdateQuiz';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
@@ -36,24 +37,25 @@ const App = () => {
             <StudentProfile />
           </ProtectedRoute>
         } />
-        <Route path="/student/watch-kuppi/:id" element={
-          <ProtectedRoute allowedRoles={['student']}>
-            <WatchKuppi />
-          </ProtectedRoute>
-        } />
         <Route path="/student/take-quiz/:id" element={
           <ProtectedRoute allowedRoles={['student']}>
             <TakeQuiz />
+          </ProtectedRoute>
+        } />
+        <Route path="/student/quizzes" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentQuizzes />
           </ProtectedRoute>
         } />
 
         {/* Teacher Routes */}
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
         <Route path="/teacher/profile" element={<TeacherProfile />} />
-        <Route path="/teacher/upload-kuppi" element={<UploadKuppi />} />
         <Route path="/teacher/create-quiz" element={<CreateQuiz />} />
         <Route path="/teacher/view-quizzes" element={<ViewQuizzes />} />
-        <Route path="/teacher/view-kuppis" element={<ViewKuppis />} />
+        <Route path="/teacher/update-quiz/:id" element={<UpdateQuiz />} />
+        <Route path="/teacher/quizzes" element={<TeacherQuizzes />} />
+        <Route path="/teacher/quiz-attempts/:id" element={<QuizAttempts />} />
 
         {/* Admin Routes */}
         <Route path="/admin/dashboard" element={

@@ -40,6 +40,24 @@ const quizSchema = new mongoose.Schema({
         type: Number, // in minutes
         default: 30
     },
+    maxAttempts: {
+        type: Number,
+        default: 1
+    },
+    enrollmentKey: {
+        type: String,
+        default: ''
+    },
+    quizPassword: {
+        type: String,
+        default: ''
+    },
+    enrollmentStartTime: {
+        type: Date
+    },
+    enrollmentEndTime: {
+        type: Date
+    },
     isActive: {
         type: Boolean,
         default: true

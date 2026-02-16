@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const protect = (req, res, next) => {
     let token;
 
+    // DEBUG: Log what headers we receive
+    console.log(`[AUTH] ${req.method} ${req.originalUrl} — Authorization header: ${req.headers.authorization ? req.headers.authorization.substring(0, 30) + '...' : 'MISSING'}`);
+
     if (
         req.headers.authorization &&
         req.headers.authorization.startsWith('Bearer')
@@ -11,6 +14,7 @@ const protect = (req, res, next) => {
     }
 
     if (!token) {
+        console.log('[AUTH] REJECTED — No token found');
         return res.status(401).json({ success: false, error: 'Not authorized to access this route' });
     }
 

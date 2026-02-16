@@ -1,12 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import CheatingAlert from '../components/CheatingAlert';
 
 const TeacherDashboard = () => {
     const navigate = useNavigate();
 
     return (
         <div className="flex min-h-screen bg-gray-50">
+            <CheatingAlert />
             <Sidebar role="teacher" />
             <div className="flex-1 ml-64">
                 <TopNavbar role="teacher" pageName="Dashboard" />
@@ -19,29 +21,6 @@ const TeacherDashboard = () => {
 
                         <main>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {/* Upload Kuppi Card */}
-                                <div className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-blue-300 cursor-pointer"
-                                     onClick={() => navigate('/teacher/upload-kuppi')}>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
-                                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-gray-400 group-hover:text-blue-600 transition-colors">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-                                        Upload Kuppi Session
-                                    </h3>
-                                    <p className="text-gray-600 text-sm">
-                                        Upload video sessions for students.
-                                    </p>
-                                </div>
-
                                 {/* Create Quiz Card */}
                                 <div className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-green-300 cursor-pointer"
                                      onClick={() => navigate('/teacher/create-quiz')}>
@@ -62,29 +41,6 @@ const TeacherDashboard = () => {
                                     </h3>
                                     <p className="text-gray-600 text-sm">
                                         Create quizzes for students to practice.
-                                    </p>
-                                </div>
-
-                                {/* My Kuppi Sessions Card */}
-                                <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white cursor-pointer"
-                                     onClick={() => navigate('/teacher/view-kuppis')}>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center text-3xl shadow-lg">
-                                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <span className="text-white text-opacity-80">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-2">
-                                        My Kuppi Sessions
-                                    </h3>
-                                    <p className="text-white text-opacity-90 text-sm">
-                                        Manage your uploaded sessions.
                                     </p>
                                 </div>
 
