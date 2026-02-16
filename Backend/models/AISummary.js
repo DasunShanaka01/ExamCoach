@@ -23,6 +23,11 @@ const AISummarySchema = new mongoose.Schema({
         enum: ['text', 'pdf'],
         default: 'text'
     },
+    relatedResources: [{
+        title: String,
+        link: String,
+        type: { type: String, enum: ['youtube', 'website', 'other'] }
+    }],
     createdAt: {
         type: Date,
         default: Date.now

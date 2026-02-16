@@ -11,6 +11,8 @@ const AILearningLab = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedHistoryId, setSelectedHistoryId] = useState(null);
+    const [relatedResources, setRelatedResources] = useState([]);
+    const [activeResultTab, setActiveResultTab] = useState('summary'); // 'summary', 'resources'
 
     // Get user from localStorage
     const user = JSON.parse(localStorage.getItem('user'));
@@ -37,8 +39,10 @@ const AILearningLab = () => {
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
         setSummary('');
+        setRelatedResources([]);
         setCurrentTitle('');
         setSelectedHistoryId(null);
+        setActiveResultTab('summary');
     };
 
     const handleTextChange = (e) => {
@@ -54,7 +58,9 @@ const AILearningLab = () => {
         setLoading(true);
         setError(null);
         setSummary('');
+        setRelatedResources([]);
         setSelectedHistoryId(null);
+        setActiveResultTab('summary');
 
         const formData = new FormData();
         if (activeTab === 'text' && text) {
@@ -79,6 +85,10 @@ const AILearningLab = () => {
             }
 
             setSummary(data.summary);
+            setRelatedResources(data.relatedResources || []);
+            if (data.relatedResources && data.relatedResources.length > 0) {
+                // specific logic if needed, but we start at summary tab
+            }
         } catch (err) {
             setError(err.message);
         } finally {
@@ -94,6 +104,7 @@ const AILearningLab = () => {
             formData.append('userId', userId);
             formData.append('title', currentTitle || 'New Summary');
             formData.append('summary', summary);
+            formData.append('relatedResources', JSON.stringify(relatedResources));
             formData.append('type', activeTab === 'upload' ? 'pdf' : 'text');
 
             if (activeTab === 'text') {
@@ -122,7 +133,9 @@ const AILearningLab = () => {
     const loadHistoryItem = (item) => {
         setSelectedHistoryId(item._id);
         setSummary(item.summary);
+        setRelatedResources(item.relatedResources || []);
         setCurrentTitle(item.title);
+        setActiveResultTab('summary');
         setActiveTab(item.type === 'pdf' ? 'upload' : 'text');
         if (item.type === 'text') {
             setText(item.originalContent);
@@ -271,8 +284,8 @@ const AILearningLab = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="p-5 border-b border-gray-100 bg-gray-50/30 flex justify-between items-center">
-                                            <div>
+                                        <div className="px-5 pt-5 pb-0 border-b border-gray-100 bg-gray-50/30 flex justify-between items-start">
+                                            <div className="mb-4">
                                                 <h3 className="font-bold text-gray-800 text-lg">{currentTitle || (activeTab === 'upload' ? 'PDF Summary' : 'Text Summary')}</h3>
                                                 <p className="text-xs text-gray-500 mt-0.5">AI Generated • {new Date().toLocaleDateString()}</p>
                                             </div>
@@ -281,6 +294,22 @@ const AILearningLab = () => {
                                                     <Save size={14} /> Save Note
                                                 </button>
                                             </div>
+                                        </div>
+
+                                        {/* Result Tabs */}
+                                        <div className="flex border-b border-gray-200 bg-white sticky top-0 z-10">
+                                            <button
+                                                onClick={() => setActiveResultTab('summary')}
+                                                className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${activeResultTab === 'summary' ? 'border-amber-500 text-amber-900 bg-amber-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                                            >
+                                                Summary
+                                            </button>
+                                            <button
+                                                onClick={() => setActiveResultTab('resources')}
+                                                className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${activeResultTab === 'resources' ? 'border-blue-500 text-blue-900 bg-blue-50/50' : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}
+                                            >
+                                                Related Resources
+                                            </button>
                                         </div>
 
                                         <div className="relative flex-1 p-8 overflow-y-auto bg-amber-50/30">
@@ -292,14 +321,44 @@ const AILearningLab = () => {
                                                     <div className="h-4 bg-gray-200 rounded w-4/5"></div>
                                                 </div>
                                             ) : (
-                                                <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed p-6 bg-white rounded-xl border border-amber-100 shadow-sm relative">
-                                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-200 to-yellow-200 rounded-t-xl"></div>
-                                                    <span className="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                                        AI Summary
-                                                    </span>
-                                                    {summary}
-                                                </div>
+                                                activeResultTab === 'summary' ? (
+                                                    <div className="prose prose-sm max-w-none text-gray-700 leading-relaxed p-6 bg-white rounded-xl border border-amber-100 shadow-sm relative">
+                                                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-200 to-yellow-200 rounded-t-xl"></div>
+                                                        <span className="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                                            AI Summary
+                                                        </span>
+                                                        {summary}
+                                                    </div>
+                                                ) : (
+                                                    <div className="space-y-4">
+                                                        {relatedResources.length > 0 ? (
+                                                            relatedResources.map((resource, index) => (
+                                                                <div key={index} className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                                                                    <div className="flex items-start gap-3">
+                                                                        <div className={`p-2 rounded-lg ${resource.type === 'youtube' ? 'bg-red-50 text-red-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                                            {resource.type === 'youtube' ? (
+                                                                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
+                                                                            ) : (
+                                                                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="flex-1">
+                                                                            <h4 className="font-medium text-gray-900 mb-1">{resource.title}</h4>
+                                                                            <a href={resource.link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                                                                                View Resource <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        ) : (
+                                                            <div className="text-center py-8 text-gray-500">
+                                                                No related resources found.
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )
                                             )}
                                         </div>
                                     </>

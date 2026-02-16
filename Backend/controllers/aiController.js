@@ -39,14 +39,44 @@ const summarizeText = async (req, res) => {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         console.log("Generating summary with model...");
-        const prompt = `Summarize the following text:\n\n${text}`;
+
+        // Request structured JSON output
+        const prompt = `
+        Analyze the following text and provide a response in JSON format.
+        The JSON object must have two keys:
+        1. "summary": A concise summary of the text.
+        2. "relatedResources": An array of at least 3 related study resources found on the web (YouTube videos, articles, documentation). 
+           Each resource object must have:
+           - "title": Title of the resource
+           - "link": A valid URL (search for actual relevant links if possible, or generate highly probable search links)
+           - "type": One of "youtube", "website", "other"
+
+        Text to analyze:
+        ${text}
+        `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const summary = response.text();
-        console.log("Summary generated successfully");
+        const textResponse = response.text();
 
-        res.status(200).json({ summary });
+        // Clean up markdown formatting if present (e.g. ```json ... ```)
+        const jsonString = textResponse.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+
+        let parsedResponse;
+        try {
+            parsedResponse = JSON.parse(jsonString);
+        } catch (e) {
+            console.error("Failed to parse JSON response:", textResponse);
+            // Fallback if JSON parsing fails - treat entire text as summary
+            parsedResponse = {
+                summary: textResponse,
+                relatedResources: []
+            };
+        }
+
+        console.log("Summary and resources generated successfully");
+
+        res.status(200).json(parsedResponse);
     } catch (error) {
         console.error("Error summarizing text:", error);
         res.status(500).json({ message: "Failed to summarize text", error: error.message });
@@ -75,6 +105,7 @@ const saveSummary = async (req, res) => {
                         title: title || req.file.originalname,
                         originalContent,
                         summary,
+                        relatedResources: req.body.relatedResources ? JSON.parse(req.body.relatedResources) : [],
                         type: 'pdf'
                     });
 
@@ -93,6 +124,7 @@ const saveSummary = async (req, res) => {
                 title: title || 'Text Summary',
                 originalContent,
                 summary,
+                relatedResources: req.body.relatedResources ? JSON.parse(req.body.relatedResources) : [],
                 type: 'text'
             });
 
