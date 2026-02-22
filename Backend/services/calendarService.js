@@ -155,6 +155,68 @@ const createStudyPlanEvents = async (tokens, studyPlan) => {
     }
 };
 
+/**
+ * Delete events from Google Calendar by search query
+ */
+const deleteStudyPlanEvents = async (tokens, studyPlan) => {
+    try {
+        setCredentials(tokens);
+        const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+        const deletedEvents = [];
+
+        console.log('[Calendar] Starting deletion of study plan events...');
+
+        // Delete exam events for each subject
+        for (const subject of studyPlan.subjects) {
+            try {
+                console.log(`[Calendar] Searching for events: Exam: ${subject.name}`);
+                
+                // Get the exam date to narrow search
+                const examDate = new Date(subject.examDate);
+                const dayBefore = new Date(examDate);
+                dayBefore.setDate(dayBefore.getDate() - 1);
+                const dayAfter = new Date(examDate);
+                dayAfter.setDate(dayAfter.getDate() + 2);
+                
+                // List all events around the exam date
+                const response = await calendar.events.list({
+                    calendarId: 'primary',
+                    timeMin: dayBefore.toISOString(),
+                    timeMax: dayAfter.toISOString(),
+                    singleEvents: true,
+                    orderBy: 'startTime'
+                });
+
+                const events = response.data.items || [];
+                console.log(`[Calendar] Found ${events.length} events around ${subject.name} exam date`);
+                
+                // Delete matching events
+                for (const event of events) {
+                    if (event.summary && event.summary.includes(subject.name) && event.summary.includes('Exam')) {
+                        console.log(`[Calendar] Deleting event: ${event.summary} (ID: ${event.id})`);
+                        await calendar.events.delete({
+                            calendarId: 'primary',
+                            eventId: event.id
+                        });
+                        deletedEvents.push(event.id);
+                        console.log(`[Calendar] Successfully deleted event: ${event.summary}`);
+                    }
+                }
+            } catch (error) {
+                console.error(`[Calendar] Error deleting events for ${subject.name}:`, error.message);
+                // Continue with other subjects even if one fails
+            }
+        }
+
+        console.log(`[Calendar] Deleted ${deletedEvents.length} events total`);
+        return deletedEvents;
+    } catch (error) {
+        console.error('[Calendar] Error deleting study plan events:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getAuthUrl,
     getTokensFromCode,
@@ -162,5 +224,6 @@ module.exports = {
     refreshAccessToken,
     createExamEvent,
     createStudySessionBlock,
-    createStudyPlanEvents
+    createStudyPlanEvents,
+    deleteStudyPlanEvents
 };

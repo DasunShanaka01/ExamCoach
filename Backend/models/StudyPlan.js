@@ -22,8 +22,102 @@ const studyPlanSchema = new mongoose.Schema({
         isWeak: {
             type: Boolean,
             default: false
-        }
+        },
+        topics: [{
+            type: String
+        }]
     }],
+    // Detailed day-by-day timetable
+    timetable: {
+        totalDays: {
+            type: Number,
+            default: 0
+        },
+        dailySchedule: [{
+            day: {
+                type: Number,
+                required: true
+            },
+            date: {
+                type: String,
+                required: true
+            },
+            tasks: [{
+                subject: {
+                    type: String,
+                    required: true
+                },
+                topic: {
+                    type: String,
+                    required: true
+                },
+                type: {
+                    type: String,
+                    enum: ['study', 'revision'],
+                    required: true
+                },
+                durationMinutes: {
+                    type: Number,
+                    required: true
+                },
+                description: {
+                    type: String
+                },
+                isCompleted: {
+                    type: Boolean,
+                    default: false
+                },
+                completedAt: {
+                    type: Date
+                }
+            }],
+            note: {
+                type: String,
+                default: ''
+            },
+            noteUpdatedAt: {
+                type: Date
+            },
+            totalMinutes: {
+                type: Number,
+                required: true
+            },
+            completedMinutes: {
+                type: Number,
+                default: 0
+            },
+            isCompleted: {
+                type: Boolean,
+                default: false
+            }
+        }],
+        subjectSummary: [{
+            subject: {
+                type: String,
+                required: true
+            },
+            totalTopics: {
+                type: Number,
+                default: 0
+            },
+            studySessions: {
+                type: Number,
+                default: 0
+            },
+            revisionSessions: {
+                type: Number,
+                default: 0
+            },
+            totalMinutes: {
+                type: Number,
+                default: 0
+            },
+            completedMinutes: {
+                type: Number,
+                default: 0
+            }
+        }]
+    },
     generatedPlan: [{
         subject: {
             type: String,
@@ -48,12 +142,9 @@ const studyPlanSchema = new mongoose.Schema({
             }
         }]
     }],
-    // We can keep this to show the *soonest* exam or remove it. 
-    // Let's keep it as "daysUntilNextExam" for dashboard widgets.
     daysUntilNextExam: {
         type: Number
     },
-    // Daily study logs to track actual study time
     dailyLogs: [{
         date: {
             type: Date,
@@ -78,7 +169,6 @@ const studyPlanSchema = new mongoose.Schema({
             default: false
         }
     }],
-    // Pending suggestion to add missed time to next day
     pendingMissedTime: {
         hours: {
             type: Number,

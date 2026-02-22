@@ -1,35 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import StudentNavbar from '../components/StudentNavbar';
+import StudentLayout from '../layouts/StudentLayout';
 
 const CreateStudyPlan = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [isEditMode, setIsEditMode] = useState(false);
     const [formData, setFormData] = useState({
         studyHoursPerDay: '',
-        subjects: [] // Array of { name, examDate, isWeak }
+        subjects: [] // Array of { name, examDate, isWeak, pdfFile, topics }
     });
 
     // Temp state for adding a subject
     const [currentSubject, setCurrentSubject] = useState({
         name: '',
         examDate: '',
-        isWeak: false
+        isWeak: false,
+        pdfFile: null
     });
+
+    const [uploadingPdf, setUploadingPdf] = useState(false);
+    const [extractedTopics, setExtractedTopics] = useState([]);
+    const [ocrUsed, setOcrUsed] = useState(false);
 
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
+        // Check if we're in edit mode (coming from edit button)
         if (location.state?.plan) {
+            setIsEditMode(true);
             const { studyHoursPerDay, subjects } = location.state.plan;
-            // Map backend subject format to frontend if needed (should be same now)
-            // Backend sends { name, examDate, isWeak } in subjects array
             const formattedSubjects = subjects.map(s => ({
                 name: s.name,
                 examDate: new Date(s.examDate).toISOString().split('T')[0],
-                isWeak: s.isWeak
+                isWeak: s.isWeak,
+                topics: s.topics || []
             }));
 
             setFormData({
@@ -39,29 +46,109 @@ const CreateStudyPlan = () => {
         }
     }, [location.state]);
 
-    const handleAddSubject = (e) => {
-        e.preventDefault();
-        if (!currentSubject.name.trim() || !currentSubject.examDate) {
+    const handlePdfUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.type !== 'application/pdf') {
+            setError('Please upload a PDF file');
             return;
         }
 
-        // Check for duplicates
-        if (formData.subjects.some(s => s.name.toLowerCase() === currentSubject.name.trim().toLowerCase())) {
-            setError('Subject already exists');
+        // Check file size (max 20MB)
+        if (file.size > 20 * 1024 * 1024) {
+            setError('PDF file is too large. Maximum size is 20MB.');
+            return;
+        }
+
+        setCurrentSubject({ ...currentSubject, pdfFile: file });
+        setUploadingPdf(true);
+        setError('');
+        setExtractedTopics([]);
+
+        try {
+            const formData = new FormData();
+            formData.append('pdf', file);
+
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/study-plan/extract-topics', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                setExtractedTopics(data.topics || []);
+                if (data.topics && data.topics.length > 0) {
+                    setError(''); // Clear any previous errors
+                    
+                    // Show info if OCR was used
+                    if (data.extractionMethod === 'ocr') {
+                        setOcrUsed(true);
+                        console.log('OCR was used to extract text from this PDF');
+                    } else {
+                        setOcrUsed(false);
+                    }
+                }
+            } else {
+                setError(data.error || 'Failed to extract topics from PDF');
+                setExtractedTopics([]);
+                setOcrUsed(false);
+            }
+        } catch (err) {
+            console.error('PDF upload error:', err);
+            setError('Failed to process PDF. Please check your connection and try again.');
+            setExtractedTopics([]);
+        } finally {
+            setUploadingPdf(false);
+        }
+    };
+
+    const handleAddSubject = (e) => {
+        e.preventDefault();
+        
+        // Only allow up to 3 subjects
+        if (formData.subjects.length >= 3) {
+            setError('Maximum 3 subjects allowed. Please edit or delete existing subjects to add a new one.');
+            return;
+        }
+        
+        if (!currentSubject.name.trim() || !currentSubject.examDate) {
+            setError('Please provide subject name and exam date');
+            return;
+        }
+
+        if (!currentSubject.pdfFile) {
+            setError('Please upload a PDF file');
+            return;
+        }
+
+        if (extractedTopics.length === 0) {
+            setError('No topics extracted from PDF. Please upload a valid study material.');
             return;
         }
 
         setFormData({
             ...formData,
-            subjects: [...formData.subjects, { ...currentSubject, name: currentSubject.name.trim() }]
+            subjects: [...formData.subjects, { 
+                ...currentSubject, 
+                name: currentSubject.name.trim(),
+                topics: extractedTopics
+            }]
         });
 
         // Reset current subject input
         setCurrentSubject({
             name: '',
             examDate: '',
-            isWeak: false
+            isWeak: false,
+            pdfFile: null
         });
+        setExtractedTopics([]);
         setError('');
     };
 
@@ -76,8 +163,10 @@ const CreateStudyPlan = () => {
         setCurrentSubject({
             name: subject.name,
             examDate: new Date(subject.examDate).toISOString().split('T')[0],
-            isWeak: subject.isWeak
+            isWeak: subject.isWeak,
+            pdfFile: subject.pdfFile || null
         });
+        setExtractedTopics(subject.topics || []);
         handleRemoveSubject(subject.name);
     };
 
@@ -95,7 +184,7 @@ const CreateStudyPlan = () => {
 
             const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:5000/api/study-plan', {
-                method: 'POST',
+                method: isEditMode ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -109,9 +198,10 @@ const CreateStudyPlan = () => {
             const data = await response.json();
 
             if (data.success) {
-                navigate('/student/view-plan');
+                // Navigate directly to timetable
+                navigate('/student/timetable');
             } else {
-                setError(data.error || 'Failed to create plan');
+                setError(data.error || `Failed to ${isEditMode ? 'update' : 'create'} plan`);
             }
         } catch (err) {
             setError('Something went wrong. Please try again.');
@@ -121,12 +211,11 @@ const CreateStudyPlan = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <StudentNavbar />
-            <div className="max-w-4xl mx-auto px-8 py-12">
+        <StudentLayout>
+            <div className="max-w-4xl mx-auto">
                 <div className="bg-white rounded-xl shadow-lg p-8">
                     <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                        Create Your Study Plan
+                        {isEditMode ? 'Edit Your Study Plan' : 'Create Your Study Plan'}
                     </h2>
 
                     {error && (
@@ -153,54 +242,118 @@ const CreateStudyPlan = () => {
                             />
                         </div>
 
-                        {/* Add Subject Section */}
-                        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Add Subjects & Exam Dates</h3>
+                        {/* Add Subject Section - Show if less than 3 subjects */}
+                        {formData.subjects.length < 3 && (
+                            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                    Add Subject & Upload Study Material ({formData.subjects.length}/3)
+                                </h3>
 
-                            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                                <div className="md:col-span-5">
-                                    <label className="block text-xs font-semibold text-gray-500 mb-1">Subject Name</label>
-                                    <input
-                                        type="text"
-                                        value={currentSubject.name}
-                                        onChange={(e) => setCurrentSubject({ ...currentSubject, name: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                        placeholder="Math"
-                                        onKeyPress={(e) => e.key === 'Enter' && handleAddSubject(e)}
-                                    />
-                                </div>
-                                <div className="md:col-span-4">
-                                    <label className="block text-xs font-semibold text-gray-500 mb-1">Exam Date</label>
-                                    <input
-                                        type="date"
-                                        value={currentSubject.examDate}
-                                        onChange={(e) => setCurrentSubject({ ...currentSubject, examDate: e.target.value })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
-                                <div className="md:col-span-2 flex items-center justify-center pb-3">
-                                    <label className="inline-flex items-center cursor-pointer">
+                            <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1">Subject Name</label>
                                         <input
-                                            type="checkbox"
-                                            checked={currentSubject.isWeak}
-                                            onChange={(e) => setCurrentSubject({ ...currentSubject, isWeak: e.target.checked })}
-                                            className="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                            type="text"
+                                            value={currentSubject.name}
+                                            onChange={(e) => setCurrentSubject({ ...currentSubject, name: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                            placeholder="e.g., Mathematics"
                                         />
-                                        <span className="ml-2 text-sm text-gray-700">Weak?</span>
-                                    </label>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1">Exam Date</label>
+                                        <input
+                                            type="date"
+                                            value={currentSubject.examDate}
+                                            onChange={(e) => setCurrentSubject({ ...currentSubject, examDate: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                    <div className="flex items-end">
+                                        <label className="inline-flex items-center cursor-pointer pb-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={currentSubject.isWeak}
+                                                onChange={(e) => setCurrentSubject({ ...currentSubject, isWeak: e.target.checked })}
+                                                className="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                            />
+                                            <span className="ml-2 text-sm text-gray-700">Weak Subject?</span>
+                                        </label>
+                                    </div>
                                 </div>
-                                <div className="md:col-span-1">
-                                    <button
-                                        type="button"
-                                        onClick={handleAddSubject}
-                                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-bold text-xl flex items-center justify-center"
-                                        title="Add Subject"
-                                    >
-                                        +
-                                    </button>
+
+                                {/* PDF Upload */}
+                                <div>
+                                    <label className="block text-xs font-semibold text-gray-500 mb-2">Upload Study Material (PDF)</label>
+                                    <div className="flex items-center gap-3">
+                                        <label className="flex-1 cursor-pointer">
+                                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                                                <div className="flex items-center justify-center gap-2 text-gray-600">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                                    </svg>
+                                                    <span className="text-sm">
+                                                        {currentSubject.pdfFile ? currentSubject.pdfFile.name : 'Click to upload PDF'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <input
+                                                type="file"
+                                                accept=".pdf"
+                                                onChange={handlePdfUpload}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                    </div>
+                                    <p className="text-xs text-gray-400 mt-2">
+                                        💡 Tip: Works with both regular PDFs and scanned documents (OCR enabled). Max size: 20MB
+                                    </p>
+                                    {uploadingPdf && (
+                                        <div className="mt-2 flex items-center gap-2">
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                            <p className="text-sm text-blue-600">Extracting topics from PDF...</p>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* Extracted Topics Display */}
+                                {extractedTopics.length > 0 && (
+                                    <div className="bg-white p-4 rounded-lg border border-green-200">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="text-sm font-semibold text-gray-700">Extracted Topics ({extractedTopics.length})</h4>
+                                            {ocrUsed && (
+                                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">
+                                                    📷 OCR Used
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {extractedTopics.map((topic, idx) => (
+                                                <span key={idx} className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+                                                    {topic}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        {ocrUsed && (
+                                            <p className="text-xs text-blue-600 mt-2">
+                                                ℹ️ This PDF was processed using OCR (Optical Character Recognition) for scanned content
+                                            </p>
+                                        )}
+                                    </div>
+                                )}
+
+                                <button
+                                    type="button"
+                                    onClick={handleAddSubject}
+                                    disabled={uploadingPdf}
+                                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Add Subject
+                                </button>
                             </div>
                         </div>
+                        )}
 
                         {/* Subject List */}
                         {formData.subjects.length > 0 && (
@@ -214,20 +367,25 @@ const CreateStudyPlan = () => {
                                             className="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-lg shadow-sm cursor-pointer hover:border-blue-500 transition-colors group"
                                             title="Click to edit"
                                         >
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-4 flex-1">
                                                 <div className={`w-2 h-10 rounded-full ${subject.isWeak ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                                                <div>
-                                                    <h4 className="font-bold text-gray-800 group-hover:text-blue-600">{subject.name}</h4>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <h4 className="font-bold text-gray-800 group-hover:text-blue-600">{subject.name}</h4>
+                                                        {subject.isWeak && (
+                                                            <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold">Weak Area</span>
+                                                        )}
+                                                    </div>
                                                     <p className="text-sm text-gray-500">Exam: {new Date(subject.examDate).toLocaleDateString()}</p>
+                                                    {subject.topics && subject.topics.length > 0 && (
+                                                        <p className="text-xs text-green-600 mt-1">{subject.topics.length} topics extracted</p>
+                                                    )}
                                                 </div>
-                                                {subject.isWeak && (
-                                                    <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold">Weak Area</span>
-                                                )}
                                             </div>
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
-                                                    e.stopPropagation(); // Prevent edit when clicking remove
+                                                    e.stopPropagation();
                                                     handleRemoveSubject(subject.name);
                                                 }}
                                                 className="text-gray-400 hover:text-red-500 transition-colors p-2"
@@ -247,12 +405,15 @@ const CreateStudyPlan = () => {
                             disabled={loading}
                             className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {loading ? 'Generating Plan...' : 'Generate My Plan'}
+                            {loading 
+                                ? (isEditMode ? 'Updating Plan...' : 'Generating Plan...') 
+                                : (isEditMode ? 'Update My Plan' : 'Generate My Plan')
+                            }
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
+        </StudentLayout>
     );
 };
 
