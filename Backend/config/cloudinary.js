@@ -31,6 +31,7 @@ const materialStorage = new CloudinaryStorage({
         const isImage = ext && imageExts.includes(ext);
         const resourceType = isVideo ? 'video' : (isImage ? 'image' : 'raw');
 
+
         const params = {
             folder: 'examcoach_materials',
             resource_type: resourceType,
@@ -52,3 +53,6 @@ const materialUpload = multer({ storage: materialStorage });
 
 module.exports = profileUpload;
 module.exports.materialUpload = materialUpload;
+
+module.exports = { cloudinary, upload };
+
