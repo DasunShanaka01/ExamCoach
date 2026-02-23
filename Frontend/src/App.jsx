@@ -32,6 +32,18 @@ const App = () => {
         <Route path="/admin/teachers" element={<TeacherList />} />
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
         <Route path="/admin/students" element={<StudentList />} />
+        
+        {/* Teacher Routes */}
+        <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/materials" element={<TeacherMaterials />} />
+
+        {/* Student Routes */}
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/courses" element={<CourseExplorer />} />
+
+        
+
+
       </Routes>
     </div>
   );
