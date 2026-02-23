@@ -35,6 +35,14 @@ const quizAttemptSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    tabSwitchDeduction: {
+        type: Number,
+        default: 0
+    },
+    finalScore: {
+        type: Number,
+        default: 0
+    },
     completedAt: {
         type: Date,
         default: Date.now

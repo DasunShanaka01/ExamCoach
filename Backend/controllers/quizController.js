@@ -268,7 +268,10 @@ exports.submitQuizAttempt = async (req, res) => {
         });
 
         const score = correctAnswers;
-        const percentage = (correctAnswers / quiz.questions.length) * 100;
+        const tabSwitches = tabSwitchCount || 0;
+        const tabSwitchDeduction = tabSwitches * 3;
+        const finalScore = Math.max(0, score - tabSwitchDeduction);
+        const percentage = (finalScore / quiz.questions.length) * 100;
 
         const attempt = await QuizAttempt.create({
             student: studentId,
@@ -278,7 +281,9 @@ exports.submitQuizAttempt = async (req, res) => {
             totalQuestions: quiz.questions.length,
             percentage,
             timeTaken,
-            tabSwitchCount: tabSwitchCount || 0
+            tabSwitchCount: tabSwitches,
+            tabSwitchDeduction,
+            finalScore
         });
 
         // Check if all attempts used after this submission
@@ -292,6 +297,9 @@ exports.submitQuizAttempt = async (req, res) => {
                 score,
                 totalQuestions: quiz.questions.length,
                 percentage,
+                tabSwitchCount: tabSwitches,
+                tabSwitchDeduction,
+                finalScore,
                 attemptsMade: totalAttemptsMade,
                 maxAttempts: quiz.maxAttempts || 1,
                 allAttemptsUsed

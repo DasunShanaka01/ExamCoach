@@ -22,6 +22,8 @@ const TakeQuiz = () => {
     const [tabSwitchCount, setTabSwitchCount] = useState(0);
     const [tabWarning, setTabWarning] = useState(false);
 
+    const [showQuizWarning, setShowQuizWarning] = useState(false);
+
     // Access verification state
     const [accessGranted, setAccessGranted] = useState(false);
     const [enrollmentKey, setEnrollmentKey] = useState('');
@@ -121,6 +123,7 @@ const TakeQuiz = () => {
             });
             if (data.success) {
                 setAccessGranted(true);
+                setShowQuizWarning(true);
                 // Now load full quiz data
                 const quizRes = await quizAPI.getQuiz(id);
                 if (quizRes.success) {
@@ -307,9 +310,46 @@ const TakeQuiz = () => {
         );
     }
 
+    // Tab-switch warning overlay (shown when quiz starts)
+    if (showQuizWarning && quizData) {
+        return (
+            <div className="min-h-screen bg-gray-50">
+                <StudentNavbar />
+                <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+                    <div className="bg-white rounded-2xl shadow-lg p-8 max-w-lg w-full mx-4">
+                        <div className="text-center mb-6">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4">
+                                <span className="text-4xl">⚠️</span>
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-800">Important Warning</h2>
+                        </div>
+                        <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
+                            <p className="text-red-800 font-semibold text-center text-lg leading-relaxed">
+                                If you switch tabs during the quiz, <span className="underline">3 marks will be deducted</span> for each tab switch.
+                            </p>
+                        </div>
+                        <ul className="text-sm text-gray-600 space-y-2 mb-6">
+                            <li className="flex items-start gap-2"><span>🔴</span> Each tab switch = <strong>−3 marks</strong> from your total score</li>
+                            <li className="flex items-start gap-2"><span>🔴</span> Your teacher will be notified of every tab switch</li>
+                            <li className="flex items-start gap-2"><span>🔴</span> Stay focused on this tab throughout the quiz</li>
+                        </ul>
+                        <button
+                            onClick={() => setShowQuizWarning(false)}
+                            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg"
+                        >
+                            I Understand, Start Quiz →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     // Results view
     if (result) {
-        const percentage = Math.round((result.score / result.totalQuestions) * 100);
+        const deduction = result.tabSwitchDeduction || 0;
+        const finalScore = result.finalScore ?? result.score;
+        const percentage = Math.round((finalScore / result.totalQuestions) * 100);
         const passed = percentage >= 50;
         const allAttemptsUsed = result.allAttemptsUsed;
         return (
@@ -329,14 +369,19 @@ const TakeQuiz = () => {
                         <p className="text-gray-600 mb-2">
                             You scored <span className="font-bold">{result.score}</span> out of <span className="font-bold">{result.totalQuestions}</span>
                         </p>
+                        {deduction > 0 && (
+                            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
+                                <p className="text-red-700 text-sm font-medium">
+                                    🚨 Tab switches: <span className="font-bold">{tabSwitchCount}</span> — Marks deducted: <span className="font-bold">−{deduction}</span>
+                                </p>
+                                <p className="text-red-800 font-bold text-lg mt-1">
+                                    Final Score: {finalScore} / {result.totalQuestions}
+                                </p>
+                            </div>
+                        )}
                         {result.attemptsMade && (
                             <p className="text-gray-500 text-sm mb-2">
                                 Attempt {result.attemptsMade} of {result.maxAttempts}
-                            </p>
-                        )}
-                        {tabSwitchCount > 0 && (
-                            <p className="text-orange-500 text-sm mb-4">
-                                ⚠️ Tab switches detected: {tabSwitchCount}
                             </p>
                         )}
 

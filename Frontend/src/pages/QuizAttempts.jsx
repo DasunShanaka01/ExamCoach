@@ -94,21 +94,21 @@ const QuizAttempts = () => {
                                         <p className="text-2xl font-bold text-gray-800">{attempts.length}</p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-                                        <p className="text-sm text-gray-500">Average Score</p>
+                                        <p className="text-sm text-gray-500">Average Final Score</p>
                                         <p className="text-2xl font-bold text-blue-600">
-                                            {attempts.length > 0 ? Math.round(attempts.reduce((sum, a) => sum + (a.score / a.totalQuestions) * 100, 0) / attempts.length) : 0}%
+                                            {attempts.length > 0 ? Math.round(attempts.reduce((sum, a) => sum + ((a.finalScore ?? a.score) / a.totalQuestions) * 100, 0) / attempts.length) : 0}%
                                         </p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-                                        <p className="text-sm text-gray-500">Highest Score</p>
+                                        <p className="text-sm text-gray-500">Highest Final Score</p>
                                         <p className="text-2xl font-bold text-green-600">
-                                            {attempts.length > 0 ? Math.round(Math.max(...attempts.map(a => (a.score / a.totalQuestions) * 100))) : 0}%
+                                            {attempts.length > 0 ? Math.round(Math.max(...attempts.map(a => ((a.finalScore ?? a.score) / a.totalQuestions) * 100))) : 0}%
                                         </p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Pass Rate (≥50%)</p>
                                         <p className="text-2xl font-bold text-purple-600">
-                                            {attempts.length > 0 ? Math.round(attempts.filter(a => (a.score / a.totalQuestions) >= 0.5).length / attempts.length * 100) : 0}%
+                                            {attempts.length > 0 ? Math.round(attempts.filter(a => ((a.finalScore ?? a.score) / a.totalQuestions) >= 0.5).length / attempts.length * 100) : 0}%
                                         </p>
                                     </div>
                                     <div className={`rounded-xl shadow-sm p-4 border ${totalCheaters > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-gray-100'}`}>
@@ -127,15 +127,16 @@ const QuizAttempts = () => {
                                                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">#</th>
                                                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Student</th>
                                                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Score</th>
-                                                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Percentage</th>
                                                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Tab Switches</th>
+                                                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Marks Deducted</th>
+                                                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Final Score</th>
+                                                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Percentage</th>
                                                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Status</th>
                                                 <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {attempts.map((attempt, index) => {
-                                                const pct = Math.round((attempt.score / attempt.totalQuestions) * 100);
                                                 const switches = attempt.tabSwitchCount || 0;
                                                 const cheatInfo = getCheatingBadge(switches);
                                                 return (
@@ -152,13 +153,21 @@ const QuizAttempts = () => {
                                                             {attempt.score} / {attempt.totalQuestions}
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getScoreBadge(attempt.score, attempt.totalQuestions)}`}>
-                                                                {pct}%
+                                                            <span className={`inline-flex items-center gap-1 text-sm font-bold ${switches > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                                                {switches > 0 ? `🚨 ${switches}` : '✅ 0'}
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`inline-flex items-center gap-1 text-sm font-bold ${switches > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                                                {switches > 0 ? `🚨 ${switches}` : '✅ 0'}
+                                                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${(attempt.tabSwitchDeduction || 0) > 0 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
+                                                                {(attempt.tabSwitchDeduction || 0) > 0 ? `−${attempt.tabSwitchDeduction}` : '0'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-sm font-bold text-gray-800">
+                                                            {attempt.finalScore ?? attempt.score} / {attempt.totalQuestions}
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getScoreBadge(attempt.finalScore ?? attempt.score, attempt.totalQuestions)}`}>
+                                                                {Math.round(((attempt.finalScore ?? attempt.score) / attempt.totalQuestions) * 100)}%
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4">
