@@ -51,8 +51,5 @@ const materialStorage = new CloudinaryStorage({
 const profileUpload = multer({ storage: profileStorage });
 const materialUpload = multer({ storage: materialStorage });
 
-module.exports = profileUpload;
-module.exports.materialUpload = materialUpload;
-
-module.exports = { cloudinary, upload };
+module.exports = { cloudinary, profileUpload, materialUpload };
 
