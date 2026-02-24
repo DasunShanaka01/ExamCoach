@@ -180,6 +180,14 @@ export const quizAPI = {
     body: JSON.stringify(credentials)
   }),
 
+  // Enroll by enrollment key — finds the quiz automatically (no quiz ID needed)
+  // Used by the StudentQuizzes enrollment form
+  enrollToQuiz: (credentials) => apiRequest('/api/quizzes/enroll', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+  }),
+
   // Get student's quiz attempts
   getStudentAttempts: () => apiRequest('/api/quizzes/attempts'),
 

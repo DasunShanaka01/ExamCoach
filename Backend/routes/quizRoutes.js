@@ -9,17 +9,23 @@ const {
     getStudentAttempts,
     verifyQuizAccess,
     getQuizAttempts,
-    getMyAttemptsForQuiz
+    getMyAttemptsForQuiz,
+    enrollToQuiz          // look up quiz by enrollment key
 } = require('../controllers/quizController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { validateQuizCreation } = require('../middleware/validationMiddleware');
 
 const router = express.Router();
 
-// Public quiz listing
+// Public quiz listing / create
 router.route('/')
     .get(getQuizzes)
     .post(validateQuizCreation, createQuiz);
+
+// Student enroll by key — must be before /:id routes
+// POST /api/quizzes/enroll  { enrollmentKey, quizPassword }
+router.route('/enroll')
+    .post(protect, enrollToQuiz);
 
 // Student attempts (must be before /:id routes)
 router.route('/attempts')

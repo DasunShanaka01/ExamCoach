@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { quizAPI } from '../services/api';
 import StudentNavbar from '../components/StudentNavbar';
 import io from 'socket.io-client';
@@ -9,7 +9,12 @@ const SOCKET_URL = 'http://localhost:5000';
 const TakeQuiz = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const socketRef = useRef(null);
+
+    // If ?verified=true was passed from the enrollment popup in StudentQuizzes,
+    // skip the credential screen and go straight to the quiz warning / quiz.
+    const preVerified = searchParams.get('verified') === 'true';
 
     const [quizData, setQuizData] = useState(null);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -23,6 +28,7 @@ const TakeQuiz = () => {
     const [tabWarning, setTabWarning] = useState(false);
 
     const [showQuizWarning, setShowQuizWarning] = useState(false);
+    const [rulesAgreed, setRulesAgreed] = useState(false);
 
     // Access verification state
     const [accessGranted, setAccessGranted] = useState(false);
@@ -98,7 +104,17 @@ const TakeQuiz = () => {
                 const data = await quizAPI.getQuiz(id);
                 if (data.success) {
                     setQuizMeta(data.data);
-                    // Always require credentials — don't auto-grant
+
+                    // If student already verified via the popup in StudentQuizzes,
+                    // grant access immediately and load quiz data.
+                    if (preVerified) {
+                        setAccessGranted(true);
+                        setShowQuizWarning(true);
+                        setQuizData(data.data);
+                        setAnswers(new Array(data.data.questions.length).fill(null));
+                        const minutes = data.data.timeLimit || 30;
+                        setTimeLeft(minutes * 60);
+                    }
                 } else {
                     setError(data.error || 'Failed to load quiz');
                 }
@@ -109,7 +125,7 @@ const TakeQuiz = () => {
             }
         };
         fetchQuizMeta();
-    }, [id]);
+    }, [id, preVerified]);
 
     // Handle credential verification
     const handleVerifyAccess = async (e) => {
@@ -310,35 +326,74 @@ const TakeQuiz = () => {
         );
     }
 
-    // Tab-switch warning overlay (shown when quiz starts)
+    // Rules & quiz info screen (shown after enrollment, before quiz starts)
     if (showQuizWarning && quizData) {
         return (
             <div className="min-h-screen bg-gray-50">
                 <StudentNavbar />
                 <div className="flex items-center justify-center h-[calc(100vh-64px)]">
                     <div className="bg-white rounded-2xl shadow-lg p-8 max-w-lg w-full mx-4">
-                        <div className="text-center mb-6">
-                            <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4">
-                                <span className="text-4xl">⚠️</span>
+                        {/* Quiz Info */}
+                        <div className="text-center mb-5">
+                            <h2 className="text-2xl font-bold text-gray-800">{quizData.title}</h2>
+                            <p className="text-blue-600 font-medium mt-1">{quizData.subject}</p>
+                        </div>
+                        <div className="grid grid-cols-3 gap-3 mb-5">
+                            <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-400 uppercase font-semibold">Questions</p>
+                                <p className="text-lg font-bold text-gray-800">{quizData.questions?.length || 0}</p>
                             </div>
-                            <h2 className="text-2xl font-bold text-gray-800">Important Warning</h2>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-400 uppercase font-semibold">Time Limit</p>
+                                <p className="text-lg font-bold text-gray-800">{quizData.timeLimit || 30} min</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-lg p-3 text-center">
+                                <p className="text-xs text-gray-400 uppercase font-semibold">Attempts</p>
+                                <p className="text-lg font-bold text-gray-800">{quizData.maxAttempts || 1}</p>
+                            </div>
                         </div>
-                        <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
-                            <p className="text-red-800 font-semibold text-center text-lg leading-relaxed">
-                                If you switch tabs during the quiz, <span className="underline">3 marks will be deducted</span> for each tab switch.
-                            </p>
+                        {quizData.description && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-5 text-sm text-blue-800">
+                                <span className="font-semibold">Description:</span> {quizData.description}
+                            </div>
+                        )}
+
+                        {/* Rules */}
+                        <div className="border-t border-gray-200 pt-5">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="text-xl">⚠️</span>
+                                <h3 className="text-lg font-bold text-gray-800">Quiz Rules</h3>
+                            </div>
+                            <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+                                <p className="text-red-800 font-semibold text-center leading-relaxed">
+                                    Switching tabs during the quiz will result in a <span className="underline">3% deduction</span> from your score.
+                                </p>
+                            </div>
+                            <ul className="text-sm text-gray-600 space-y-2 mb-5">
+                                <li className="flex items-start gap-2"><span>🔴</span> Tab switching = <strong>flat −3%</strong> penalty on your score</li>
+                                <li className="flex items-start gap-2"><span>🔴</span> Your teacher will be notified of every tab switch</li>
+                                <li className="flex items-start gap-2"><span>🔴</span> Stay focused on this tab throughout the quiz</li>
+                                <li className="flex items-start gap-2"><span>🔴</span> The timer starts once you click the button below</li>
+                            </ul>
+
+                            <label className="flex items-center gap-3 mb-5 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={rulesAgreed}
+                                    onChange={(e) => setRulesAgreed(e.target.checked)}
+                                    className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                />
+                                <span className="text-sm text-gray-700 font-medium">I have read and agree to the quiz rules</span>
+                            </label>
+
+                            <button
+                                onClick={() => setShowQuizWarning(false)}
+                                disabled={!rulesAgreed}
+                                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                                Continue to Quiz →
+                            </button>
                         </div>
-                        <ul className="text-sm text-gray-600 space-y-2 mb-6">
-                            <li className="flex items-start gap-2"><span>🔴</span> Each tab switch = <strong>−3 marks</strong> from your total score</li>
-                            <li className="flex items-start gap-2"><span>🔴</span> Your teacher will be notified of every tab switch</li>
-                            <li className="flex items-start gap-2"><span>🔴</span> Stay focused on this tab throughout the quiz</li>
-                        </ul>
-                        <button
-                            onClick={() => setShowQuizWarning(false)}
-                            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg"
-                        >
-                            I Understand, Start Quiz →
-                        </button>
                     </div>
                 </div>
             </div>
@@ -347,35 +402,77 @@ const TakeQuiz = () => {
 
     // Results view
     if (result) {
+        const rawPercentage = Math.round((result.score / result.totalQuestions) * 100);
         const deduction = result.tabSwitchDeduction || 0;
-        const finalScore = result.finalScore ?? result.score;
-        const percentage = Math.round((finalScore / result.totalQuestions) * 100);
-        const passed = percentage >= 50;
+        // result.percentage already has the deduction applied (done on the backend)
+        const finalPercentage = Math.round(result.percentage ?? rawPercentage);
+        const passed = finalPercentage >= 50;
         const allAttemptsUsed = result.allAttemptsUsed;
         return (
             <div className="min-h-screen bg-gray-50">
                 <StudentNavbar />
                 <div className="max-w-3xl mx-auto p-8 mt-8">
+
+                    {/* Quiz Info Card */}
+                    <div className="bg-white rounded-2xl shadow-md p-6 mb-6 border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-800 mb-3">{quizData.title}</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                                <p className="text-gray-400 uppercase text-xs font-semibold mb-1">Subject</p>
+                                <p className="text-gray-700 font-medium">{quizData.subject || '—'}</p>
+                            </div>
+                            <div>
+                                <p className="text-gray-400 uppercase text-xs font-semibold mb-1">Questions</p>
+                                <p className="text-gray-700 font-medium">{quizData.questions?.length || result.totalQuestions}</p>
+                            </div>
+                            <div>
+                                <p className="text-gray-400 uppercase text-xs font-semibold mb-1">Time Limit</p>
+                                <p className="text-gray-700 font-medium">{quizData.timeLimit || 30} mins</p>
+                            </div>
+                            <div>
+                                <p className="text-gray-400 uppercase text-xs font-semibold mb-1">Teacher</p>
+                                <p className="text-gray-700 font-medium">{quizData.createdBy?.name || '—'}</p>
+                            </div>
+                        </div>
+                        {quizData.description && (
+                            <div className="mt-4 pt-4 border-t border-gray-100">
+                                <p className="text-gray-400 uppercase text-xs font-semibold mb-1">Description</p>
+                                <p className="text-gray-600 text-sm">{quizData.description}</p>
+                            </div>
+                        )}
+                        {(quizData.enrollmentStartTime || quizData.enrollmentEndTime) && (
+                            <div className="mt-3">
+                                <p className="text-gray-400 uppercase text-xs font-semibold mb-1">Enrollment Window</p>
+                                <p className="text-gray-600 text-sm">
+                                    {quizData.enrollmentStartTime ? new Date(quizData.enrollmentStartTime).toLocaleString() : 'Open'}
+                                    {' → '}
+                                    {quizData.enrollmentEndTime ? new Date(quizData.enrollmentEndTime).toLocaleString() : 'Open'}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Score Card */}
                     <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
                         <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 ${passed ? 'bg-green-100' : 'bg-red-100'}`}>
                             <span className="text-4xl">{passed ? '🎉' : '📝'}</span>
                         </div>
                         <h2 className="text-3xl font-bold text-gray-800 mb-2">Quiz Completed!</h2>
-                        <p className="text-gray-500 mb-6">{quizData.title}</p>
 
                         <div className={`text-6xl font-extrabold mb-2 ${passed ? 'text-green-600' : 'text-red-600'}`}>
-                            {percentage}%
+                            {finalPercentage}%
                         </div>
                         <p className="text-gray-600 mb-2">
-                            You scored <span className="font-bold">{result.score}</span> out of <span className="font-bold">{result.totalQuestions}</span>
+                            You answered <span className="font-bold">{result.score}</span> out of <span className="font-bold">{result.totalQuestions}</span> correctly
+                            <span className="text-gray-400 text-sm ml-1">({rawPercentage}% raw)</span>
                         </p>
                         {deduction > 0 && (
                             <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-3">
                                 <p className="text-red-700 text-sm font-medium">
-                                    🚨 Tab switches: <span className="font-bold">{tabSwitchCount}</span> — Marks deducted: <span className="font-bold">−{deduction}</span>
+                                    🚨 Tab switch detected ({tabSwitchCount} time{tabSwitchCount !== 1 ? 's' : ''}) — <span className="font-bold">−{deduction}% penalty applied</span>
                                 </p>
-                                <p className="text-red-800 font-bold text-lg mt-1">
-                                    Final Score: {finalScore} / {result.totalQuestions}
+                                <p className="text-red-800 text-xs mt-1 opacity-75">
+                                    {rawPercentage}% − {deduction}% = <strong>{finalPercentage}%</strong> final score
                                 </p>
                             </div>
                         )}

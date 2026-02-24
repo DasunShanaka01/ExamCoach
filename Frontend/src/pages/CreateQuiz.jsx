@@ -59,7 +59,14 @@ const CreateQuiz = () => {
         if (formData.questions.length === 0) { alert('Please add at least one question'); return; }
         setLoading(true);
         try {
-            const data = await quizAPI.createQuiz(formData);
+            // Convert datetime-local strings (local time, no tz) → UTC ISO so MongoDB
+            // stores the time the teacher actually intended, not a UTC-shifted version.
+            const payload = { ...formData };
+            if (payload.enrollmentStartTime)
+                payload.enrollmentStartTime = new Date(payload.enrollmentStartTime).toISOString();
+            if (payload.enrollmentEndTime)
+                payload.enrollmentEndTime = new Date(payload.enrollmentEndTime).toISOString();
+            const data = await quizAPI.createQuiz(payload);
             if (data.success) { alert('Quiz created successfully!'); navigate('/teacher/view-quizzes'); }
             else { alert(data.error || 'Quiz creation failed'); }
         } catch (error) { alert('Quiz creation failed: ' + error.message); }

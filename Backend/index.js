@@ -5,46 +5,60 @@ const http = require('http');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 
-// Load env vars
+// Load environment variables from .env file
 dotenv.config();
 
-// Connect to database
+// Connect to MongoDB Atlas
 connectDB();
 
 const app = express();
+
+// Use http.createServer so that Socket.io can share
+// the same port as the REST API (required for real-time features)
 const server = http.createServer(app);
 
-// Socket.io setup with CORS
+// ── Socket.io Setup ──────────────────────────────────────────
+// CORS origins must match the frontend dev/prod URLs.
+// To add more origins update FRONTEND_URL in .env or extend the array below.
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+        origin: [
+            process.env.FRONTEND_URL || 'http://localhost:5173',
+            'http://localhost:5174',
+            'http://localhost:5175'
+        ],
         methods: ['GET', 'POST']
     }
 });
 
-// Make io accessible to routes if needed
+// Attach io to the app so controllers can emit events via req.app.get('io')
 app.set('io', io);
 
-// Middleware
-app.use(express.json());
-app.use(cors());
+// ── Express Middleware ───────────────────────────────────────
+app.use(express.json()); // Parse incoming JSON request bodies
+app.use(cors());          // Allow cross-origin requests from the frontend
 
-// Basic Route
+// Health-check route
 app.get('/', (req, res) => {
-    res.send('API is running...');
+    res.send('ExamCoach API is running...');
 });
 
-// Auth Routes
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/teachers', require('./routes/teacherRoutes'));
-app.use('/api/students', require('./routes/studentRoutes'));
+// ── REST API Routes ──────────────────────────────────────────
+app.use('/api/auth',     require('./routes/authRoutes'));    // Authentication (login, register, add-teacher)
+app.use('/api/teachers', require('./routes/teacherRoutes')); // Teacher CRUD
+app.use('/api/students', require('./routes/studentRoutes')); // Student CRUD
 
-// Kuppi Routes
-const kuppiRoutes = require('./routes/kuppiRoutes');
+// ── Quiz Routes ──────────────────────────────────────────────
+// All quiz-related endpoints: create, attempt, verify, results
 const quizRoutes = require('./routes/quizRoutes');
-
-app.use('/api/kuppi', kuppiRoutes);
 app.use('/api/quizzes', quizRoutes);
+
+// ── Kuppi (Video Lesson) Routes — REMOVED ───────────────────
+// The kuppi/video-lesson feature has been removed from this system.
+// The route file still exists at routes/kuppiRoutes.js but is NOT mounted.
+// To re-enable, uncomment the two lines below:
+// const kuppiRoutes = require('./routes/kuppiRoutes');
+// app.use('/api/kuppi', kuppiRoutes);
 
 // ========== Socket.io — Cheating Detection ==========
 io.on('connection', (socket) => {

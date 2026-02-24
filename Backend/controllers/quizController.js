@@ -3,9 +3,80 @@ const QuizAttempt = require('../models/QuizAttempt');
 const Teacher = require('../models/Teacher');
 const Student = require('../models/Student');
 
+// ============================================================
+//  Quiz Controller
+//  Handles all quiz CRUD operations, access verification,
+//  attempt submission, scoring, and results retrieval.
+// ============================================================
+
+// @desc    Enroll to a quiz using enrollment key (student enters key, system finds quiz)
+// @route   POST /api/quizzes/enroll
+// @access  Private/Student
+exports.enrollToQuiz = async (req, res) => {
+    try {
+        const { enrollmentKey, quizPassword } = req.body;
+
+        // VALIDATION: Enrollment key is required
+        if (!enrollmentKey) {
+            return res.status(400).json({ success: false, error: 'Enrollment key is required' });
+        }
+
+        // Find the quiz that has this enrollment key
+        const quiz = await Quiz.findOne({ enrollmentKey, isActive: true });
+        if (!quiz) {
+            return res.status(404).json({ success: false, error: 'Invalid enrollment key. No active quiz found.' });
+        }
+
+        // Check if this student already has attempt(s) on this quiz.
+        // If they do and still have remaining attempts, skip the enrollment
+        // time window check — they already enrolled, they're just retrying.
+        let skipTimeCheck = false;
+        if (req.user && req.user.id) {
+            const student = await Student.findOne({ user: req.user.id });
+            if (student) {
+                const existingAttempts = await QuizAttempt.countDocuments({ student: student._id, quiz: quiz._id });
+                const maxAttempts = quiz.maxAttempts || 1;
+                if (existingAttempts > 0 && existingAttempts < maxAttempts) {
+                    skipTimeCheck = true;
+                }
+                if (existingAttempts >= maxAttempts) {
+                    return res.status(403).json({ success: false, error: `You have used all ${maxAttempts} attempt(s) for this quiz.` });
+                }
+            }
+        }
+
+        // VALIDATION: Check enrollment time window if configured (skip for retrying students)
+        if (!skipTimeCheck && quiz.enrollmentStartTime && quiz.enrollmentEndTime) {
+            const now = new Date();
+            if (now < new Date(quiz.enrollmentStartTime) || now > new Date(quiz.enrollmentEndTime)) {
+                return res.status(403).json({ success: false, error: 'Enrollment period is closed for this quiz.' });
+            }
+        }
+
+        // VALIDATION: Quiz password must match if set
+        if (quiz.quizPassword && quiz.quizPassword !== quizPassword) {
+            return res.status(401).json({ success: false, error: 'Invalid quiz password.' });
+        }
+
+        // Return quiz info so the frontend can show quiz details before navigating
+        res.status(200).json({
+            success: true,
+            quizId: quiz._id,
+            quizTitle: quiz.title,
+            quizSubject: quiz.subject || '',
+            quizDescription: quiz.description || '',
+            totalQuestions: quiz.questions?.length || 0,
+            timeLimit: quiz.timeLimit || 30,
+            message: 'Access granted'
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
 // @desc    Get all quizzes
 // @route   GET /api/quizzes
-// @access  Private
+// @access  Public (listing only — credentials stripped)
 exports.getQuizzes = async (req, res) => {
     try {
         const quizzes = await Quiz.find({ isActive: true })
@@ -30,6 +101,7 @@ exports.getQuiz = async (req, res) => {
         const quiz = await Quiz.findById(req.params.id)
             .populate('createdBy', 'name subject');
 
+        // VALIDATION: Return 404 if the quiz id does not match any document
         if (!quiz) {
             return res.status(404).json({ 
                 success: false, 
@@ -37,13 +109,14 @@ exports.getQuiz = async (req, res) => {
             });
         }
 
-        // Strip sensitive fields for students, but keep for teachers editing
+        // Strip sensitive access credentials from the response for students.
+        // Teachers editing a quiz pass ?includeCredentials=true to get the full object.
         const quizObj = quiz.toObject();
         if (req.query.includeCredentials !== 'true') {
             const hasCredentials = !!(quizObj.enrollmentKey || quizObj.quizPassword);
             delete quizObj.enrollmentKey;
             delete quizObj.quizPassword;
-            quizObj.hasCredentials = hasCredentials;
+            quizObj.hasCredentials = hasCredentials; // tells frontend whether to show the lock icon
         }
 
         res.status(200).json({ success: true, data: quizObj });
@@ -68,13 +141,27 @@ exports.verifyQuizAccess = async (req, res) => {
 
         const { enrollmentKey, quizPassword } = req.body;
 
-        // If quiz has no enrollment key/password set, allow access
+        // VALIDATION: If quiz has no credentials configured, allow anyone in
         if (!quiz.enrollmentKey && !quiz.quizPassword) {
             return res.status(200).json({ success: true, message: 'Access granted' });
         }
 
-        // Check enrollment time window
-        if (quiz.enrollmentStartTime && quiz.enrollmentEndTime) {
+        // Check if student already has attempts — skip time window for retries
+        let skipTimeCheck = false;
+        if (req.user && req.user.id) {
+            const student = await Student.findOne({ user: req.user.id });
+            if (student) {
+                const existingAttempts = await QuizAttempt.countDocuments({ student: student._id, quiz: quiz._id });
+                const maxAttempts = quiz.maxAttempts || 1;
+                if (existingAttempts > 0 && existingAttempts < maxAttempts) {
+                    skipTimeCheck = true;
+                }
+            }
+        }
+
+        // VALIDATION: Enrollment is only allowed within the configured time window
+        // (skipped for students retrying a multi-attempt quiz)
+        if (!skipTimeCheck && quiz.enrollmentStartTime && quiz.enrollmentEndTime) {
             const now = new Date();
             if (now < new Date(quiz.enrollmentStartTime) || now > new Date(quiz.enrollmentEndTime)) {
                 return res.status(403).json({ 
@@ -84,7 +171,7 @@ exports.verifyQuizAccess = async (req, res) => {
             }
         }
 
-        // Verify enrollment key
+        // VALIDATION: Enrollment key must match exactly (case-sensitive)
         if (quiz.enrollmentKey && quiz.enrollmentKey !== enrollmentKey) {
             return res.status(401).json({ 
                 success: false, 
@@ -92,7 +179,7 @@ exports.verifyQuizAccess = async (req, res) => {
             });
         }
 
-        // Verify quiz password
+        // VALIDATION: Quiz password must match exactly
         if (quiz.quizPassword && quiz.quizPassword !== quizPassword) {
             return res.status(401).json({ 
                 success: false, 
@@ -109,25 +196,23 @@ exports.verifyQuizAccess = async (req, res) => {
 // @desc    Create quiz
 // @route   POST /api/quizzes
 // @access  Private/Teacher
+// NOTE: Basic field validation is handled by validateQuizCreation middleware
+//       before this controller is called.
 exports.createQuiz = async (req, res) => {
     try {
-        // Temporarily disable teacher check for testing
+        // TODO: Re-enable teacher ownership check after auth is fully enforced.
+        // Currently disabled so the UI works without mandatory teacher login.
         // const teacher = await Teacher.findOne({ user: req.user.id });
-
         // if (!teacher) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         error: 'Teacher profile not found'
-        //     });
+        //     return res.status(404).json({ success: false, error: 'Teacher profile not found' });
         // }
 
         const quizData = {
             ...req.body,
-            createdBy: null // Temporarily set to null for testing
+            createdBy: null // TODO: replace null with teacher._id once teacher check above is re-enabled
         };
 
         const quiz = await Quiz.create(quizData);
-
         res.status(201).json({ success: true, data: quiz });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -141,6 +226,7 @@ exports.updateQuiz = async (req, res) => {
     try {
         let quiz = await Quiz.findById(req.params.id);
 
+        // VALIDATION: Quiz must exist before attempting to update
         if (!quiz) {
             return res.status(404).json({ 
                 success: false, 
@@ -148,7 +234,8 @@ exports.updateQuiz = async (req, res) => {
             });
         }
 
-        // Temporarily handle unauthenticated requests for testing
+        // VALIDATION: If authenticated, only the quiz creator can update it.
+        // TODO: Remove the req.user guard once teacher auth is fully enforced.
         if (req.user && req.user.id) {
             const teacher = await Teacher.findOne({ user: req.user.id });
             if (quiz.createdBy.toString() !== teacher._id.toString()) {
@@ -158,16 +245,17 @@ exports.updateQuiz = async (req, res) => {
                 });
             }
         }
-        // For testing without auth, allow updates
+        // If no user on the request, allow update (unauthenticated dev/test mode)
 
         const updateData = { ...req.body };
+        // Keep totalQuestions in sync if questions array is being replaced
         if (req.body.questions) {
             updateData.totalQuestions = req.body.questions.length;
         }
 
         quiz = await Quiz.findByIdAndUpdate(req.params.id, updateData, {
             new: true,
-            runValidators: true
+            runValidators: true // Enforce Mongoose schema validators on update
         });
 
         res.status(200).json({ success: true, data: quiz });
@@ -183,6 +271,7 @@ exports.deleteQuiz = async (req, res) => {
     try {
         const quiz = await Quiz.findById(req.params.id);
 
+        // VALIDATION: Quiz must exist before attempting to delete
         if (!quiz) {
             return res.status(404).json({ 
                 success: false, 
@@ -190,7 +279,8 @@ exports.deleteQuiz = async (req, res) => {
             });
         }
 
-        // Temporarily handle unauthenticated requests for testing
+        // VALIDATION: If authenticated, only the creator or an admin can delete.
+        // TODO: Remove the req.user guard once teacher auth is fully enforced.
         if (req.user && req.user.id) {
             const teacher = await Teacher.findOne({ user: req.user.id });
             if (req.user.role !== 'admin' && 
@@ -201,10 +291,9 @@ exports.deleteQuiz = async (req, res) => {
                 });
             }
         }
-        // For testing without auth, allow deletion
+        // If no user on the request, allow deletion (unauthenticated dev/test mode)
 
         await quiz.deleteOne();
-
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -225,7 +314,7 @@ exports.submitQuizAttempt = async (req, res) => {
             });
         }
 
-        // Require authenticated user
+        // VALIDATION: Require an authenticated student to submit an attempt
         if (!req.user || !req.user.id) {
             return res.status(401).json({ 
                 success: false, 
@@ -233,6 +322,7 @@ exports.submitQuizAttempt = async (req, res) => {
             });
         }
 
+        // VALIDATION: Student profile must exist in the DB (created at registration)
         const student = await Student.findOne({ user: req.user.id });
         if (!student) {
             return res.status(404).json({ 
@@ -242,7 +332,7 @@ exports.submitQuizAttempt = async (req, res) => {
         }
         const studentId = student._id;
 
-        // Check max attempts
+        // VALIDATION: Enforce the maximum number of attempts per student per quiz
         if (quiz.maxAttempts && quiz.maxAttempts > 0) {
             const existingAttempts = await QuizAttempt.countDocuments({ student: studentId, quiz: quiz._id });
             if (existingAttempts >= quiz.maxAttempts) {
@@ -255,7 +345,13 @@ exports.submitQuizAttempt = async (req, res) => {
 
         const { answers, timeTaken, tabSwitchCount } = req.body;
 
-        // Calculate score
+        // ── Scoring Logic ────────────────────────────────────────
+        // Each correct answer adds 1 point.
+        // Tab-switch penalty: a FLAT 3-mark deduction if the student
+        // switched tabs at all during the quiz (regardless of how many times).
+        // finalScore = max(0, correctAnswers - 3)   when tabSwitches > 0
+        // finalScore = correctAnswers               when tabSwitches == 0
+        // percentage  = finalScore / totalQuestions * 100
         let correctAnswers = 0;
         const processedAnswers = answers.map((answer, index) => {
             const isCorrect = answer.selectedAnswer === quiz.questions[index].correctAnswer;
@@ -269,9 +365,15 @@ exports.submitQuizAttempt = async (req, res) => {
 
         const score = correctAnswers;
         const tabSwitches = tabSwitchCount || 0;
-        const tabSwitchDeduction = tabSwitches * 3;
-        const finalScore = Math.max(0, score - tabSwitchDeduction);
-        const percentage = (finalScore / quiz.questions.length) * 100;
+        const rawPercentage = (score / quiz.questions.length) * 100;
+        // Flat 3 PERCENTAGE POINT deduction if ANY tab switching occurred.
+        // Using a percentage-point deduction (not a raw-mark deduction) means
+        // the penalty is proportionally fair regardless of quiz length:
+        //   e.g. 1/2 correct = 50% raw  →  50 - 3 = 47%  (not 0% as before)
+        //   e.g. 46/100 correct = 46%   →  46 - 3 = 43%
+        const tabSwitchDeduction = tabSwitches > 0 ? 3 : 0; // deducted from percentage
+        const percentage = Math.max(0, rawPercentage - tabSwitchDeduction);
+        const finalScore = percentage; // finalScore === percentage (kept for response compatibility)
 
         const attempt = await QuizAttempt.create({
             student: studentId,

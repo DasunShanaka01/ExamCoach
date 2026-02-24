@@ -5,6 +5,15 @@ import TopNavbar from '../components/TopNavbar';
 import CheatingAlert from '../components/CheatingAlert';
 import { quizAPI } from '../services/api';
 
+// Convert a UTC ISO string → local-time string accepted by <input type="datetime-local">
+// e.g. "2026-02-25T06:00:00.000Z" in UTC+5:30  →  "2026-02-25T11:30"
+const toLocalInputValue = (utcString) => {
+    if (!utcString) return '';
+    const d = new Date(utcString);
+    // Offset moves the clock from UTC to local time before slicing
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+};
+
 const UpdateQuiz = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -46,8 +55,8 @@ const UpdateQuiz = () => {
                         maxAttempts: quiz.maxAttempts || 1,
                         enrollmentKey: quiz.enrollmentKey || '',
                         quizPassword: quiz.quizPassword || '',
-                        enrollmentStartTime: quiz.enrollmentStartTime ? new Date(quiz.enrollmentStartTime).toISOString().slice(0, 16) : '',
-                        enrollmentEndTime: quiz.enrollmentEndTime ? new Date(quiz.enrollmentEndTime).toISOString().slice(0, 16) : '',
+                        enrollmentStartTime: toLocalInputValue(quiz.enrollmentStartTime),
+                        enrollmentEndTime: toLocalInputValue(quiz.enrollmentEndTime),
                         questions: quiz.questions || []
                     });
                 } else {
@@ -93,7 +102,15 @@ const UpdateQuiz = () => {
         setSaving(true);
         setError('');
         try {
-            const data = await quizAPI.updateQuiz(id, formData);
+            // Convert datetime-local strings (local time, no timezone) to proper UTC ISO strings
+            // so MongoDB always receives unambiguous timestamps.
+            const payload = { ...formData };
+            if (payload.enrollmentStartTime)
+                payload.enrollmentStartTime = new Date(payload.enrollmentStartTime).toISOString();
+            if (payload.enrollmentEndTime)
+                payload.enrollmentEndTime = new Date(payload.enrollmentEndTime).toISOString();
+
+            const data = await quizAPI.updateQuiz(id, payload);
             if (data.success) {
                 alert('Quiz updated successfully!');
                 navigate('/teacher/view-quizzes');
