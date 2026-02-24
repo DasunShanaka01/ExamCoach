@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../utils/sendEmail');
 
 // Generate JWT
 const generateToken = (id, role) => {
@@ -28,12 +29,21 @@ exports.registerStudent = async (req, res) => {
             return res.status(400).json({ success: false, error: 'User already exists' });
         }
 
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+        console.log(`\n\n=== DEVELOPMENT OTP FOR ${email}: ${otp} ===\n\n`);
+
         // Create User
         const user = await User.create({
             name: `${firstName} ${lastName}`,
             email,
             password,
-            role: 'student'
+            role: 'student',
+            otp,
+            otpExpires,
+            isVerified: false
         });
 
         // Create Student Profile
@@ -44,17 +54,79 @@ exports.registerStudent = async (req, res) => {
             profilePic
         });
 
-        const token = generateToken(user._id, user.role);
+        // Send OTP Email
+        const message = `Your verification OTP is: ${otp}. It is valid for 10 minutes.`;
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'ExamCoach - Email Verification',
+                message
+            });
+        } catch (error) {
+            console.error('Email could not be sent', error);
+            // Optionally: user.otp = undefined; user.otpExpires = undefined; await user.save();
+            return res.status(500).json({ success: false, error: 'Email could not be sent' });
+        }
 
         res.status(201).json({
             success: true,
+            message: 'Registration successful. Please verify your email.',
+            userId: user._id
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Verify OTP for user registration
+// @route   POST /api/auth/verify-otp
+// @access  Public
+exports.verifyOTP = async (req, res) => {
+    try {
+        const { userId, otp } = req.body;
+
+        if (!userId || !otp) {
+            return res.status(400).json({ success: false, error: 'Please provide user ID and OTP' });
+        }
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ success: false, error: 'User not found' });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({ success: false, error: 'User is already verified' });
+        }
+
+        if (user.otp !== otp || user.otpExpires < Date.now()) {
+            return res.status(400).json({ success: false, error: 'Invalid or expired OTP' });
+        }
+
+        // Mark user as verified
+        user.isVerified = true;
+        user.otp = undefined;
+        user.otpExpires = undefined;
+        await user.save();
+
+        // After verification, generate token and login the user
+        const token = generateToken(user._id, user.role);
+
+        let profile = null;
+        if (user.role === 'student') {
+            profile = await Student.findOne({ user: user._id });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Email verified successfully',
             token,
             user: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                profile: student
+                profile
             }
         });
     } catch (err) {
@@ -77,6 +149,29 @@ exports.login = async (req, res) => {
 
         if (!user || !(await user.matchPassword(password))) {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
+        }
+
+        if (!user.isVerified) {
+            // Need to resend OTP? Optional feature. For now, let's just create a new one to resend
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            console.log(`\n\n=== DEVELOPMENT RESENT OTP FOR ${user.email}: ${otp} ===\n\n`);
+            user.otp = otp;
+            user.otpExpires = Date.now() + 10 * 60 * 1000;
+            await user.save();
+
+            const message = `Your new verification OTP is: ${otp}. It is valid for 10 minutes.`;
+            await sendEmail({
+                email: user.email,
+                subject: 'ExamCoach - Email Verification',
+                message
+            });
+
+            return res.status(403).json({
+                success: false,
+                error: 'Please verify your email first. A new OTP has been sent.',
+                requiresVerification: true,
+                userId: user._id
+            });
         }
 
         const token = generateToken(user._id, user.role);
@@ -132,7 +227,8 @@ exports.addTeacher = async (req, res) => {
             name,
             email,
             password,
-            role: 'teacher'
+            role: 'teacher',
+            isVerified: true // Auto verify teachers added by admin
         });
 
         // Create Teacher Profile

@@ -1,11 +1,12 @@
 const express = require('express');
-const { registerStudent, login, addTeacher, getMe } = require('../controllers/authController');
+const { registerStudent, login, addTeacher, getMe, verifyOTP } = require('../controllers/authController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { profileUpload } = require('../config/cloudinary');
 
 const router = express.Router();
 
 router.post('/register-student', profileUpload.single('profilePic'), registerStudent);
+router.post('/verify-otp', verifyOTP);
 router.post('/login', login);
 router.post('/add-teacher', protect, authorize('admin'), profileUpload.single('profilePic'), addTeacher);
 router.get('/me', protect, getMe);
