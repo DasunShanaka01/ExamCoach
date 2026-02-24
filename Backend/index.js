@@ -1,3 +1,4 @@
+
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
@@ -26,6 +27,19 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/teachers', require('./routes/teacherRoutes'));
 app.use('/api/students', require('./routes/studentRoutes'));
 app.use('/api/quiz', require('./routes/quizRoutes'));
+
+app.use('/api/streams', require('./routes/streamRoutes'));
+app.use('/api/subjects', require('./routes/subjectRoutes'));
+app.use('/api/lessons', require('./routes/lessonRoutes'));
+
+// Error handler to return JSON (e.g., multer/cloudinary errors)
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+    console.error('Unhandled error', err);
+    res.status(err.status || 500).json({ success: false, error: err.message || 'Server error' });
+});
+
+app.use('/api/ai', require('./routes/aiRoutes'));
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -13,6 +13,14 @@ import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
 import AIQuizGenerator from './pages/AIQuizGenerator';
 
+import AdminCoursePortal from './pages/AdminCoursePortal';
+import CourseExplorer from './pages/CourseExplorer';
+import TeacherMaterials from './pages/TeacherMaterials';
+
+
+import AILearningLabPage from './pages/AILearningLabPage';
+
+
 const App = () => {
   return (
     <div className="app">
@@ -23,17 +31,35 @@ const App = () => {
 
         {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
         <Route path="/student/home" element={<StudentHome />} />
+
+
         <Route path="/student/profile" element={<StudentProfile />} />
         <Route path="/student/quiz-generator" element={<AIQuizGenerator />} />
+        <Route path="/student/ai_learning_lab" element={<AILearningLabPage />} />
+
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-        <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/courses" element={<AdminCoursePortal />} />
 
         {/* Admin Management Routes */}
         <Route path="/admin/teachers" element={<TeacherList />} />
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
         <Route path="/admin/students" element={<StudentList />} />
         <Route path="/admin/analytics" element={<AdminQuizAnalytics />} />
+        
+        {/* Teacher Routes */}
+        <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/materials" element={<TeacherMaterials />} />
+
+        {/* Student Routes */}
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/courses" element={<CourseExplorer />} />
+
+        
+
+
+
+
       </Routes>
     </div>
   );
