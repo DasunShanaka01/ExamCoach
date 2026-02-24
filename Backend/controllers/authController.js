@@ -4,6 +4,7 @@ const Teacher = require('../models/Teacher');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
+const { getOTPVerificationTemplate, getPasswordResetTemplate } = require('../utils/emailTemplates');
 
 // Generate JWT
 const generateToken = (id, role) => {
@@ -61,7 +62,8 @@ exports.registerStudent = async (req, res) => {
             await sendEmail({
                 email: user.email,
                 subject: 'ExamCoach - Email Verification',
-                message
+                message,
+                html: getOTPVerificationTemplate(otp)
             });
         } catch (error) {
             console.error('Email could not be sent', error);
@@ -164,7 +166,8 @@ exports.login = async (req, res) => {
             await sendEmail({
                 email: user.email,
                 subject: 'ExamCoach - Email Verification',
-                message
+                message,
+                html: getOTPVerificationTemplate(otp)
             });
 
             return res.status(403).json({
@@ -317,7 +320,8 @@ exports.forgotPassword = async (req, res) => {
         await sendEmail({
             email: user.email,
             subject: 'Password reset token',
-            message
+            message,
+            html: getPasswordResetTemplate(resetUrl)
         });
 
         res.status(200).json({ success: true, data: 'Email sent' });
