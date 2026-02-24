@@ -4,7 +4,7 @@ const Teacher = require('../models/Teacher');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
-const { getOTPVerificationTemplate, getPasswordResetTemplate } = require('../utils/emailTemplates');
+const { getOTPVerificationTemplate, getPasswordResetTemplate, getWelcomeTemplate } = require('../utils/emailTemplates');
 
 // Generate JWT
 const generateToken = (id, role) => {
@@ -118,6 +118,19 @@ exports.verifyOTP = async (req, res) => {
         let profile = null;
         if (user.role === 'student') {
             profile = await Student.findOne({ user: user._id });
+        }
+
+        // Send Welcome Email asynchronously
+        try {
+            sendEmail({
+                email: user.email,
+                subject: 'Welcome to ExamCoach!',
+                message: `Welcome to ExamCoach, ${user.name}! Your account is now active.`,
+                html: getWelcomeTemplate(user.name.split(' ')[0]) // Pass first name
+            });
+        } catch (emailErr) {
+            console.error('Failed to send welcome email:', emailErr);
+            // Don't fail the verification just because the welcome email failed
         }
 
         res.status(200).json({

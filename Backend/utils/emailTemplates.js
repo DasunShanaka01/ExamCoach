@@ -244,7 +244,160 @@ const getPasswordResetTemplate = (resetUrl) => {
     `;
 };
 
+const getWelcomeTemplate = (name) => {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Welcome to ExamCoach</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f4f7fb;
+                margin: 0;
+                padding: 0;
+                -webkit-font-smoothing: antialiased;
+            }
+            .container {
+                max-width: 600px;
+                margin: 40px auto;
+                background-color: #ffffff;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+            .header {
+                background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+                padding: 30px 20px;
+                text-align: center;
+            }
+            .header h1 {
+                color: #ffffff;
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }
+            .content {
+                padding: 40px 30px;
+                color: #333333;
+                text-align: center;
+            }
+            .content h2 {
+                color: #2d3748;
+                font-size: 24px;
+                font-weight: 600;
+                margin-top: 0;
+                margin-bottom: 20px;
+            }
+            .content p {
+                font-size: 16px;
+                line-height: 1.6;
+                color: #4a5568;
+                margin-bottom: 25px;
+                text-align: left;
+            }
+            .btn-container {
+                margin: 35px 0;
+                text-align: center;
+            }
+            .btn {
+                display: inline-block;
+                background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+                color: #ffffff;
+                font-weight: 600;
+                font-size: 16px;
+                text-decoration: none;
+                padding: 15px 35px;
+                border-radius: 50px;
+                box-shadow: 0 4px 10px rgba(72, 187, 120, 0.3);
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(72, 187, 120, 0.4);
+            }
+            .features {
+                background-color: #f7fafc;
+                border-radius: 8px;
+                padding: 20px;
+                margin-top: 30px;
+                text-align: left;
+            }
+            .features ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+            .features li {
+                margin-bottom: 10px;
+                color: #4a5568;
+                font-size: 15px;
+                position: relative;
+                padding-left: 25px;
+            }
+            .features li::before {
+                content: "✓";
+                color: #48bb78;
+                font-weight: bold;
+                position: absolute;
+                left: 0;
+            }
+            .footer {
+                background-color: #f8fafc;
+                padding: 20px;
+                text-align: center;
+                border-top: 1px solid #edf2f7;
+            }
+            .footer p {
+                color: #718096;
+                font-size: 14px;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>ExamCoach</h1>
+            </div>
+            <div class="content">
+                <h2>Welcome to ExamCoach, ${name}! 🎉</h2>
+                <p>Your email has been successfully verified, and your student account is now fully active. We are thrilled to have you join our learning community.</p>
+                
+                <p>ExamCoach is designed to help you achieve your academic goals with personalized learning tools and AI-powered assistance.</p>
+                
+                <div class="features">
+                    <h3 style="margin-top: 0; color: #2d3748; font-size: 18px;">What you can do right now:</h3>
+                    <ul>
+                        <li>Generate custom AI quizzes to test your knowledge</li>
+                        <li>Explore our courses and learning materials</li>
+                        <li>Track your progress with advanced analytics</li>
+                        <li>Create a personalized study plan</li>
+                    </ul>
+                </div>
+
+                <div class="btn-container">
+                    <a href="${process.env.FRONTEND_URL}/login" class="btn" style="color: white !important;">Go to Dashboard</a>
+                </div>
+                
+                <p>If you have any questions or need help getting started, our support team is always here for you.</p>
+                
+                <p>Happy Learning!<br><strong>The ExamCoach Team</strong></p>
+            </div>
+            <div class="footer">
+                <p>&copy; ${new Date().getFullYear()} ExamCoach. All rights reserved.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
+};
+
 module.exports = {
     getOTPVerificationTemplate,
-    getPasswordResetTemplate
+    getPasswordResetTemplate,
+    getWelcomeTemplate
 };
