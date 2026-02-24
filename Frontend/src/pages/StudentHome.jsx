@@ -1,9 +1,35 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import StudentNavbar from '../components/StudentNavbar';
 import Footer from '../components/Footer';
 
 const StudentHome = () => {
     const user = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
+    const [studyPlan, setStudyPlan] = useState(null);
+
+    useEffect(() => {
+        fetchStudyPlan();
+    }, []);
+
+    const fetchStudyPlan = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/study-plan', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                setStudyPlan(data.data);
+            }
+        } catch (err) {
+            // Silently fail - user might not have a study plan yet
+            console.log('No study plan found');
+        }
+    };
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -64,6 +90,35 @@ const StudentHome = () => {
                             <p className="text-sm font-semibold text-green-600">0 Active Courses</p>
                         </div>
                     </div>
+
+                    {/* Study Plan Card */}
+                    <div
+                        onClick={() => navigate('/student/view-plan')}
+                        className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-indigo-300 cursor-pointer"
+                    >
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
+                                📅
+                            </div>
+                            <span className="text-gray-400 group-hover:text-indigo-600 transition-colors">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </span>
+                        </div>
+                        <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
+                            My Study Plan
+                        </h2>
+                        <p className="text-gray-600 text-sm">
+                            Generate or view your personalized study schedule.
+                        </p>
+                        <div className="mt-4 pt-4 border-t border-gray-100">
+                            <button className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
+                                Manage Plan →
+                            </button>
+                        </div>
+                    </div>
+
 
                     {/* Assignments Card */}
                     <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white">
