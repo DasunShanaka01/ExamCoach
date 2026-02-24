@@ -1,4 +1,4 @@
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require('fs');
 const pdf = require('pdf-parse');
 const Quiz = require('../models/Quiz');
@@ -13,7 +13,7 @@ cloudinary.config({
 });
 
 // Initialize the new Google GenAI Client
-const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 console.log("-----------------------------------------");
 console.log("AI QUIZ CONTROLLER LOADED - timestamp: " + Date.now());
 console.log("Model: gemini-2.5-flash");
@@ -95,13 +95,13 @@ exports.generateQuiz = async (req, res) => {
         `;
 
         // Use the new SDK method
-        const response = await genAI.models.generateContent({
+        const model = genAI.getGenerativeModel({
             model: "gemini-2.5-flash",
-            contents: prompt,
-            config: {
-                responseMimeType: "application/json"
-            }
+            generationConfig: { responseMimeType: "application/json" }
         });
+
+        const result = await model.generateContent(prompt);
+        const response = result.response;
 
         // Parse JSON from the response text
         let text = "";

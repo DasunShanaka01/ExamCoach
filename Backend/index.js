@@ -34,13 +34,14 @@ app.use('/api/streams', require('./routes/streamRoutes'));
 app.use('/api/subjects', require('./routes/subjectRoutes'));
 app.use('/api/lessons', require('./routes/lessonRoutes'));
 
+// AI Routes
+app.use('/api/ai', require('./routes/aiRoutes'));
+
 // Error handler to return JSON (e.g., multer/cloudinary errors)
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     console.error('Unhandled error', err);
     res.status(err.status || 500).json({ success: false, error: err.message || 'Server error' });
 });
-
-app.use('/api/ai', require('./routes/aiRoutes'));
 
 
 // Start server
