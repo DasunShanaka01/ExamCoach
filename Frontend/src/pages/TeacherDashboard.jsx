@@ -112,81 +112,8 @@ const TeacherDashboard = () => {
                                     </div>
                                 </div>
 
-                                {/* Upload Kuppi Card */}
-                                <div 
-                                    className="group relative bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden cursor-pointer"
-                                    onClick={() => navigate('/teacher/upload-kuppi')}
-                                >
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
-                                    <div className="relative">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-white/70">
-                                                <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <h3 className="text-xl font-bold text-white mb-2">
-                                            Upload Kuppi
-                                        </h3>
-                                        <p className="text-white/80 text-sm">
-                                            Share educational videos with your students.
-                                        </p>
-                                        <div className="mt-4 pt-4 border-t border-white/20">
-                                            <span className="text-sm font-semibold text-white/90 flex items-center gap-1">
-                                                Upload Video
-                                                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* View Kuppis Card */}
-                                <div 
-                                    className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
-                                    onClick={() => navigate('/teacher/view-kuppis')}
-                                >
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full blur-2xl opacity-60 -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
-                                    <div className="relative">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                                <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                            </div>
-                                            <span className="text-gray-400 group-hover:text-purple-600 transition-colors">
-                                                <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                                </svg>
-                                            </span>
-                                        </div>
-                                        <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">
-                                            My Kuppis
-                                        </h3>
-                                        <p className="text-gray-600 text-sm">
-                                            View and manage your uploaded educational videos.
-                                        </p>
-                                        <div className="mt-4 pt-4 border-t border-gray-100">
-                                            <span className="text-sm font-semibold text-purple-600 group-hover:text-purple-700 transition-colors flex items-center gap-1">
-                                                View Videos
-                                                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 {/* Today's Schedule */}
-                                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 md:col-span-2">
+                                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center text-white">
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
