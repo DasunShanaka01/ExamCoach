@@ -8,11 +8,16 @@ const StudentQuizzes = () => {
     const [attempts, setAttempts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [activeTab, setActiveTab] = useState('enroll');
+    const [activeTab, setActiveTab] = useState('available');
     const [enrollKey, setEnrollKey] = useState('');
     const [enrollPassword, setEnrollPassword] = useState('');
     const [enrollError, setEnrollError] = useState('');
     const [enrolling, setEnrolling] = useState(false);
+    const [availableQuizzes, setAvailableQuizzes] = useState([]);
+    const [quizzesLoading, setQuizzesLoading] = useState(false);
+    const [selectedQuiz, setSelectedQuiz] = useState(null);
+    const [quizPassword, setQuizPassword] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(null); // 'AL' | 'OL'
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -23,6 +28,7 @@ const StudentQuizzes = () => {
             return;
         }
         fetchData();
+        fetchAvailableQuizzes();
     }, []);
 
     const fetchData = async () => {
@@ -34,6 +40,42 @@ const StudentQuizzes = () => {
             setError('Error: ' + err.message);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchAvailableQuizzes = async () => {
+        try {
+            setQuizzesLoading(true);
+            const res = await quizAPI.getQuizzes();
+            if (res.success) setAvailableQuizzes(res.data || []);
+        } catch (err) {
+            console.error('Failed to fetch quizzes:', err);
+        } finally {
+            setQuizzesLoading(false);
+        }
+    };
+
+    const handleQuizEnroll = async (quiz) => {
+        if (!quizPassword.trim()) {
+            setEnrollError('Please enter the quiz password');
+            return;
+        }
+        setEnrolling(true);
+        setEnrollError('');
+        try {
+            const data = await quizAPI.enrollToQuiz({ 
+                enrollmentKey: quiz.enrollmentKey, 
+                quizPassword: quizPassword 
+            });
+            if (data.success) {
+                navigate(`/student/take-quiz/${data.quizId}?verified=true`);
+            } else {
+                setEnrollError(data.error || 'Access denied');
+            }
+        } catch (err) {
+            setEnrollError(err.message || 'Verification failed');
+        } finally {
+            setEnrolling(false);
         }
     };
 
@@ -53,6 +95,19 @@ const StudentQuizzes = () => {
         } finally {
             setEnrolling(false);
         }
+    };
+
+    const isQuizActive = (quiz) => {
+        if (!quiz.isActive) return false;
+        if (!quiz.enrollmentStartTime || !quiz.enrollmentEndTime) return false;
+        const now = new Date();
+        return now >= new Date(quiz.enrollmentStartTime) && now <= new Date(quiz.enrollmentEndTime);
+    };
+
+    const fmtEnrollEnd = (d) => {
+        const dt = new Date(d);
+        return dt.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
+             + ' ' + dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     const scoreColor  = (pct) => pct >= 80 ? 'text-emerald-600' : pct >= 50 ? 'text-amber-500' : 'text-red-500';
@@ -111,16 +166,60 @@ const StudentQuizzes = () => {
             </div>
 
             <div className="max-w-3xl mx-auto px-4 py-8 -mt-4">
+
+                {/* Category Gate — shown until student picks AL or OL */}
+                {!selectedCategory ? (
+                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-10 max-w-md mx-auto text-center relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                        <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-200">
+                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Select Exam Category</h2>
+                        <p className="text-gray-500 text-sm mb-8">Choose your exam level to view the relevant quizzes.</p>
+                        <div className="flex gap-4">
+                            {[{id:'AL', label:'Advanced Level', sub:'A/L'}, {id:'OL', label:'Ordinary Level', sub:'O/L'}].map((cat) => (
+                                <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
+                                    className="flex-1 py-6 rounded-2xl border-2 border-indigo-200 hover:border-indigo-500 hover:bg-indigo-50 transition-all group">
+                                    <p className="text-3xl font-extrabold text-indigo-600 group-hover:text-indigo-700">{cat.sub}</p>
+                                    <p className="text-xs font-semibold text-gray-500 mt-1 group-hover:text-gray-700">{cat.label}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                <>
+
+                {/* Category Badge */}
+                <div className="flex items-center gap-3 mb-6">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        {selectedCategory === 'AL' ? 'A/L — Advanced Level' : 'O/L — Ordinary Level'}
+                    </span>
+                    <button onClick={() => { setSelectedCategory(null); setSelectedQuiz(null); setQuizPassword(''); setEnrollError(''); }}
+                        className="text-xs text-gray-400 hover:text-indigo-600 underline transition-colors">Change category</button>
+                </div>
+
                 {/* Enhanced Tab Navigation */}
                 <div className="flex gap-2 mb-8 bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
-                    <button onClick={() => setActiveTab('enroll')}
+                    <button onClick={() => {setActiveTab('available'); setSelectedQuiz(null); setQuizPassword(''); setEnrollError('');}}
+                        className={`flex-1 px-5 py-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${activeTab === 'available' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Available Quizzes
+                    </button>
+                    <button onClick={() => {setActiveTab('enroll'); setSelectedQuiz(null); setQuizPassword(''); setEnrollError('');}}
                         className={`flex-1 px-5 py-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${activeTab === 'enroll' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                         Join Quiz
                     </button>
-                    <button onClick={() => setActiveTab('results')}
+                    <button onClick={() => {setActiveTab('results'); setSelectedQuiz(null); setQuizPassword(''); setEnrollError('');}}
                         className={`flex-1 px-5 py-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${activeTab === 'results' ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-md' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'}`}>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -136,6 +235,145 @@ const StudentQuizzes = () => {
                         </svg>
                         {error}
                     </div>
+                )}
+
+                {activeTab === 'available' && (
+                    quizzesLoading ? (
+                        <div className="flex items-center justify-center py-20">
+                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mr-4"></div>
+                            <span className="text-gray-500">Loading available quizzes...</span>
+                        </div>
+                    ) : selectedQuiz ? (
+                        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 max-w-md mx-auto relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+                            <button onClick={() => {setSelectedQuiz(null); setQuizPassword(''); setEnrollError('');}} className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                            </button>
+                            
+                            <div className="relative text-center mb-8 pt-4">
+                                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
+                                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                </div>
+                                <h2 className="text-xl font-bold text-gray-800">{selectedQuiz.title}</h2>
+                                {selectedQuiz.subject && <p className="text-sm font-semibold text-indigo-500 mt-1 uppercase tracking-wide">{selectedQuiz.subject}</p>}
+                                <div className="flex justify-center gap-4 mt-4 text-sm text-gray-500">
+                                    <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {selectedQuiz.questions?.length || 0} Questions</span>
+                                    <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {selectedQuiz.timeLimit} min</span>
+                                </div>
+                            </div>
+                            
+                            {enrollError && (
+                                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-5 text-sm text-center flex items-center justify-center gap-2">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    {enrollError}
+                                </div>
+                            )}
+                            
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Enter Quiz Password</label>
+                                    <div className="relative">
+                                        <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
+                                        <input type="password" value={quizPassword} onChange={(e) => setQuizPassword(e.target.value)}
+                                            placeholder="Enter password to start quiz"
+                                            className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all bg-gray-50/50" />
+                                    </div>
+                                </div>
+                                <button onClick={() => handleQuizEnroll(selectedQuiz)} disabled={enrolling || !quizPassword.trim()}
+                                    className="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg hover:from-indigo-700 hover:to-purple-700 transition-all text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                                    {enrolling ? (
+                                        <>
+                                            <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Starting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                            </svg>
+                                            Start Quiz
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    ) : availableQuizzes.filter(q => q.examCategory === selectedCategory && isQuizActive(q)).length === 0 ? (
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-lg p-14 text-center">
+                            <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                            <p className="text-gray-700 font-bold text-lg">No active {selectedCategory} quizzes right now</p>
+                            <p className="text-gray-400 text-sm mt-2 mb-6">There are no currently active quizzes for your category. Check back later or join using an enrollment key.</p>
+                            <button onClick={() => setActiveTab('enroll')} className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold flex items-center gap-2 mx-auto">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                Join with Key
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {availableQuizzes.filter(q => q.examCategory === selectedCategory && isQuizActive(q)).map((quiz) => (
+                                <div key={quiz._id} className="bg-white rounded-2xl border-2 border-emerald-400 shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                                    <div className="h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
+                                    <div className="p-6">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center text-white shadow-md flex-shrink-0">
+                                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                    </svg>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        <h3 className="font-bold text-gray-800 text-lg leading-tight">{quiz.title}</h3>
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
+                                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>Active
+                                                        </span>
+                                                    </div>
+                                                    {quiz.subject && <p className="text-xs font-semibold text-teal-600 mt-0.5 uppercase tracking-wide">{quiz.subject}</p>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p className="text-gray-600 text-sm mt-3 line-clamp-2">{quiz.description}</p>
+                                        <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-gray-500">
+                                            <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {quiz.questions?.length || 0} Questions</span>
+                                            <span className="flex items-center gap-1 font-semibold text-gray-700"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {quiz.timeLimit} min</span>
+                                            <span className="flex items-center gap-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg> {quiz.maxAttempts} attempt{quiz.maxAttempts > 1 ? 's' : ''}</span>
+                                            {quiz.enrollmentEndTime && (
+                                                <span className="flex items-center gap-1 text-amber-600 font-medium">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                                    Available until {fmtEnrollEnd(quiz.enrollmentEndTime)}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-end">
+                                            <button onClick={() => { setSelectedQuiz(quiz); setQuizPassword(''); setEnrollError(''); }}
+                                                className="px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl hover:shadow-lg transition-all text-sm font-semibold flex items-center gap-2">
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                </svg>
+                                                Enroll Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )
                 )}
 
                 {activeTab === 'enroll' && (
@@ -335,6 +573,8 @@ const StudentQuizzes = () => {
                             </div>
                         </>
                     )
+                )}
+                </>
                 )}
             </div>
         </div>

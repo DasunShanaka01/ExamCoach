@@ -62,6 +62,11 @@ const quizSchema = new mongoose.Schema({
         type: Boolean,
         default: true
     },
+    examCategory: {
+        type: String,
+        enum: ['AL', 'OL'],
+        default: null
+    },
     totalQuestions: {
         type: Number,
         default: function() {

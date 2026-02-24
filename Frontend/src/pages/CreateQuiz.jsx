@@ -7,6 +7,7 @@ import { quizAPI } from '../services/api';
 const CreateQuiz = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        examCategory: '',
         title: '',
         description: '',
         subject: '',
@@ -56,6 +57,7 @@ const CreateQuiz = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!formData.examCategory) { alert('Please select an exam category (AL or OL)'); return; }
         if (formData.questions.length === 0) { alert('Please add at least one question'); return; }
         setLoading(true);
         try {
@@ -115,6 +117,26 @@ const CreateQuiz = () => {
                                     </div>
                                     <h2 className="text-xl font-bold text-gray-800">Quiz Details</h2>
                                 </div>
+
+                                {/* Exam Category */}
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Exam Category <span className="text-red-500">*</span></label>
+                                    <div className="flex gap-3">
+                                        {['AL', 'OL'].map((cat) => (
+                                            <button key={cat} type="button"
+                                                onClick={() => setFormData({...formData, examCategory: cat})}
+                                                className={`flex-1 py-3 rounded-xl border-2 text-sm font-bold transition-all ${
+                                                    formData.examCategory === cat
+                                                        ? 'border-violet-600 bg-violet-600 text-white shadow-md'
+                                                        : 'border-gray-200 text-gray-500 hover:border-violet-300 hover:text-violet-600'
+                                                }`}>
+                                                {cat === 'AL' ? 'A/L — Advanced Level' : 'O/L — Ordinary Level'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    {!formData.examCategory && <p className="text-xs text-amber-600 mt-1.5">Please select an exam category before creating the quiz.</p>}
+                                </div>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 mb-2">Title <span className="text-red-500">*</span></label>

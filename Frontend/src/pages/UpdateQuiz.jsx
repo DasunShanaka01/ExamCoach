@@ -19,6 +19,7 @@ const UpdateQuiz = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
+        examCategory: '',
         title: '',
         description: '',
         subject: '',
@@ -48,6 +49,7 @@ const UpdateQuiz = () => {
                 if (data.success) {
                     const quiz = data.data;
                     setFormData({
+                        examCategory: quiz.examCategory || '',
                         title: quiz.title || '',
                         description: quiz.description || '',
                         subject: quiz.subject || '',
@@ -161,6 +163,25 @@ const UpdateQuiz = () => {
                             {/* Quiz details */}
                             <div className="bg-white rounded-xl shadow-md p-6 mb-6 border border-gray-100">
                                 <h2 className="text-lg font-semibold text-gray-800 mb-4">Quiz Details</h2>
+
+                                {/* Exam Category */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Exam Category <span className="text-red-500">*</span></label>
+                                    <div className="flex gap-3">
+                                        {['AL', 'OL'].map((cat) => (
+                                            <button key={cat} type="button"
+                                                onClick={() => setFormData({...formData, examCategory: cat})}
+                                                className={`flex-1 py-2.5 rounded-lg border-2 text-sm font-bold transition-all ${
+                                                    formData.examCategory === cat
+                                                        ? 'border-blue-600 bg-blue-600 text-white shadow-md'
+                                                        : 'border-gray-300 text-gray-500 hover:border-blue-400 hover:text-blue-600'
+                                                }`}>
+                                                {cat === 'AL' ? 'A/L — Advanced Level' : 'O/L — Ordinary Level'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="md:col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
