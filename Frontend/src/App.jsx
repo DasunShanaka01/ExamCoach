@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import RegisterStudent from './pages/RegisterStudent';
 import StudentHome from './pages/StudentHome';
 import StudentProfile from './pages/StudentProfile';
@@ -32,6 +34,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/register" element={<RegisterStudent />} />
 
         {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
@@ -57,7 +61,7 @@ const App = () => {
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
         <Route path="/admin/students" element={<StudentList />} />
         <Route path="/admin/analytics" element={<AdminQuizAnalytics />} />
-        
+
         {/* Teacher Routes */}
         <Route path="/teacher/profile" element={<TeacherProfile />} />
         <Route path="/teacher/materials" element={<TeacherMaterials />} />
@@ -66,7 +70,7 @@ const App = () => {
         <Route path="/student/profile" element={<StudentProfile />} />
         <Route path="/student/courses" element={<CourseExplorer />} />
 
-        
+
 
 
 

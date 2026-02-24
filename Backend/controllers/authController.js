@@ -2,6 +2,7 @@ const User = require('../models/User');
 const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
 
 // Generate JWT
@@ -286,4 +287,93 @@ exports.getMe = async (req, res) => {
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
+};
+
+// @desc    Forgot password
+// @route   POST /api/auth/forgotpassword
+// @access  Public
+exports.forgotPassword = async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+        return res.status(404).json({ success: false, error: 'There is no user with that email' });
+    }
+
+    // Get reset token
+    const resetToken = user.getResetPasswordToken();
+
+    await user.save();
+
+    // Create reset url
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    console.log(`\n\n=== DEVELOPMENT PASSWORD RESET LINK FOR ${user.email} ===`);
+    console.log(resetUrl);
+    console.log(`=====================================================\n\n`);
+
+    const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Password reset token',
+            message
+        });
+
+        res.status(200).json({ success: true, data: 'Email sent' });
+    } catch (err) {
+        console.error(err);
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        await user.save();
+
+        res.status(500).json({ success: false, error: 'Email could not be sent' });
+    }
+};
+
+// @desc    Reset password
+// @route   PUT /api/auth/resetpassword/:resettoken
+// @access  Public
+exports.resetPassword = async (req, res) => {
+    // Get hashed token
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex');
+
+    const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() }
+    }).select('+password'); // select password to be able to hash new one if we had to check old, but we just override. we don't strictly need +password to set a new one, but pre-save might need it
+
+    if (!user) {
+        return res.status(400).json({ success: false, error: 'Invalid token' });
+    }
+
+    // Set new password
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    // Create token
+    const token = generateToken(user._id, user.role);
+
+    let profile = null;
+    if (user.role === 'student') {
+        profile = await Student.findOne({ user: user._id });
+    } else if (user.role === 'teacher') {
+        profile = await Teacher.findOne({ user: user._id });
+    }
+
+    res.status(200).json({
+        success: true,
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            profile
+        }
+    });
 };
