@@ -1,4 +1,3 @@
-
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import RegisterStudent from './pages/RegisterStudent';
@@ -11,6 +10,12 @@ import AdminQuizAnalytics from './pages/AdminQuizAnalytics';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
+import CreateStudyPlan from './pages/CreateStudyPlan';
+import StudyPlanResult from './pages/StudyPlanResult';
+import CalendarCallback from './pages/CalendarCallback';
+import TimetableView from './pages/TimetableView';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import StudyJournal from './pages/StudyJournal';
 import AIQuizGenerator from './pages/AIQuizGenerator';
 
 import AdminCoursePortal from './pages/AdminCoursePortal';
@@ -31,6 +36,12 @@ const App = () => {
 
         {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
         <Route path="/student/home" element={<StudentHome />} />
+        <Route path="/student/create-plan" element={<CreateStudyPlan />} />
+        <Route path="/student/view-plan" element={<StudyPlanResult />} />
+        <Route path="/student/timetable" element={<TimetableView />} />
+        <Route path="/student/analytics" element={<AnalyticsDashboard />} />
+        <Route path="/student/journal" element={<StudyJournal />} />
+        <Route path="/calendar-callback" element={<CalendarCallback />} />
 
 
         <Route path="/student/profile" element={<StudentProfile />} />

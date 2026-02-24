@@ -30,6 +30,22 @@ const studentSchema = new mongoose.Schema({
     profilePic: {
         type: String, // URL to the image
         default: 'default-profile.png'
+    },
+    // Google Calendar Integration
+    googleCalendarConnected: {
+        type: Boolean,
+        default: false
+    },
+    googleAccessToken: {
+        type: String,
+        select: false // Don't return in queries by default for security
+    },
+    googleRefreshToken: {
+        type: String,
+        select: false // Don't return in queries by default for security
+    },
+    googleTokenExpiry: {
+        type: Date
     }
 }, {
     timestamps: true
