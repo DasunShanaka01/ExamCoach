@@ -7,9 +7,11 @@ import StudentProfile from './pages/StudentProfile';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminQuizAnalytics from './pages/AdminQuizAnalytics';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
+import AIQuizGenerator from './pages/AIQuizGenerator';
 
 import AdminCoursePortal from './pages/AdminCoursePortal';
 import CourseExplorer from './pages/CourseExplorer';
@@ -32,6 +34,7 @@ const App = () => {
 
 
         <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/quiz-generator" element={<AIQuizGenerator />} />
         <Route path="/student/ai_learning_lab" element={<AILearningLabPage />} />
 
         <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
@@ -42,6 +45,7 @@ const App = () => {
         <Route path="/admin/teachers" element={<TeacherList />} />
         <Route path="/admin/add-teacher" element={<AddTeacher />} />
         <Route path="/admin/students" element={<StudentList />} />
+        <Route path="/admin/analytics" element={<AdminQuizAnalytics />} />
         
         {/* Teacher Routes */}
         <Route path="/teacher/profile" element={<TeacherProfile />} />
