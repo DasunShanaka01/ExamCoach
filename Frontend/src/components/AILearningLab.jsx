@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, FileText, Save, Clock, RefreshCw, File, Loader2 } from 'lucide-react';
+import { Upload, FileText, Save, Clock, RefreshCw, File, Loader2, Trash2 } from 'lucide-react';
 
 const AILearningLab = () => {
     const [history, setHistory] = useState([]);
@@ -13,6 +13,43 @@ const AILearningLab = () => {
     const [selectedHistoryId, setSelectedHistoryId] = useState(null);
     const [relatedResources, setRelatedResources] = useState([]);
     const [activeResultTab, setActiveResultTab] = useState('summary'); // 'summary', 'resources'
+    const [deletingHistoryId, setDeletingHistoryId] = useState(null);
+
+    const normalizeRelatedResources = (resources) => {
+        if (!resources) return [];
+
+        let parsedResources = resources;
+        if (typeof parsedResources === 'string') {
+            try {
+                parsedResources = JSON.parse(parsedResources);
+            } catch {
+                return [];
+            }
+        }
+
+        if (!Array.isArray(parsedResources)) return [];
+
+        return parsedResources
+            .map((resource) => {
+                if (!resource) return null;
+
+                const title = String(resource.title || resource.name || '').trim();
+                const link = String(resource.link || resource.url || '').trim();
+                const rawType = String(resource.type || '').toLowerCase();
+
+                if (!title || !link) return null;
+
+                let type = 'other';
+                if (rawType === 'youtube' || /youtube\.com|youtu\.be/i.test(link)) {
+                    type = 'youtube';
+                } else if (rawType === 'website') {
+                    type = 'website';
+                }
+
+                return { title, link, type };
+            })
+            .filter(Boolean);
+    };
 
     // Get user from localStorage
     const user = JSON.parse(localStorage.getItem('user'));
@@ -84,8 +121,14 @@ const AILearningLab = () => {
                 throw new Error(data.message || 'Failed to summarize text');
             }
 
-            setSummary(data.summary);
-            setRelatedResources(data.relatedResources || []);
+            setSummary(data.summary || '');
+
+            const normalizedResources =
+                normalizeRelatedResources(data.relatedResources).length > 0
+                    ? normalizeRelatedResources(data.relatedResources)
+                    : normalizeRelatedResources(data.resources);
+
+            setRelatedResources(normalizedResources);
             if (data.relatedResources && data.relatedResources.length > 0) {
                 // specific logic if needed, but we start at summary tab
             }
@@ -133,7 +176,7 @@ const AILearningLab = () => {
     const loadHistoryItem = (item) => {
         setSelectedHistoryId(item._id);
         setSummary(item.summary);
-        setRelatedResources(item.relatedResources || []);
+        setRelatedResources(normalizeRelatedResources(item.relatedResources));
         setCurrentTitle(item.title);
         setActiveResultTab('summary');
         setActiveTab(item.type === 'pdf' ? 'upload' : 'text');
@@ -144,6 +187,49 @@ const AILearningLab = () => {
             // For PDF, simply show upload tab state, but we can't set file input value programmatically
             setText('');
             setFile(null);
+        }
+    };
+
+    const handleDeleteHistoryItem = async (e, itemId) => {
+        e.stopPropagation();
+
+        if (!userId || deletingHistoryId === itemId) return;
+
+        const confirmed = window.confirm('Delete this saved note from history?');
+        if (!confirmed) return;
+
+        try {
+            setDeletingHistoryId(itemId);
+            setError(null);
+
+            const response = await fetch(`http://localhost:5000/api/ai/history/${itemId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId })
+            });
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => ({}));
+                throw new Error(data.message || 'Failed to delete history item');
+            }
+
+            if (selectedHistoryId === itemId) {
+                setSelectedHistoryId(null);
+                setSummary('');
+                setRelatedResources([]);
+                setCurrentTitle('');
+                setText('');
+                setFile(null);
+                setActiveResultTab('summary');
+            }
+
+            setHistory((prev) => prev.filter((item) => item._id !== itemId));
+        } catch (err) {
+            setError(err.message || 'Failed to delete history item.');
+        } finally {
+            setDeletingHistoryId(null);
         }
     };
 
@@ -173,7 +259,22 @@ const AILearningLab = () => {
                                         {item.type === 'pdf' ? <FileText size={16} /> : <File size={16} />}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className={`text-sm font-medium truncate ${selectedHistoryId === item._id ? 'text-blue-700' : 'text-gray-700'}`}>{item.title}</h4>
+                                        <div className="flex items-start justify-between gap-2">
+                                            <h4 className={`text-sm font-medium truncate ${selectedHistoryId === item._id ? 'text-blue-700' : 'text-gray-700'}`}>{item.title}</h4>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => handleDeleteHistoryItem(e, item._id)}
+                                                disabled={deletingHistoryId === item._id}
+                                                className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition disabled:opacity-40"
+                                                title="Delete note"
+                                            >
+                                                {deletingHistoryId === item._id ? (
+                                                    <Loader2 size={14} className="animate-spin" />
+                                                ) : (
+                                                    <Trash2 size={14} />
+                                                )}
+                                            </button>
+                                        </div>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="text-xs text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</span>
                                             <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded uppercase">{item.type}</span>
