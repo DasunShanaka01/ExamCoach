@@ -88,6 +88,30 @@ const extractLinksFromText = (text) => {
     }));
 };
 
+const parseRelatedResourcesInput = (input) => {
+    if (!input) return [];
+
+    if (Array.isArray(input)) return normalizeRelatedResources(input);
+
+    if (typeof input === 'object') {
+        return normalizeRelatedResources([input]);
+    }
+
+    if (typeof input === 'string') {
+        const trimmed = input.trim();
+        if (!trimmed) return [];
+
+        try {
+            const parsed = JSON.parse(trimmed);
+            return normalizeRelatedResources(parsed);
+        } catch {
+            return [];
+        }
+    }
+
+    return [];
+};
+
 const summarizeText = async (req, res) => {
     try {
         let text = req.body.text;
@@ -178,6 +202,7 @@ const saveSummary = async (req, res) => {
     try {
         const { title, summary, type, originalText, userId } = req.body;
         let originalContent = originalText;
+        const parsedRelatedResources = parseRelatedResourcesInput(req.body.relatedResources);
 
         if (req.file) {
             // Upload to Cloudinary
@@ -196,7 +221,7 @@ const saveSummary = async (req, res) => {
                         title: title || req.file.originalname,
                         originalContent,
                         summary,
-                        relatedResources: req.body.relatedResources ? JSON.parse(req.body.relatedResources) : [],
+                        relatedResources: parsedRelatedResources,
                         type: 'pdf'
                     });
 
@@ -215,7 +240,7 @@ const saveSummary = async (req, res) => {
                 title: title || 'Text Summary',
                 originalContent,
                 summary,
-                relatedResources: req.body.relatedResources ? JSON.parse(req.body.relatedResources) : [],
+                relatedResources: parsedRelatedResources,
                 type: 'text'
             });
 
