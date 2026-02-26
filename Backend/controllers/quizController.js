@@ -21,11 +21,21 @@ exports.enrollToQuiz = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Enrollment key is required' });
         }
 
-        // Find the quiz that has this enrollment key
-        const quiz = await Quiz.findOne({ enrollmentKey, isActive: true });
-        if (!quiz) {
+        // Find all quizzes that share this enrollment key.
+        // Multiple quizzes may reuse the same key (common during testing),
+        // so we pick the one whose enrollment window is currently open.
+        // Fallback: if none is open, use the most recently created match.
+        const matchingQuizzes = await Quiz.find({ enrollmentKey, isActive: true }).sort({ createdAt: -1 });
+        if (matchingQuizzes.length === 0) {
             return res.status(404).json({ success: false, error: 'Invalid enrollment key. No active quiz found.' });
         }
+
+        const now = new Date();
+        let quiz = matchingQuizzes.find(q => {
+            if (!q.enrollmentStartTime || !q.enrollmentEndTime) return true; // no window = always open
+            return now >= new Date(q.enrollmentStartTime) && now <= new Date(q.enrollmentEndTime);
+        });
+        if (!quiz) quiz = matchingQuizzes[0]; // newest fallback
 
         // Check if this student already has attempt(s) on this quiz.
         // If they do and still have remaining attempts, skip the enrollment
@@ -47,9 +57,14 @@ exports.enrollToQuiz = async (req, res) => {
 
         // VALIDATION: Check enrollment time window if configured (skip for retrying students)
         if (!skipTimeCheck && quiz.enrollmentStartTime && quiz.enrollmentEndTime) {
-            const now = new Date();
-            if (now < new Date(quiz.enrollmentStartTime) || now > new Date(quiz.enrollmentEndTime)) {
-                return res.status(403).json({ success: false, error: 'Enrollment period is closed for this quiz.' });
+            const nowCheck = new Date();
+            const start = new Date(quiz.enrollmentStartTime);
+            const end   = new Date(quiz.enrollmentEndTime);
+            if (nowCheck < start) {
+                return res.status(403).json({ success: false, error: `Enrollment has not started yet. It opens on ${start.toLocaleString()}.` });
+            }
+            if (nowCheck > end) {
+                return res.status(403).json({ success: false, error: `Enrollment period has ended. It closed on ${end.toLocaleString()}.` });
             }
         }
 
@@ -163,10 +178,18 @@ exports.verifyQuizAccess = async (req, res) => {
         // (skipped for students retrying a multi-attempt quiz)
         if (!skipTimeCheck && quiz.enrollmentStartTime && quiz.enrollmentEndTime) {
             const now = new Date();
-            if (now < new Date(quiz.enrollmentStartTime) || now > new Date(quiz.enrollmentEndTime)) {
+            const start = new Date(quiz.enrollmentStartTime);
+            const end   = new Date(quiz.enrollmentEndTime);
+            if (now < start) {
                 return res.status(403).json({ 
                     success: false, 
-                    error: 'Enrollment period is closed for this quiz' 
+                    error: `Enrollment has not started yet. It opens on ${start.toLocaleString()}.`
+                });
+            }
+            if (now > end) {
+                return res.status(403).json({ 
+                    success: false, 
+                    error: `Enrollment period has ended. It closed on ${end.toLocaleString()}.`
                 });
             }
         }

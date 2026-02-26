@@ -39,8 +39,7 @@ const QuizAttempts = () => {
         }
     };
 
-    const getScoreBadge = (score, total) => {
-        const pct = Math.round((score / total) * 100);
+    const getScoreBadge = (pct) => {
         if (pct >= 80) return 'bg-green-100 text-green-700';
         if (pct >= 50) return 'bg-yellow-100 text-yellow-700';
         return 'bg-red-100 text-red-700';
@@ -96,19 +95,19 @@ const QuizAttempts = () => {
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Average Final Score</p>
                                         <p className="text-2xl font-bold text-blue-600">
-                                            {attempts.length > 0 ? Math.round(attempts.reduce((sum, a) => sum + ((a.finalScore ?? a.score) / a.totalQuestions) * 100, 0) / attempts.length) : 0}%
+                                            {attempts.length > 0 ? Math.round(attempts.reduce((sum, a) => sum + (a.percentage ?? 0), 0) / attempts.length) : 0}%
                                         </p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Highest Final Score</p>
                                         <p className="text-2xl font-bold text-green-600">
-                                            {attempts.length > 0 ? Math.round(Math.max(...attempts.map(a => ((a.finalScore ?? a.score) / a.totalQuestions) * 100))) : 0}%
+                                            {attempts.length > 0 ? Math.round(Math.max(...attempts.map(a => a.percentage ?? 0))) : 0}%
                                         </p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Pass Rate (≥50%)</p>
                                         <p className="text-2xl font-bold text-purple-600">
-                                            {attempts.length > 0 ? Math.round(attempts.filter(a => ((a.finalScore ?? a.score) / a.totalQuestions) >= 0.5).length / attempts.length * 100) : 0}%
+                                            {attempts.length > 0 ? Math.round(attempts.filter(a => (a.percentage ?? 0) >= 50).length / attempts.length * 100) : 0}%
                                         </p>
                                     </div>
                                     <div className={`rounded-xl shadow-sm p-4 border ${totalCheaters > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-gray-100'}`}>
@@ -159,15 +158,15 @@ const QuizAttempts = () => {
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${(attempt.tabSwitchDeduction || 0) > 0 ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-                                                                {(attempt.tabSwitchDeduction || 0) > 0 ? `−${attempt.tabSwitchDeduction}` : '0'}
+                                                                {(attempt.tabSwitchDeduction || 0) > 0 ? `−${attempt.tabSwitchDeduction}%` : '0'}
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4 text-sm font-bold text-gray-800">
-                                                            {attempt.finalScore ?? attempt.score} / {attempt.totalQuestions}
+                                                            {Math.round(attempt.percentage ?? 0)}%
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getScoreBadge(attempt.finalScore ?? attempt.score, attempt.totalQuestions)}`}>
-                                                                {Math.round(((attempt.finalScore ?? attempt.score) / attempt.totalQuestions) * 100)}%
+                                                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${getScoreBadge(Math.round(attempt.percentage ?? 0))}`}>
+                                                                {Math.round(attempt.percentage ?? 0)}%
                                                             </span>
                                                         </td>
                                                         <td className="px-6 py-4">

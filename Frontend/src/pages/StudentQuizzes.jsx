@@ -99,7 +99,8 @@ const StudentQuizzes = () => {
 
     const isQuizActive = (quiz) => {
         if (!quiz.isActive) return false;
-        if (!quiz.enrollmentStartTime || !quiz.enrollmentEndTime) return false;
+        // If no enrollment time window is configured, the quiz is always accessible
+        if (!quiz.enrollmentStartTime || !quiz.enrollmentEndTime) return true;
         const now = new Date();
         return now >= new Date(quiz.enrollmentStartTime) && now <= new Date(quiz.enrollmentEndTime);
     };

@@ -86,6 +86,37 @@ const TakeQuiz = () => {
                     return newCount;
                 });
 
+                // Play warning beep sound using Web Audio API
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    // First beep
+                    const osc1 = audioCtx.createOscillator();
+                    const gain1 = audioCtx.createGain();
+                    osc1.type = 'square';
+                    osc1.frequency.setValueAtTime(880, audioCtx.currentTime);
+                    gain1.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc1.connect(gain1);
+                    gain1.connect(audioCtx.destination);
+                    osc1.start(audioCtx.currentTime);
+                    osc1.stop(audioCtx.currentTime + 0.3);
+                    // Second beep (higher pitch, slight delay)
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.type = 'square';
+                    osc2.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.35);
+                    gain2.gain.setValueAtTime(0.3, audioCtx.currentTime + 0.35);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.65);
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.start(audioCtx.currentTime + 0.35);
+                    osc2.stop(audioCtx.currentTime + 0.65);
+                    // Clean up after sounds finish
+                    setTimeout(() => audioCtx.close(), 1000);
+                } catch (e) {
+                    console.warn('Could not play beep sound:', e);
+                }
+
                 // Show warning to student
                 setTabWarning(true);
                 setTimeout(() => setTabWarning(false), 5000);
