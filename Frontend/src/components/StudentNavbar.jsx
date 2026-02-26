@@ -85,6 +85,13 @@ const StudentNavbar = () => {
 
 
                 <Link
+                    to="/student/quiz-generator"
+                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
+                >
+                    AI Quiz Generator
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                </Link>
+                <Link
                     to="/student/profile"
                     className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
                 >

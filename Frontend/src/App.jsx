@@ -6,6 +6,7 @@ import StudentProfile from './pages/StudentProfile';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherProfile from './pages/TeacherProfile';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminQuizAnalytics from './pages/AdminQuizAnalytics';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
@@ -17,6 +18,21 @@ import TeacherQuizzes from './pages/TeacherQuizzes';
 import QuizAttempts from './pages/QuizAttempts';
 import UpdateQuiz from './pages/UpdateQuiz';
 import ProtectedRoute from './components/ProtectedRoute';
+import CreateStudyPlan from './pages/CreateStudyPlan';
+import StudyPlanResult from './pages/StudyPlanResult';
+import CalendarCallback from './pages/CalendarCallback';
+import TimetableView from './pages/TimetableView';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import StudyJournal from './pages/StudyJournal';
+import AIQuizGenerator from './pages/AIQuizGenerator';
+
+import AdminCoursePortal from './pages/AdminCoursePortal';
+import CourseExplorer from './pages/CourseExplorer';
+import TeacherMaterials from './pages/TeacherMaterials';
+
+
+import AILearningLabPage from './pages/AILearningLabPage';
+
 
 const App = () => {
   return (
@@ -80,6 +96,43 @@ const App = () => {
             <StudentList />
           </ProtectedRoute>
         } />
+        {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
+        <Route path="/student/home" element={<StudentHome />} />
+        <Route path="/student/create-plan" element={<CreateStudyPlan />} />
+        <Route path="/student/view-plan" element={<StudyPlanResult />} />
+        <Route path="/student/timetable" element={<TimetableView />} />
+        <Route path="/student/analytics" element={<AnalyticsDashboard />} />
+        <Route path="/student/journal" element={<StudyJournal />} />
+        <Route path="/calendar-callback" element={<CalendarCallback />} />
+
+
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/quiz-generator" element={<AIQuizGenerator />} />
+        <Route path="/student/ai_learning_lab" element={<AILearningLabPage />} />
+
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/courses" element={<AdminCoursePortal />} />
+
+        {/* Admin Management Routes */}
+        <Route path="/admin/teachers" element={<TeacherList />} />
+        <Route path="/admin/add-teacher" element={<AddTeacher />} />
+        <Route path="/admin/students" element={<StudentList />} />
+        <Route path="/admin/analytics" element={<AdminQuizAnalytics />} />
+        
+        {/* Teacher Routes */}
+        <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/materials" element={<TeacherMaterials />} />
+
+        {/* Student Routes */}
+        <Route path="/student/profile" element={<StudentProfile />} />
+        <Route path="/student/courses" element={<CourseExplorer />} />
+
+        
+
+
+
+
       </Routes>
     </div>
   );

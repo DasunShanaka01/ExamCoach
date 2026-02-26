@@ -16,6 +16,7 @@ const Sidebar = ({ role }) => {
 
     const adminMenuItems = [
         { path: '/admin/dashboard', label: 'Dashboard', icon: 'chart' },
+        { path: '/admin/courses', label: 'Course Management', icon: 'book' },
         { path: '/admin/teachers', label: 'Manage Teachers', icon: 'users' },
         { path: '/admin/students', label: 'Manage Students', icon: 'academic' },
     ];
@@ -25,6 +26,7 @@ const Sidebar = ({ role }) => {
         { path: '/teacher/view-quizzes', label: 'My Quizzes', icon: 'quiz' },
         { path: '/teacher/classes', label: 'My Classes', icon: 'book' },
         { path: '/teacher/assignments', label: 'Assignments', icon: 'document' },
+        { path: '/teacher/materials', label: 'Learning Materials', icon: 'document' },
         { path: '/teacher/profile', label: 'My Profile', icon: 'user' },
     ];
 

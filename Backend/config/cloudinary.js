@@ -11,6 +11,8 @@ cloudinary.config({
 
 // Storage for profile images
 const imageStorage = new CloudinaryStorage({
+// Profile pictures (images only)
+const profileStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'examcoach_profiles',
@@ -44,3 +46,37 @@ const uploadVideo = multer({ storage: videoStorage });
 const uploadThumbnail = multer({ storage: thumbnailStorage });
 
 module.exports = { uploadImage, uploadVideo, uploadThumbnail, cloudinary };
+// Course materials (documents, slides, videos)
+const materialStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: async (req, file) => {
+        const original = (file?.originalname || '').toLowerCase();
+        const ext = original.split('.').pop();
+        const videoExts = ['mp4', 'mov', 'avi', 'mkv'];
+        const imageExts = ['jpg', 'jpeg', 'png'];
+        const isVideo = ext && videoExts.includes(ext);
+        const isImage = ext && imageExts.includes(ext);
+        const resourceType = isVideo ? 'video' : (isImage ? 'image' : 'raw');
+
+
+        const params = {
+            folder: 'examcoach_materials',
+            resource_type: resourceType,
+            allowed_formats: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'mp4', 'mov', 'avi', 'mkv', 'jpg', 'jpeg', 'png']
+        };
+
+        if (resourceType === 'raw') {
+            const nameName = (file.originalname || 'file').replace(/\.[^/.]+$/, "").replace(/[^a-z0-9]/gi, '_');
+            params.public_id = `${nameName}_${Date.now()}`;
+            if (ext) params.public_id += `.${ext}`;
+        }
+
+        return params;
+    }
+});
+
+const profileUpload = multer({ storage: profileStorage });
+const materialUpload = multer({ storage: materialStorage });
+
+module.exports = { cloudinary, profileUpload, materialUpload };
+
