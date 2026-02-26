@@ -10,6 +10,14 @@ import AdminQuizAnalytics from './pages/AdminQuizAnalytics';
 import TeacherList from './pages/TeacherList';
 import AddTeacher from './pages/AddTeacher';
 import StudentList from './pages/StudentList';
+import CreateQuiz from './pages/CreateQuiz';
+import ViewQuizzes from './pages/ViewQuizzes';
+import TakeQuiz from './pages/TakeQuiz';
+import StudentQuizzes from './pages/StudentQuizzes';
+import TeacherQuizzes from './pages/TeacherQuizzes';
+import QuizAttempts from './pages/QuizAttempts';
+import UpdateQuiz from './pages/UpdateQuiz';
+import ProtectedRoute from './components/ProtectedRoute';
 import CreateStudyPlan from './pages/CreateStudyPlan';
 import StudyPlanResult from './pages/StudyPlanResult';
 import CalendarCallback from './pages/CalendarCallback';
@@ -34,6 +42,60 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterStudent />} />
 
+        {/* Protected Student Routes */}
+        <Route path="/student/home" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentHome />
+          </ProtectedRoute>
+        } />
+        <Route path="/student/profile" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentProfile />
+          </ProtectedRoute>
+        } />
+        <Route path="/student/take-quiz/:id" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <TakeQuiz />
+          </ProtectedRoute>
+        } />
+        <Route path="/student/quizzes" element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentQuizzes />
+          </ProtectedRoute>
+        } />
+
+        {/* Teacher Routes */}
+        <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+        <Route path="/teacher/profile" element={<TeacherProfile />} />
+        <Route path="/teacher/create-quiz" element={<CreateQuiz />} />
+        <Route path="/teacher/view-quizzes" element={<ViewQuizzes />} />
+        <Route path="/teacher/update-quiz/:id" element={<UpdateQuiz />} />
+        <Route path="/teacher/quizzes" element={<TeacherQuizzes />} />
+        <Route path="/teacher/quiz-attempts/:id" element={<QuizAttempts />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/dashboard" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+
+        {/* Admin Management Routes */}
+        <Route path="/admin/teachers" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <TeacherList />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/add-teacher" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AddTeacher />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/students" element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <StudentList />
+          </ProtectedRoute>
+        } />
         {/* Protected Routes (Ideally wrapped in a ProtectedRoute component) */}
         <Route path="/student/home" element={<StudentHome />} />
         <Route path="/student/create-plan" element={<CreateStudyPlan />} />

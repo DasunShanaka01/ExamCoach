@@ -144,3 +144,41 @@ exports.deleteTeacher = async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 };
+
+// @desc    Upload Kuppi
+// @route   POST /api/teachers/upload-kuppi
+// @access  Private/Admin
+exports.uploadKuppi = async (req, res) => {
+    try {
+        const teacher = await Teacher.findById(req.params.id);
+
+        if (!teacher) {
+            return res.status(404).json({ success: false, error: 'Teacher not found' });
+        }
+
+        const result = await teacher.uploadKuppi(req.file);
+
+        res.status(200).json({ success: true, data: result });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
+
+// @desc    Create Quiz
+// @route   POST /api/teachers/create-quiz
+// @access  Private/Admin
+exports.createQuiz = async (req, res) => {
+    try {
+        const teacher = await Teacher.findById(req.params.id);
+
+        if (!teacher) {
+            return res.status(404).json({ success: false, error: 'Teacher not found' });
+        }
+
+        const result = await teacher.createQuiz(req.body);
+
+        res.status(200).json({ success: true, data: result });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+};
