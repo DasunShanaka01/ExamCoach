@@ -11,7 +11,7 @@ const {
     getQuizAttempts,
     getMyAttemptsForQuiz,
     enrollToQuiz          // look up quiz by enrollment key
-} = require('../controllers/quizController');
+} = require('../controllers/quizzController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const { validateQuizCreation } = require('../middleware/validationMiddleware');
 

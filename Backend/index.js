@@ -50,7 +50,7 @@ app.use('/api/students', require('./routes/studentRoutes')); // Student CRUD
 
 // ── Quiz Routes ──────────────────────────────────────────────
 // All quiz-related endpoints: create, attempt, verify, results
-const quizRoutes = require('./routes/quizRoutes');
+const quizRoutes = require('./routes/quizzRoutes');
 app.use('/api/quizzes', quizRoutes);
 
 // ── Kuppi (Video Lesson) Routes — REMOVED ───────────────────
