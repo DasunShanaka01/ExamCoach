@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require('fs');
 const pdf = require('pdf-parse');
-const Quiz = require('../models/Quiz');
+const Quiz = require('../models/Quizz');
 const User = require('../models/User');
 const cloudinary = require('cloudinary').v2;
 

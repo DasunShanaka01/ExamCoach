@@ -6,10 +6,12 @@ const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail');
 const { getOTPVerificationTemplate, getPasswordResetTemplate, getWelcomeTemplate } = require('../utils/emailTemplates');
 
-// Generate JWT
+// ── Token Helper ─────────────────────────────────────────────
+// Signs a JWT containing the user's id and role.
+// Expiry is controlled by JWT_EXPIRES_IN in .env (default: 30d).
 const generateToken = (id, role) => {
     return jwt.sign({ id, role }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
+        expiresIn: process.env.JWT_EXPIRES_IN || '30d'
     });
 };
 
@@ -21,12 +23,13 @@ exports.registerStudent = async (req, res) => {
         const { firstName, lastName, email, password } = req.body;
         let profilePic = 'default-profile.png';
 
+        // If a profile picture was uploaded (via Cloudinary/multer), use its URL
         if (req.file) {
             profilePic = req.file.path;
         }
 
+        // VALIDATION: Prevent duplicate accounts — email must be unique in the User collection
         const userExists = await User.findOne({ email });
-
         if (userExists) {
             return res.status(400).json({ success: false, error: 'User already exists' });
         }
@@ -38,6 +41,7 @@ exports.registerStudent = async (req, res) => {
         console.log(`\n\n=== DEVELOPMENT OTP FOR ${email}: ${otp} ===\n\n`);
 
         // Create User
+        // Create base User record (holds credentials and role)
         const user = await User.create({
             name: `${firstName} ${lastName}`,
             email,
@@ -48,7 +52,7 @@ exports.registerStudent = async (req, res) => {
             isVerified: false
         });
 
-        // Create Student Profile
+        // Create linked Student profile (holds personal details)
         const student = await Student.create({
             user: user._id,
             firstName,
@@ -157,12 +161,14 @@ exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        // VALIDATION: Both email and password must be provided
         if (!email || !password) {
             return res.status(400).json({ success: false, error: 'Please provide an email and password' });
         }
 
+        // VALIDATION: User must exist and password must match the stored bcrypt hash
+        // .select('+password') is needed because password is excluded by default in the schema
         const user = await User.findOne({ email }).select('+password');
-
         if (!user || !(await user.matchPassword(password))) {
             return res.status(401).json({ success: false, error: 'Invalid credentials' });
         }
@@ -193,13 +199,14 @@ exports.login = async (req, res) => {
 
         const token = generateToken(user._id, user.role);
 
-        // Fetch profile data based on role
+        // Fetch role-specific profile data to return alongside the token
         let profile = null;
         if (user.role === 'student') {
             profile = await Student.findOne({ user: user._id });
         } else if (user.role === 'teacher') {
             profile = await Teacher.findOne({ user: user._id });
         }
+        // Admin users have no separate profile record
 
         res.status(200).json({
             success: true,
@@ -233,13 +240,13 @@ exports.addTeacher = async (req, res) => {
             profilePic = req.file.path;
         }
 
+        // VALIDATION: Teacher email must be unique — same check as student registration
         const userExists = await User.findOne({ email });
-
         if (userExists) {
             return res.status(400).json({ success: false, error: 'User already exists' });
         }
 
-        // Create User
+        // Create base User record with teacher role
         const user = await User.create({
             name,
             email,
@@ -248,7 +255,7 @@ exports.addTeacher = async (req, res) => {
             isVerified: true // Auto verify teachers added by admin
         });
 
-        // Create Teacher Profile
+        // Create linked Teacher profile (holds professional details)
         const teacher = await Teacher.create({
             user: user._id,
             name,

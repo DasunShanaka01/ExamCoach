@@ -7,6 +7,111 @@ const stream = require('stream');
 
 dotenv.config();
 
+const normalizeRelatedResources = (resources) => {
+    if (!resources) return [];
+
+    let parsedResources = resources;
+    if (typeof parsedResources === 'string') {
+        try {
+            parsedResources = JSON.parse(parsedResources);
+        } catch {
+            return [];
+        }
+    }
+
+    if (!Array.isArray(parsedResources)) return [];
+
+    const normalized = parsedResources
+        .map((resource) => {
+            if (!resource) return null;
+
+            const title = String(
+                resource.title || resource.name || resource.label || ''
+            ).trim();
+            const link = String(
+                resource.link || resource.url || resource.href || ''
+            ).trim();
+            const rawType = String(resource.type || '').toLowerCase();
+
+            if (!title || !link) return null;
+            if (!/^https?:\/\//i.test(link)) return null;
+
+            let type = 'other';
+            if (rawType === 'youtube' || /youtube\.com|youtu\.be/i.test(link)) {
+                type = 'youtube';
+            } else if (rawType === 'website') {
+                type = 'website';
+            }
+
+            return { title, link, type };
+        })
+        .filter(Boolean);
+
+    return normalized;
+};
+
+const extractJsonObject = (text) => {
+    if (!text || typeof text !== 'string') return null;
+
+    const cleaned = text.replace(/```json\s*/gi, '').replace(/```/g, '').trim();
+
+    try {
+        return JSON.parse(cleaned);
+    } catch {
+        const start = cleaned.indexOf('{');
+        const end = cleaned.lastIndexOf('}');
+
+        if (start !== -1 && end !== -1 && end > start) {
+            const candidate = cleaned.substring(start, end + 1);
+            try {
+                return JSON.parse(candidate);
+            } catch {
+                return null;
+            }
+        }
+
+        return null;
+    }
+};
+
+const extractLinksFromText = (text) => {
+    if (!text) return [];
+
+    const regex = /(https?:\/\/[^\s)\]}"'>]+)/gi;
+    const matches = text.match(regex) || [];
+    const unique = [...new Set(matches)].slice(0, 6);
+
+    return unique.map((link, index) => ({
+        title: `Related Resource ${index + 1}`,
+        link,
+        type: /youtube\.com|youtu\.be/i.test(link) ? 'youtube' : 'website'
+    }));
+};
+
+const parseRelatedResourcesInput = (input) => {
+    if (!input) return [];
+
+    if (Array.isArray(input)) return normalizeRelatedResources(input);
+
+    if (typeof input === 'object') {
+        return normalizeRelatedResources([input]);
+    }
+
+    if (typeof input === 'string') {
+        const trimmed = input.trim();
+        if (!trimmed) return [];
+
+        try {
+            const parsed = JSON.parse(trimmed);
+            return normalizeRelatedResources(parsed);
+        } catch {
+            return [];
+        }
+    }
+
+    return [];
+};
+
 const summarizeText = async (req, res) => {
     try {
         let text = req.body.text;
@@ -59,24 +164,34 @@ const summarizeText = async (req, res) => {
         const response = await result.response;
         const textResponse = response.text();
 
-        // Clean up markdown formatting if present (e.g. ```json ... ```)
-        const jsonString = textResponse.replace(/^```json\s*/, "").replace(/\s*```$/, "");
+        const parsedResponse = extractJsonObject(textResponse);
 
-        let parsedResponse;
-        try {
-            parsedResponse = JSON.parse(jsonString);
-        } catch (e) {
-            console.error("Failed to parse JSON response:", textResponse);
-            // Fallback if JSON parsing fails - treat entire text as summary
-            parsedResponse = {
-                summary: textResponse,
-                relatedResources: []
-            };
-        }
+        const summary =
+            parsedResponse?.summary ||
+            parsedResponse?.result ||
+            parsedResponse?.text ||
+            textResponse;
+
+        const relatedResourcesCandidates = [
+            normalizeRelatedResources(parsedResponse?.relatedResources),
+            normalizeRelatedResources(parsedResponse?.resources),
+            normalizeRelatedResources(parsedResponse?.related_links)
+        ];
+
+        const relatedResources = relatedResourcesCandidates.find(
+            (candidate) => Array.isArray(candidate) && candidate.length > 0
+        ) || [];
+
+        const fallbackResources = relatedResources.length > 0
+            ? relatedResources
+            : extractLinksFromText(textResponse);
 
         console.log("Summary and resources generated successfully");
 
-        res.status(200).json(parsedResponse);
+        res.status(200).json({
+            summary,
+            relatedResources: fallbackResources
+        });
     } catch (error) {
         console.error("Error summarizing text:", error);
         res.status(500).json({ message: "Failed to summarize text", error: error.message });
@@ -87,6 +202,7 @@ const saveSummary = async (req, res) => {
     try {
         const { title, summary, type, originalText, userId } = req.body;
         let originalContent = originalText;
+        const parsedRelatedResources = parseRelatedResourcesInput(req.body.relatedResources);
 
         if (req.file) {
             // Upload to Cloudinary
@@ -105,7 +221,7 @@ const saveSummary = async (req, res) => {
                         title: title || req.file.originalname,
                         originalContent,
                         summary,
-                        relatedResources: req.body.relatedResources ? JSON.parse(req.body.relatedResources) : [],
+                        relatedResources: parsedRelatedResources,
                         type: 'pdf'
                     });
 
@@ -124,7 +240,7 @@ const saveSummary = async (req, res) => {
                 title: title || 'Text Summary',
                 originalContent,
                 summary,
-                relatedResources: req.body.relatedResources ? JSON.parse(req.body.relatedResources) : [],
+                relatedResources: parsedRelatedResources,
                 type: 'text'
             });
 
@@ -149,4 +265,26 @@ const getHistory = async (req, res) => {
     }
 };
 
-module.exports = { summarizeText, saveSummary, getHistory };
+const deleteHistoryItem = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { userId } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ message: 'userId is required' });
+        }
+
+        const deleted = await AISummary.findOneAndDelete({ _id: id, user: userId });
+
+        if (!deleted) {
+            return res.status(404).json({ message: 'History item not found' });
+        }
+
+        res.status(200).json({ message: 'History item deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting history item:', error);
+        res.status(500).json({ message: 'Failed to delete history item', error: error.message });
+    }
+};
+
+module.exports = { summarizeText, saveSummary, getHistory, deleteHistoryItem };
