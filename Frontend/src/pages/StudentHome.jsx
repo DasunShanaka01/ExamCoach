@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import StudentNavbar from '../components/StudentNavbar';
 import Footer from '../components/Footer';
-import { quizAPI } from '../services/api';
 
 const StudentHome = () => {
-    const [quizzes, setQuizzes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem('user'));
-    const navigate = useNavigate();
     const [studyPlan, setStudyPlan] = useState(null);
 
     useEffect(() => {
@@ -39,25 +35,8 @@ const StudentHome = () => {
 
 
     useEffect(() => {
-        fetchContent();
+        setLoading(false);
     }, []);
-
-    const fetchContent = async () => {
-        try {
-            setLoading(true);
-            const quizzesResponse = await quizAPI.getQuizzes();
-            setQuizzes(quizzesResponse.data || []);
-        } catch (err) {
-            setError('Failed to load content. Please try again.');
-            console.error('Error fetching content:', err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleTakeQuiz = (quizId) => {
-        navigate(`/student/take-quiz/${quizId}`);
-    };
 
     if (loading) {
         return (
@@ -206,6 +185,9 @@ const StudentHome = () => {
                             </p>
                             <div className="mt-4 pt-4 border-t border-white/20">
                                 <p className="text-sm font-semibold text-white/90">Keep up the great work!</p>
+                            </div>
+                        </div>
+                    </div>
                     {/* Study Plan Card */}
                     <div
                         onClick={() => navigate('/student/view-plan')}
@@ -242,89 +224,6 @@ const StudentHome = () => {
                                 📝
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Available Quizzes Section */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
-                    <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center text-white">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-800">Available Quizzes</h3>
-                                    <p className="text-gray-500 text-sm">Test your knowledge with these quizzes</p>
-                                </div>
-                            </div>
-                            <button 
-                                onClick={() => navigate('/student/quizzes')} 
-                                className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1 group"
-                            >
-                                View All
-                                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div className="p-6">
-                        {quizzes.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center py-12 text-center">
-                                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </div>
-                                <p className="text-gray-600 font-medium">No quizzes available at the moment.</p>
-                                <p className="text-gray-400 text-sm mt-1">Check back later for new quizzes!</p>
-                            </div>
-                        ) : (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {quizzes.slice(0, 6).map((quiz) => (
-                                    <div 
-                                        key={quiz._id} 
-                                        className="group bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-xl p-5 hover:shadow-lg hover:border-blue-300 transition-all duration-300"
-                                    >
-                                        <div className="flex items-start justify-between mb-3">
-                                            <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-lg flex items-center justify-center text-white text-lg shadow-md">
-                                                📝
-                                            </div>
-                                            <span className="text-xs font-medium px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
-                                                {quiz.questions?.length || 0} Qs
-                                            </span>
-                                        </div>
-                                        <h4 className="font-bold text-gray-800 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">{quiz.title}</h4>
-                                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{quiz.description}</p>
-                                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
-                                            <span>{quiz.createdBy?.name || 'Unknown'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-4">
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                            <span>{quiz.duration} minutes</span>
-                                        </div>
-                                        <button
-                                            className="w-full px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 text-sm font-semibold shadow-md hover:shadow-lg flex items-center justify-center gap-2 group-hover:scale-[1.02]"
-                                            onClick={() => handleTakeQuiz(quiz._id)}
-                                        >
-                                            Take Quiz
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 </div>
 

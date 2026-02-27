@@ -9,15 +9,22 @@ cloudinary.config({
     api_secret: 'APN9C79BAZrybhYYiCL69pqelRs'
 });
 
-// Storage for profile images
-const imageStorage = new CloudinaryStorage({
 // Profile pictures (images only)
 const profileStorage = new CloudinaryStorage({
-    cloudinary: cloudinary,
+    cloudinary,
     params: {
         folder: 'examcoach_profiles',
         allowed_formats: ['jpg', 'png', 'jpeg'],
         transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    },
+});
+
+// Generic image storage (if needed elsewhere)
+const imageStorage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+        folder: 'examcoach_images',
+        allowed_formats: ['jpg', 'png', 'jpeg'],
     },
 });
 
@@ -44,8 +51,6 @@ const thumbnailStorage = new CloudinaryStorage({
 const uploadImage = multer({ storage: imageStorage });
 const uploadVideo = multer({ storage: videoStorage });
 const uploadThumbnail = multer({ storage: thumbnailStorage });
-
-module.exports = { uploadImage, uploadVideo, uploadThumbnail, cloudinary };
 // Course materials (documents, slides, videos)
 const materialStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -78,5 +83,12 @@ const materialStorage = new CloudinaryStorage({
 const profileUpload = multer({ storage: profileStorage });
 const materialUpload = multer({ storage: materialStorage });
 
-module.exports = { cloudinary, profileUpload, materialUpload };
+module.exports = {
+    cloudinary,
+    uploadImage,
+    uploadVideo,
+    uploadThumbnail,
+    profileUpload,
+    materialUpload
+};
 
