@@ -13,10 +13,10 @@ if (!fs.existsSync('uploads')) {
 // Configure Multer for PDF uploads - temporary storage
 const upload = multer({ dest: 'uploads/' });
 
-// @desc    Generate quiz from text/PDF
+// @desc    Generate quiz from text/PDFs
 // @route   POST /api/quiz/generate
 // @access  Private (Student)
-router.post('/generate', protect, upload.single('file'), generateQuiz);
+router.post('/generate', protect, upload.array('files', 5), generateQuiz);
 
 // @desc    Save completed quiz result
 // @route   POST /api/quiz/save

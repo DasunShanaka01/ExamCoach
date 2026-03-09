@@ -23,7 +23,7 @@ const AIQuizGenerator = () => {
 
     // Input State
     const [textInput, setTextInput] = useState('');
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]); // Support array of files
     const [numQuestions, setNumQuestions] = useState(5);
     const [difficulty, setDifficulty] = useState('Normal');
     const [language, setLanguage] = useState('English');
@@ -118,14 +118,19 @@ const AIQuizGenerator = () => {
     };
 
     const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile && (selectedFile.type === 'application/pdf' || selectedFile.type === 'text/plain')) {
-            setFile(selectedFile);
+        const selectedFiles = Array.from(e.target.files);
+        const validFiles = selectedFiles.filter(f => f.type === 'application/pdf' || f.type === 'text/plain');
+
+        if (validFiles.length > 0) {
+            setFiles(prev => [...prev, ...validFiles]);
             setError('');
         } else {
-            setFile(null);
-            setError('Please upload a valid PDF or Text file.');
+            setError('Please upload only valid PDF or Text files.');
         }
+    };
+
+    const removeFile = (indexToRemove) => {
+        setFiles(prev => prev.filter((_, index) => index !== indexToRemove));
     };
 
     const handleTypeToggle = (typeId) => {
@@ -140,8 +145,8 @@ const AIQuizGenerator = () => {
     };
 
     const generateQuiz = async () => {
-        if (!textInput && !file) {
-            setError('Please provide text or upload a file.');
+        if (!textInput && files.length === 0) {
+            setError('Please provide text or upload at least one file.');
             return;
         }
 
@@ -149,7 +154,14 @@ const AIQuizGenerator = () => {
         setError('');
 
         const formData = new FormData();
-        if (file) formData.append('file', file);
+
+        // Append all selected files
+        if (files.length > 0) {
+            files.forEach(f => {
+                formData.append('files', f);
+            });
+        }
+
         if (textInput) formData.append('textInput', textInput);
         formData.append('numQuestions', numQuestions);
         formData.append('difficulty', difficulty);
@@ -274,7 +286,7 @@ const AIQuizGenerator = () => {
 
     const resetQuiz = () => {
         setStep('upload');
-        setFile(null);
+        setFiles([]);
         setTextInput('');
         setQuizData([]);
         setSourceText('');
@@ -349,7 +361,7 @@ const AIQuizGenerator = () => {
                                                             <input type="file" id="file-upload" className="hidden" accept=".pdf,.txt" onChange={handleFileChange} />
                                                             <label htmlFor="file-upload" className="cursor-pointer block h-full flex flex-col items-center justify-center">
                                                                 <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                                                                <span className="text-gray-600 font-medium">{file ? file.name : "Upload PDF or Text File"}</span>
+                                                                <span className="text-gray-600 font-medium">{files.length > 0 ? files.map(f => f.name).join(', ') : "Upload PDF or Text File"}</span>
                                                                 <span className="text-xs text-gray-400 mt-2">Max 10MB</span>
                                                             </label>
                                                         </div>
@@ -412,7 +424,7 @@ const AIQuizGenerator = () => {
                                                     </div>
                                                 </div>
 
-                                                <button onClick={generateQuiz} disabled={(!file && !textInput) || loading} className="w-full py-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:from-violet-700 hover:to-indigo-700 transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
+                                                <button onClick={generateQuiz} disabled={(files.length === 0 && !textInput) || loading} className="w-full py-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:from-violet-700 hover:to-indigo-700 transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed">
                                                     Generate Quiz 🚀
                                                 </button>
                                             </div>

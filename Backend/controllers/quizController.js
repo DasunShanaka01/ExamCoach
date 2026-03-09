@@ -35,30 +35,36 @@ const extractPdfText = async (filePath) => {
 // @route   POST /api/quiz/generate
 // @access  Private (Student)
 exports.generateQuiz = async (req, res) => {
-    let filePath = null;
+    let uploadedFiles = []; // To keep track for cleanup
 
     try {
         const { numQuestions = 5, difficulty = 'Normal', textInput, language = 'English', selectedTypes = ['MCQ'] } = req.body;
         let content = textInput || "";
 
-        // Handle File Upload
-        if (req.file) {
-            filePath = req.file.path;
-            if (req.file.mimetype === 'application/pdf') {
-                const pdfText = await extractPdfText(filePath);
-                content += "\n\n" + pdfText;
-            } else if (req.file.mimetype === 'text/plain') {
-                const fileText = fs.readFileSync(filePath, 'utf8');
-                content += "\n\n" + fileText;
+        // Handle Multiple File Uploads
+        if (req.files && req.files.length > 0) {
+            for (const fileItem of req.files) {
+                uploadedFiles.push(fileItem.path);
+
+                if (fileItem.mimetype === 'application/pdf') {
+                    const pdfText = await extractPdfText(fileItem.path);
+                    content += "\n\n" + pdfText;
+                } else if (fileItem.mimetype === 'text/plain') {
+                    const fileText = fs.readFileSync(fileItem.path, 'utf8');
+                    content += "\n\n" + fileText;
+                }
             }
         }
 
         // Validate Input
         if (!content || content.trim().length === 0) {
-            if (filePath) fs.unlinkSync(filePath); // Cleanup
+            // Cleanup
+            uploadedFiles.forEach(path => {
+                if (fs.existsSync(path)) fs.unlinkSync(path);
+            });
             return res.status(400).json({
                 success: false,
-                error: 'Please provide text or upload a document (PDF/TXT) to generate a quiz.'
+                error: 'Please provide text or upload at least one document (PDF/TXT) to generate a quiz.'
             });
         }
 
@@ -136,42 +142,47 @@ exports.generateQuiz = async (req, res) => {
             throw new Error("Failed to parse AI response as JSON");
         }
 
-        // Upload PDF to Cloudinary if it exists
-        let pdfUrl = null;
-        if (filePath && req.file.mimetype === 'application/pdf') {
-            try {
-                const uploadResult = await cloudinary.uploader.upload(filePath, {
-                    resource_type: "auto", // Auto-detect (likely 'image' for PDFs) to allow display and transformation
-                    format: "pdf", // Ensure the resulting URL ends in .pdf
-                    folder: "examcoach_quizzes",
-                    use_filename: true,
-                    unique_filename: true
-                });
-                pdfUrl = uploadResult.secure_url;
-                console.log("PDF Uploaded to Cloudinary:", pdfUrl);
-            } catch (uploadError) {
-                console.error("Cloudinary Upload Error:", uploadError);
-                // We continue even if upload fails, as we have the text
+        // Upload PDFs to Cloudinary if they exist
+        let mainPdfUrl = null;
+
+        if (req.files && req.files.length > 0) {
+            for (const fileItem of req.files) {
+                if (fileItem.mimetype === 'application/pdf' && !mainPdfUrl) {
+                    try {
+                        const uploadResult = await cloudinary.uploader.upload(fileItem.path, {
+                            resource_type: "auto",
+                            format: "pdf",
+                            folder: "examcoach_quizzes",
+                            use_filename: true,
+                            unique_filename: true
+                        });
+                        // Just keep the first one as primary for now to prevent breaking frontend schemas
+                        mainPdfUrl = uploadResult.secure_url;
+                        console.log("PDF Uploaded to Cloudinary:", mainPdfUrl);
+                    } catch (uploadError) {
+                        console.error("Cloudinary Upload Error:", uploadError);
+                    }
+                }
             }
         }
 
-        // Cleanup uploaded file
-        if (filePath && fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
+        // Cleanup uploaded files
+        uploadedFiles.forEach(path => {
+            if (fs.existsSync(path)) fs.unlinkSync(path);
+        });
 
         res.status(200).json({
             success: true,
             data: quiz.quiz || quiz, // Fallback if AI skips wrapper
             timeLimitSeconds: quiz.suggestedTimeLimitSeconds || (numQuestions * 60),
             sourceContent: content, // Return the source text to be saved later
-            pdfUrl: pdfUrl // Return PDF URL if uploaded
+            pdfUrl: mainPdfUrl // Return PDF URL if uploaded
         });
     } catch (err) {
-        // Cleanup uploaded file on error
-        if (filePath && fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
+        // Cleanup uploaded files on error
+        uploadedFiles.forEach(path => {
+            if (fs.existsSync(path)) fs.unlinkSync(path);
+        });
 
         console.error("AI Quiz Gen Error:", err);
         res.status(500).json({
