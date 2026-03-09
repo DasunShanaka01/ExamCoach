@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const fs = require('fs');
 const { protect, authorize } = require('../middleware/authMiddleware');
-const { generateQuiz, saveQuizResult, getQuizHistory, getAdminAnalytics } = require('../controllers/quizController');
+const { generateQuiz, saveQuizResult, getQuizHistory, getAdminAnalytics, deleteQuizHistory } = require('../controllers/quizController');
 
 // Ensure uploads directory exists
 if (!fs.existsSync('uploads')) {
@@ -27,6 +27,11 @@ router.post('/save', protect, saveQuizResult);
 // @route   GET /api/quiz/history
 // @access  Private (Student)
 router.get('/history', protect, getQuizHistory);
+
+// @desc    Delete student's quiz history
+// @route   DELETE /api/quiz/history/:id
+// @access  Private (Student)
+router.delete('/history/:id', protect, deleteQuizHistory);
 
 // @desc    Get Quiz Analytics (Admin)
 // @route   GET /api/quiz/admin/stats

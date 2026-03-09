@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require('fs');
 const pdf = require('pdf-parse');
-const Quiz = require('../models/Quizz');
+const AIQuiz = require('../models/Quiz');
 const User = require('../models/User');
 const cloudinary = require('cloudinary').v2;
 
@@ -81,17 +81,21 @@ exports.generateQuiz = async (req, res) => {
             ${content}
 
             **Output Format:**
-            Return a valid JSON array of objects.
-            Each object MUST have a "type" field matching one of: 'MCQ', 'TrueFalse', 'MultiSelect', 'FillBlanks', 'ShortAnswer', 'Essay'.
+            Return a valid JSON object with TWO fields:
+            1. "suggestedTimeLimitSeconds": (integer) An adaptive, calculated time limit strictly in seconds (e.g., 300 for 5 mins). Consider the difficulty, number, and type of questions (e.g. Essay takes longer) when calculating this.
+            2. "quiz": A valid JSON array of question objects.
+            
+            Each question object MUST have a "type" field matching one of: 'MCQ', 'TrueFalse', 'MultiSelect', 'FillBlanks', 'ShortAnswer', 'Essay'.
             
             Structure guide:
-            - **MCQ / TrueFalse**: { type: "MCQ", question: "...", options: ["A", "B", "C", "D"], correctAnswer: "content of correct option", explanation: "..." }
+            - **MCQ**: { type: "MCQ", question: "...", options: ["A", "B", "C", "D"], correctAnswer: "content of correct option", explanation: "..." }
+            - **TrueFalse**: { type: "TrueFalse", question: "...", options: ["True", "False"], correctAnswer: "True", explanation: "..." }
             - **MultiSelect**: { type: "MultiSelect", question: "...", options: ["A", "B", ...], correctAnswer: ["Option A", "Option C"], explanation: "..." } (Correct Answer IS AN ARRAY)
             - **FillBlanks**: { type: "FillBlanks", question: "The capital of France is ______", correctAnswer: "Paris", explanation: "..." } (No options)
             - **ShortAnswer**: { type: "ShortAnswer", question: "...", correctAnswer: "Key phrase", explanation: "..." } (No options)
             - **Essay**: { type: "Essay", question: "...", correctAnswer: "Key points expected in answer...", explanation: "..." } (No options)
             
-            Ensure the JSON is valid and strictly follows this array structure.
+            Ensure the JSON is valid and strictly follows this structured object format.
         `;
 
         // Use the new SDK method
@@ -158,7 +162,8 @@ exports.generateQuiz = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            data: quiz,
+            data: quiz.quiz || quiz, // Fallback if AI skips wrapper
+            timeLimitSeconds: quiz.suggestedTimeLimitSeconds || (numQuestions * 60),
             sourceContent: content, // Return the source text to be saved later
             pdfUrl: pdfUrl // Return PDF URL if uploaded
         });
@@ -183,7 +188,7 @@ exports.saveQuizResult = async (req, res) => {
     try {
         const { score, totalQuestions, questions, difficulty, sourceContent, pdfUrl } = req.body;
 
-        await Quiz.create({
+        await AIQuiz.create({
             student: req.user.id,
             score,
             totalQuestions,
@@ -211,7 +216,7 @@ exports.saveQuizResult = async (req, res) => {
 // @access  Private (Student)
 exports.getQuizHistory = async (req, res) => {
     try {
-        const history = await Quiz.find({ student: req.user.id })
+        const history = await AIQuiz.find({ student: req.user.id })
             .select('score totalQuestions difficulty createdAt title sourceContent pdfUrl questions')
             .sort({ createdAt: -1 });
 
@@ -229,15 +234,36 @@ exports.getQuizHistory = async (req, res) => {
     }
 };
 
+// @desc    Delete an AI quiz from history
+// @route   DELETE /api/quiz/history/:id
+// @access  Private (Student)
+exports.deleteQuizHistory = async (req, res) => {
+    try {
+        const quizId = req.params.id;
+        const studentId = req.user.id; // From authMiddleware
+
+        const deletedQuiz = await AIQuiz.findOneAndDelete({ _id: quizId, student: studentId });
+
+        if (!deletedQuiz) {
+            return res.status(404).json({ success: false, error: 'Quiz not found or unauthorized' });
+        }
+
+        res.status(200).json({ success: true, message: 'Quiz deleted successfully' });
+    } catch (err) {
+        console.error("Delete Quiz Error:", err);
+        res.status(500).json({ success: false, error: 'Failed to delete quiz' });
+    }
+};
+
 // @desc    Get Quiz Analytics for Admin
 // @route   GET /api/quiz/admin/stats
 // @access  Private (Admin)
 exports.getAdminAnalytics = async (req, res) => {
     try {
-        const totalQuizzes = await Quiz.countDocuments();
+        const totalQuizzes = await AIQuiz.countDocuments();
 
         // Use aggregation for detailed stats
-        const stats = await Quiz.aggregate([
+        const stats = await AIQuiz.aggregate([
             {
                 $group: {
                     _id: null,
@@ -249,12 +275,12 @@ exports.getAdminAnalytics = async (req, res) => {
         ]);
 
         // Difficulty Distribution
-        const difficultyDist = await Quiz.aggregate([
+        const difficultyDist = await AIQuiz.aggregate([
             { $group: { _id: "$difficulty", count: { $sum: 1 } } }
         ]);
 
         // Recent Activities (last 10)
-        const recentQuizzes = await Quiz.find()
+        const recentQuizzes = await AIQuiz.find()
             .sort({ createdAt: -1 })
             .limit(10)
             .populate('student', 'name email')
@@ -262,7 +288,7 @@ exports.getAdminAnalytics = async (req, res) => {
 
         // Pass Rate (Score >= 60%)
         // We can do this efficiently with aggregate
-        const passedStats = await Quiz.aggregate([
+        const passedStats = await AIQuiz.aggregate([
             {
                 $project: {
                     percentage: { $divide: ["$score", "$totalQuestions"] }
@@ -295,3 +321,4 @@ exports.getAdminAnalytics = async (req, res) => {
         res.status(500).json({ success: false, error: 'Server Error' });
     }
 };
+

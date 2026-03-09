@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentNavbar from '../components/StudentNavbar';
 import Footer from '../components/Footer';
+import html2pdf from 'html2pdf.js';
 
 const AIQuizGenerator = () => {
     const navigate = useNavigate();
@@ -26,6 +27,8 @@ const AIQuizGenerator = () => {
     const [numQuestions, setNumQuestions] = useState(5);
     const [difficulty, setDifficulty] = useState('Normal');
     const [language, setLanguage] = useState('English');
+    const [enableTimer, setEnableTimer] = useState(true); // NEW toggle for AI Timer
+    const [timeLeft, setTimeLeft] = useState(0); // Time remaining in seconds
 
     // NEW: Question Types State
     const [selectedTypes, setSelectedTypes] = useState(['MCQ']);
@@ -53,6 +56,32 @@ const AIQuizGenerator = () => {
         }
     }, [view]);
 
+    // Timer Effect Layer
+    useEffect(() => {
+        let timer = null;
+        if (step === 'quiz' && timeLeft > 0) {
+            timer = setInterval(() => {
+                setTimeLeft((prev) => {
+                    if (prev <= 1) {
+                        clearInterval(timer);
+                        submitQuiz(); // Auto-submit when time is up
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        } else if (step !== 'quiz') {
+            clearInterval(timer);
+        }
+        return () => clearInterval(timer);
+    }, [step, timeLeft]);
+
+    const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
     const fetchHistory = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -63,6 +92,28 @@ const AIQuizGenerator = () => {
             if (data.success) setHistory(data.data);
         } catch (err) {
             console.error("Failed to fetch history", err);
+        }
+    };
+
+    const handleDelete = async (quizId) => {
+        if (!window.confirm("Are you sure you want to delete this quiz history?")) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/quiz/history/${quizId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                fetchHistory(); // Refresh the list
+            } else {
+                alert(data.error || "Failed to delete quiz");
+            }
+        } catch (err) {
+            console.error("Error deleting quiz", err);
+            alert("An error occurred while deleting the quiz.");
         }
     };
 
@@ -122,6 +173,11 @@ const AIQuizGenerator = () => {
                 setSourceText(data.sourceContent || textInput);
                 setPdfUrl(data.pdfUrl || null);
                 setStep('quiz');
+                if (enableTimer) {
+                    setTimeLeft(data.timeLimitSeconds || 600); // Initialize from backend AI or fallback to 10 mins
+                } else {
+                    setTimeLeft(0); // Disable the countdown entirely
+                }
                 setUserAnswers({});
             } else {
                 setError(data.error || 'Failed to generate quiz');
@@ -226,7 +282,20 @@ const AIQuizGenerator = () => {
         setUserAnswers({});
         setScore(0);
         setError('');
+        setTimeLeft(0);
         setSelectedTypes(['MCQ']);
+    };
+
+    const exportToPDF = () => {
+        const element = document.getElementById('quiz-result-container');
+        const opt = {
+            margin: 1,
+            filename: 'ExamCoach_AI_Quiz_Results.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
     };
 
     const formatDate = (dateString) => {
@@ -333,6 +402,13 @@ const AIQuizGenerator = () => {
                                                                 <option value="Sinhala">Sinhala (සිංහල)</option>
                                                             </select>
                                                         </div>
+                                                        <div className="flex flex-col flex-1 justify-center relative top-2">
+                                                            <label className="block text-sm text-gray-600 mb-2 font-semibold flex items-center gap-2 cursor-pointer">
+                                                                <input type="checkbox" checked={enableTimer} onChange={(e) => setEnableTimer(e.target.checked)} className="w-5 h-5 text-violet-600 rounded focus:ring-violet-500 border-gray-300 transition-all" />
+                                                                Enable Exam Timer ⏱️
+                                                            </label>
+                                                            <span className="text-xs text-gray-400">If enabled, the AI will assign a strict time limit.</span>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -343,7 +419,14 @@ const AIQuizGenerator = () => {
                                         )}
 
                                         {step === 'quiz' && (
-                                            <div className="space-y-8 animate-fade-in">
+                                            <div className="space-y-8 animate-fade-in relative pt-4">
+                                                {/* Fixed Timer */}
+                                                {timeLeft > 0 && (
+                                                    <div className={`fixed top-24 right-4 md:right-8 z-[100] px-6 py-3 rounded-full shadow-2xl border-2 font-mono text-xl font-bold transition-colors ${timeLeft < 60 ? 'bg-red-100 text-red-700 border-red-500 animate-pulse' : 'bg-white text-gray-800 border-gray-200'}`}>
+                                                        ⏳ {formatTime(timeLeft)}
+                                                    </div>
+                                                )}
+
                                                 <div className="flex justify-between items-center bg-violet-50 p-4 rounded-lg">
                                                     <span className="font-semibold text-violet-700">Attempting Quiz</span>
                                                     <span className="text-sm font-bold bg-white px-3 py-1 rounded shadow-sm text-gray-600">{difficulty}</span>
@@ -362,7 +445,7 @@ const AIQuizGenerator = () => {
                                                             {/* RENDER INPUT BASED ON TYPE */}
                                                             <div className="space-y-3">
                                                                 {/* MCQ & TrueFalse */}
-                                                                {(q.type === 'MCQ' || q.type === 'TrueFalse') && q.options.map((option, optIndex) => (
+                                                                {(q.type === 'MCQ' || q.type === 'TrueFalse') && q.options?.map((option, optIndex) => (
                                                                     <label key={optIndex} className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${userAnswers[index] === option ? 'bg-violet-50 border-violet-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
                                                                         <input type="radio" name={`question-${index}`} value={option} checked={userAnswers[index] === option} onChange={() => handleAnswerChange(index, option, 'MCQ')} className="w-4 h-4 text-violet-600 border-gray-300 focus:ring-violet-500" />
                                                                         <span className="ml-3 text-gray-700">{option}</span>
@@ -370,7 +453,7 @@ const AIQuizGenerator = () => {
                                                                 ))}
 
                                                                 {/* MultiSelect */}
-                                                                {q.type === 'MultiSelect' && q.options.map((option, optIndex) => (
+                                                                {q.type === 'MultiSelect' && q.options?.map((option, optIndex) => (
                                                                     <label key={optIndex} className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${(userAnswers[index] || []).includes(option) ? 'bg-violet-50 border-violet-500 shadow-sm' : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
                                                                         <input type="checkbox" checked={(userAnswers[index] || []).includes(option)} onChange={() => handleAnswerChange(index, option, 'MultiSelect')} className="w-4 h-4 text-violet-600 rounded border-gray-300 focus:ring-violet-500" />
                                                                         <span className="ml-3 text-gray-700">{option}</span>
@@ -410,49 +493,84 @@ const AIQuizGenerator = () => {
 
                                         {step === 'result' && (
                                             <div className="space-y-8 animate-fade-in">
-                                                <div className="text-center bg-violet-50 rounded-xl p-8 border border-violet-100">
-                                                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Completed! 🎉</h2>
-                                                    <p className="text-gray-600">Note: Essay/Short answers are auto-graded based on keywords/length.</p>
+                                                <div id="quiz-result-container" className="space-y-8 p-4 bg-white">
+                                                    <div className="text-center bg-violet-50 rounded-xl p-8 border border-violet-100">
+                                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Completed! 🎉</h2>
+                                                        <p className="text-gray-600">Note: Essay/Short answers are auto-graded based on keywords/length.</p>
 
-                                                    <div className="mt-6 flex justify-center items-center gap-4">
-                                                        <div className="text-center"><span className="block text-4xl font-extrabold text-violet-600">{score}</span><span className="text-sm text-gray-500 uppercase font-semibold">Correct</span></div>
-                                                        <div className="h-12 w-px bg-gray-300"></div>
-                                                        <div className="text-center"><span className="block text-4xl font-extrabold text-gray-400">{quizData.length}</span><span className="text-sm text-gray-500 uppercase font-semibold">Total</span></div>
+                                                        <div className="mt-6 flex justify-center items-center gap-4">
+                                                            <div className="text-center"><span className="block text-4xl font-extrabold text-violet-600">{score}</span><span className="text-sm text-gray-500 uppercase font-semibold">Correct</span></div>
+                                                            <div className="h-12 w-px bg-gray-300"></div>
+                                                            <div className="text-center"><span className="block text-4xl font-extrabold text-gray-400">{quizData.length}</span><span className="text-sm text-gray-500 uppercase font-semibold">Total</span></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="space-y-6">
+                                                        <h3 className="text-xl font-bold text-gray-800">Review Answers</h3>
+                                                        {quizData.map((q, index) => (
+                                                            <div key={index} className="p-6 rounded-xl border-l-4 bg-white shadow-sm border-violet-300 break-inside-avoid">
+                                                                <div className="flex justify-between">
+                                                                    <p className="font-semibold text-gray-900 mb-3">{index + 1}. {q.question} <span className="text-xs text-gray-500 bg-gray-100 px-2 rounded ml-2">{q.type}</span></p>
+                                                                </div>
+
+                                                                {/* Review Display Logic */}
+                                                                <div className="grid grid-cols-1 gap-4 mb-4">
+                                                                    {(() => {
+                                                                        // Determine if correct based on type
+                                                                        let isCorrect = false;
+                                                                        const uAns = userAnswers[index];
+                                                                        const cAns = q.correctAnswer;
+
+                                                                        if (q.type === 'MultiSelect') {
+                                                                            const uAnsArr = uAns || [];
+                                                                            const cAnsArr = cAns || [];
+                                                                            isCorrect = Array.isArray(cAnsArr) && Array.isArray(uAnsArr) && cAnsArr.length === uAnsArr.length && cAnsArr.every(val => uAnsArr.includes(val));
+                                                                        } else if (q.type === 'FillBlanks' || q.type === 'ShortAnswer') {
+                                                                            const uAnsStr = uAns || "";
+                                                                            const cAnsStr = cAns || "";
+                                                                            isCorrect = uAnsStr.trim().toLowerCase() === cAnsStr.trim().toLowerCase();
+                                                                        } else if (q.type === 'Essay') {
+                                                                            isCorrect = (uAns && uAns.length > 10);
+                                                                        } else {
+                                                                            isCorrect = uAns === cAns;
+                                                                        }
+
+                                                                        return (
+                                                                            <>
+                                                                                <div className={`p-3 rounded-lg border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                                                                                    <span className={`block text-xs font-bold uppercase ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                                                                        Your Answer {isCorrect ? '(Correct)' : '(Incorrect)'}
+                                                                                    </span>
+                                                                                    <div className={`font-medium ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+                                                                                        {Array.isArray(uAns) ? uAns.join(', ') : (uAns || 'Skipped')}
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                {!isCorrect && (
+                                                                                    <div className="p-3 rounded-lg bg-green-50 border border-green-200">
+                                                                                        <span className="block text-xs font-bold text-green-700 uppercase">Correct Answer</span>
+                                                                                        <div className="text-green-900 font-medium">
+                                                                                            {Array.isArray(cAns) ? cAns.join(', ') : cAns}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                )}
+                                                                            </>
+                                                                        );
+                                                                    })()}
+                                                                </div>
+
+                                                                {q.explanation && (
+                                                                    <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg"><strong>💡 Explanation:</strong> {q.explanation}</div>
+                                                                )}
+                                                            </div>
+                                                        ))}
                                                     </div>
                                                 </div>
 
-                                                <div className="space-y-6">
-                                                    <h3 className="text-xl font-bold text-gray-800">Review Answers</h3>
-                                                    {quizData.map((q, index) => (
-                                                        <div key={index} className="p-6 rounded-xl border-l-4 bg-white shadow-sm border-violet-300">
-                                                            <div className="flex justify-between">
-                                                                <p className="font-semibold text-gray-900 mb-3">{index + 1}. {q.question} <span className="text-xs text-gray-500 bg-gray-100 px-2 rounded ml-2">{q.type}</span></p>
-                                                            </div>
-
-                                                            {/* Review Display Logic */}
-                                                            <div className="grid grid-cols-1 gap-4 mb-4">
-                                                                <div className="p-3 rounded-lg bg-gray-50 border border-gray-200">
-                                                                    <span className="block text-xs font-bold text-gray-500 uppercase">Your Answer</span>
-                                                                    <div className="text-gray-900 font-medium">
-                                                                        {Array.isArray(userAnswers[index]) ? userAnswers[index].join(', ') : (userAnswers[index] || 'Skipped')}
-                                                                    </div>
-                                                                </div>
-                                                                <div className="p-3 rounded-lg bg-green-50 border border-green-200">
-                                                                    <span className="block text-xs font-bold text-green-700 uppercase">Correct Answer / Model Answer</span>
-                                                                    <div className="text-green-900 font-medium">
-                                                                        {Array.isArray(q.correctAnswer) ? q.correctAnswer.join(', ') : q.correctAnswer}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            {q.explanation && (
-                                                                <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg"><strong>💡 Explanation:</strong> {q.explanation}</div>
-                                                            )}
-                                                        </div>
-                                                    ))}
+                                                <div className="flex gap-4 flex-col md:flex-row">
+                                                    <button onClick={resetQuiz} className="flex-1 py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transition-all transform hover:-translate-y-1">Generate New Quiz 🔄</button>
+                                                    <button onClick={exportToPDF} className="flex-1 py-4 bg-red-600 text-white font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all transform hover:-translate-y-1">Download as PDF 📥</button>
                                                 </div>
-
-                                                <button onClick={resetQuiz} className="w-full py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-900 transition-all transform hover:-translate-y-1">Generate New Quiz 🔄</button>
                                             </div>
                                         )}
                                     </>
@@ -484,9 +602,10 @@ const AIQuizGenerator = () => {
                                                         <td className="p-4"><span className="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-700">{item.difficulty}</span></td>
                                                         <td className="p-4 text-gray-700">{item.score} / {item.totalQuestions}</td>
                                                         <td className="p-4 text-right space-x-2">
-                                                            {item.pdfUrl && <button onClick={() => setViewingPdf(item.pdfUrl)} className="text-violet-600 text-sm underline mr-2">PDF</button>}
-                                                            <button onClick={() => setViewingNote(item.sourceContent || "No notes.")} className="text-gray-500 text-sm underline mr-2">Text</button>
-                                                            <button onClick={() => setViewingQuiz(item)} className="text-indigo-600 text-sm underline">Results</button>
+                                                            {item.pdfUrl && <button onClick={() => setViewingPdf(item.pdfUrl)} className="text-violet-600 text-sm underline mr-2 hover:text-violet-800">PDF</button>}
+                                                            <button onClick={() => setViewingNote(item.sourceContent || "No notes.")} className="text-gray-500 text-sm underline mr-2 hover:text-gray-700">Text</button>
+                                                            <button onClick={() => setViewingQuiz(item)} className="text-indigo-600 text-sm underline mr-2 hover:text-indigo-800">Results</button>
+                                                            <button onClick={() => handleDelete(item._id)} className="text-red-500 text-sm underline hover:text-red-700">Delete 🗑️</button>
                                                         </td>
                                                     </tr>
                                                 ))}
