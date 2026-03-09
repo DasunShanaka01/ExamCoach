@@ -87,9 +87,10 @@ exports.generateQuiz = async (req, res) => {
             ${content}
 
             **Output Format:**
-            Return a valid JSON object with TWO fields:
+            Return a valid JSON object with THREE fields:
             1. "suggestedTimeLimitSeconds": (integer) An adaptive, calculated time limit strictly in seconds (e.g., 300 for 5 mins). Consider the difficulty, number, and type of questions (e.g. Essay takes longer) when calculating this.
-            2. "quiz": A valid JSON array of question objects.
+            2. "quizTitle": (string) A short, descriptive, and highly professional title summarizing this specific quiz context (e.g. "Advanced Cell Biology Chapter 3 Quiz").
+            3. "quiz": A valid JSON array of question objects.
             
             Each question object MUST have a "type" field matching one of: 'MCQ', 'TrueFalse', 'MultiSelect', 'FillBlanks', 'ShortAnswer', 'Essay'.
             
@@ -174,9 +175,10 @@ exports.generateQuiz = async (req, res) => {
         res.status(200).json({
             success: true,
             data: quiz.quiz || quiz, // Fallback if AI skips wrapper
+            quizTitle: quiz.quizTitle || "Smart AI Quiz",
             timeLimitSeconds: quiz.suggestedTimeLimitSeconds || (numQuestions * 60),
             sourceContent: content, // Return the source text to be saved later
-            pdfUrl: mainPdfUrl // Return PDF URL if uploaded
+            pdfUrl: mainPdfUrl || pdfUrl // Return PDF URL if uploaded
         });
     } catch (err) {
         // Cleanup uploaded files on error
@@ -197,10 +199,11 @@ exports.generateQuiz = async (req, res) => {
 // @access  Private (Student)
 exports.saveQuizResult = async (req, res) => {
     try {
-        const { score, totalQuestions, questions, difficulty, sourceContent, pdfUrl } = req.body;
+        const { title, score, totalQuestions, questions, difficulty, sourceContent, pdfUrl } = req.body;
 
         await AIQuiz.create({
             student: req.user.id,
+            title: title || "Smart AI Quiz",
             score,
             totalQuestions,
             difficulty,

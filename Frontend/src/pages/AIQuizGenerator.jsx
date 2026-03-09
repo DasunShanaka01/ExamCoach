@@ -35,6 +35,7 @@ const AIQuizGenerator = () => {
 
     // Quiz State
     const [quizData, setQuizData] = useState([]);
+    const [quizTitle, setQuizTitle] = useState(''); // NEW AI Title
     const [sourceText, setSourceText] = useState('');
     const [pdfUrl, setPdfUrl] = useState(null);
     const [userAnswers, setUserAnswers] = useState({}); // Object: keys are indices, values can be string or array
@@ -182,6 +183,7 @@ const AIQuizGenerator = () => {
 
             if (response.ok) {
                 setQuizData(data.data);
+                setQuizTitle(data.quizTitle || "Smart AI Quiz"); // Receive title from AI
                 setSourceText(data.sourceContent || textInput);
                 setPdfUrl(data.pdfUrl || null);
                 setStep('quiz');
@@ -270,6 +272,7 @@ const AIQuizGenerator = () => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
+                    title: quizTitle,
                     score: calculatedScore,
                     totalQuestions: quizData.length,
                     difficulty,
@@ -289,6 +292,7 @@ const AIQuizGenerator = () => {
         setFiles([]);
         setTextInput('');
         setQuizData([]);
+        setQuizTitle('');
         setSourceText('');
         setPdfUrl(null);
         setUserAnswers({});
@@ -302,7 +306,21 @@ const AIQuizGenerator = () => {
         const element = document.getElementById('quiz-result-container');
         const opt = {
             margin: 1,
-            filename: 'ExamCoach_AI_Quiz_Results.pdf',
+            filename: `ExamCoach_AI_Quiz_${quizTitle ? quizTitle.replace(/\s+/g, '_') : 'Results'}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    };
+
+    const exportHistoryToPDF = () => {
+        if (!viewingQuiz) return;
+        const element = document.getElementById('history-quiz-result');
+        const exportTitle = viewingQuiz.title || "Quiz";
+        const opt = {
+            margin: 1,
+            filename: `ExamCoach_History_${exportTitle.replace(/\s+/g, '_')}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
@@ -507,7 +525,7 @@ const AIQuizGenerator = () => {
                                             <div className="space-y-8 animate-fade-in">
                                                 <div id="quiz-result-container" className="space-y-8 p-4 bg-white">
                                                     <div className="text-center bg-violet-50 rounded-xl p-8 border border-violet-100">
-                                                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Completed! 🎉</h2>
+                                                        <h2 className="text-2xl font-bold text-violet-900 mb-2">{quizTitle} Completed! 🎉</h2>
                                                         <p className="text-gray-600">Note: Essay/Short answers are auto-graded based on keywords/length.</p>
 
                                                         <div className="mt-6 flex justify-center items-center gap-4">
@@ -602,6 +620,7 @@ const AIQuizGenerator = () => {
                                             <thead>
                                                 <tr className="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
                                                     <th className="p-4 rounded-tl-lg">Date</th>
+                                                    <th className="p-4">Title</th>
                                                     <th className="p-4">Difficulty</th>
                                                     <th className="p-4">Score</th>
                                                     <th className="p-4 rounded-tr-lg text-right">Actions</th>
@@ -611,6 +630,7 @@ const AIQuizGenerator = () => {
                                                 {history.map((item) => (
                                                     <tr key={item._id} className="hover:bg-gray-50 transition-colors">
                                                         <td className="p-4 text-gray-800 font-medium">{formatDate(item.createdAt)}</td>
+                                                        <td className="p-4 font-bold text-violet-700 max-w-xs truncate" title={item.title}>{item.title || "Smart AI Quiz"}</td>
                                                         <td className="p-4"><span className="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-700">{item.difficulty}</span></td>
                                                         <td className="p-4 text-gray-700">{item.score} / {item.totalQuestions}</td>
                                                         <td className="p-4 text-right space-x-2">
@@ -653,8 +673,16 @@ const AIQuizGenerator = () => {
             {viewingQuiz && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
                     <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[85vh] flex flex-col p-6">
-                        <div className="flex justify-between mb-4 border-b pb-4"><h3 className="text-xl font-bold">Results</h3><button onClick={() => setViewingQuiz(null)}>✕</button></div>
-                        <div className="overflow-y-auto flex-1 space-y-6">
+                        <div className="flex justify-between items-center mb-4 border-b pb-4">
+                            <h3 className="text-xl font-bold">{viewingQuiz.title || "Results"}</h3>
+                            <div className="flex items-center gap-4">
+                                <button onClick={exportHistoryToPDF} className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 px-3 py-1 rounded-lg text-sm font-bold transition-colors">
+                                    Export to PDF 📥
+                                </button>
+                                <button onClick={() => setViewingQuiz(null)} className="text-gray-500 hover:text-black font-bold text-xl">✕</button>
+                            </div>
+                        </div>
+                        <div id="history-quiz-result" className="overflow-y-auto flex-1 space-y-6 p-2">
                             <div className="text-center mb-6"><span className="text-3xl font-bold text-violet-600">{viewingQuiz.score} / {viewingQuiz.totalQuestions}</span></div>
                             {viewingQuiz.questions && viewingQuiz.questions.map((q, index) => (
                                 <div key={index} className="p-4 border rounded-lg bg-gray-50">
