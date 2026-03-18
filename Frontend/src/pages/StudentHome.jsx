@@ -87,10 +87,10 @@ const StudentHome = () => {
                     </div>
                 )}
 
-                {/* Quick Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {/* Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* My Profile Card */}
-                    <div 
+                    <div
                         onClick={() => navigate('/student/profile')}
                         className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
                     >
@@ -108,15 +108,11 @@ const StudentHome = () => {
                                     </svg>
                                 </span>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-                                My Profile
-                            </h2>
-                            <p className="text-gray-600 text-sm">
-                                Manage your profile details and settings here.
-                            </p>
+                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">My Profile</h2>
+                            <p className="text-gray-600 text-sm">Manage your profile details and settings here.</p>
                             <div className="mt-4 pt-4 border-t border-gray-100">
                                 <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition-colors flex items-center gap-1">
-                                    View Profile 
+                                    View Profile
                                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                     </svg>
@@ -126,7 +122,7 @@ const StudentHome = () => {
                     </div>
 
                     {/* My Quizzes Card */}
-                    <div 
+                    <div
                         onClick={() => navigate('/student/quizzes')}
                         className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
                     >
@@ -144,12 +140,8 @@ const StudentHome = () => {
                                     </svg>
                                 </span>
                             </div>
-                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition-colors">
-                                My Quizzes
-                            </h2>
-                            <p className="text-gray-600 text-sm">
-                                View your quiz history and track your progress.
-                            </p>
+                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition-colors">My Quizzes</h2>
+                            <p className="text-gray-600 text-sm">View your quiz history and track your progress.</p>
                             <div className="mt-4 pt-4 border-t border-gray-100">
                                 <span className="text-sm font-semibold text-green-600 group-hover:text-green-700 transition-colors flex items-center gap-1">
                                     View Results
@@ -161,126 +153,36 @@ const StudentHome = () => {
                         </div>
                     </div>
 
-                    {/* Assignments/Progress Card */}
-                    <div className="group relative bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
+                    {/* My Study Plan Card */}
+                    <div
+                        onClick={() => navigate(studyPlan ? '/student/view-plan' : '/student/create-plan')}
+                        className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full blur-2xl opacity-60 -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
                         <div className="relative">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
                                     <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <span className="text-white/70">
+                                <span className="text-gray-400 group-hover:text-indigo-600 transition-colors">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </span>
                             </div>
-                            <h2 className="text-xl font-bold text-white mb-2">
-                                My Progress
-                            </h2>
-                            <p className="text-white/80 text-sm">
-                                Track your learning achievements.
+                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">My Study Plan</h2>
+                            <p className="text-gray-600 text-sm">
+                                {studyPlan ? 'View your personalized study schedule.' : 'Create your personalized study schedule.'}
                             </p>
-                            <div className="mt-4 pt-4 border-t border-white/20">
-                                <p className="text-sm font-semibold text-white/90">Keep up the great work!</p>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Study Plan Card */}
-                    <div
-                        onClick={() => navigate('/student/view-plan')}
-                        className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-indigo-300 cursor-pointer"
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
-                                📅
-                            </div>
-                            <span className="text-gray-400 group-hover:text-indigo-600 transition-colors">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </span>
-                        </div>
-                        <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
-                            My Study Plan
-                        </h2>
-                        <p className="text-gray-600 text-sm">
-                            Generate or view your personalized study schedule.
-                        </p>
-                        <div className="mt-4 pt-4 border-t border-gray-100">
-                            <button className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-                                Manage Plan →
-                            </button>
-                        </div>
-                    </div>
-
-
-                    {/* Assignments Card */}
-                    <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center text-3xl shadow-lg">
-                                📝
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Quick Links and Announcements */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-800">Quick Links</h3>
-                        </div>
-                        <div className="space-y-3">
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-50 to-transparent hover:from-blue-100 rounded-xl transition-all duration-300 text-sm font-medium text-blue-700 group">
-                                <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">📖</span>
-                                Browse Courses
-                                <svg className="w-4 h-4 ml-auto text-blue-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-green-50 to-transparent hover:from-green-100 rounded-xl transition-all duration-300 text-sm font-medium text-green-700 group">
-                                <span className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">📊</span>
-                                View Grades
-                                <svg className="w-4 h-4 ml-auto text-green-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-50 to-transparent hover:from-purple-100 rounded-xl transition-all duration-300 text-sm font-medium text-purple-700 group">
-                                <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">💬</span>
-                                Contact Teacher
-                                <svg className="w-4 h-4 ml-auto text-purple-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center text-white">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-800">Announcements</h3>
-                        </div>
-                        <div className="space-y-3">
-                            <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl">
-                                <div className="flex items-start gap-3">
-                                    <span className="text-2xl">📢</span>
-                                    <div>
-                                        <p className="text-sm text-gray-700 font-medium">No new announcements</p>
-                                        <p className="text-xs text-gray-500 mt-1">You're all caught up!</p>
-                                    </div>
-                                </div>
+                            <div className="mt-4 pt-4 border-t border-gray-100">
+                                <span className="text-sm font-semibold text-indigo-600 group-hover:text-indigo-700 transition-colors flex items-center gap-1">
+                                    {studyPlan ? 'View Plan' : 'Create Plan'}
+                                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                    </svg>
+                                </span>
                             </div>
                         </div>
                     </div>

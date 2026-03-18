@@ -227,6 +227,7 @@ const addTask = async (req, res) => {
     }
 };
 
+//update tasks
 // @desc    Toggle task completion status
 // @route   PATCH /api/study-plan/task/:taskId
 // @access  Private (Student)
