@@ -280,7 +280,7 @@ const AILearningLab = () => {
 
             {/* Header */}
             <div className="px-8 pt-8 pb-6">
-                <div className="max-w-7xl mx-auto">
+                <div className="max-w-screen-2xl mx-auto">
                     <div className="flex items-center gap-3 text-blue-600">
                         <div className="h-10 w-10 rounded-2xl bg-blue-100 flex items-center justify-center">
                             <Sparkles size={20} />
@@ -294,7 +294,7 @@ const AILearningLab = () => {
             </div>
 
             <div className="px-8 pb-10">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Sidebar */}
                     <div className="lg:col-span-4">
                         <div className="bg-white/90 backdrop-blur rounded-3xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
@@ -370,7 +370,7 @@ const AILearningLab = () => {
 
                     {/* Main Content */}
                     <div className="lg:col-span-8">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="flex flex-col gap-6">
                             {/* Input Card */}
                             <div className="bg-white/90 backdrop-blur rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                                 <div className="p-5 border-b border-slate-100 flex items-start justify-between">

@@ -6,7 +6,7 @@ const AILearningLabPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
             <StudentNavbar />
-            <div className="max-w-7xl mx-auto px-8 py-12 flex-1">
+            <div className="max-w-screen-4xl mx-auto px-8 py-12 flex-1">
                 <header className="mb-12">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">
                         
