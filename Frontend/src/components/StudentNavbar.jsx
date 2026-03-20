@@ -1,42 +1,90 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 
 const StudentNavbar = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = JSON.parse(localStorage.getItem('user'));
     const [profilePic, setProfilePic] = useState('');
+    const [hasPlan, setHasPlan] = useState(null);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         const fetchProfilePic = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token || !user) return;
-
                 const response = await fetch(`http://localhost:5000/api/students/profile/${user.id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
-
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.data.profilePic) {
-                        setProfilePic(data.data.profilePic);
-                    }
+                    if (data.data.profilePic) setProfilePic(data.data.profilePic);
                 }
             } catch (err) {
                 console.error('Error fetching profile picture:', err);
             }
         };
-
         fetchProfilePic();
     }, [user?.id]);
+
+    useEffect(() => {
+        const checkPlan = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+                const response = await fetch('http://localhost:5000/api/study-plan', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                setHasPlan(data.success && !!data.data);
+            } catch {
+                setHasPlan(false);
+            }
+        };
+        checkPlan();
+    }, [location.pathname]);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+                setDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');
     };
+
+    const handleStudyPlanClick = () => {
+        if (!hasPlan) {
+            navigate('/student/create-plan');
+        } else {
+            setDropdownOpen((prev) => !prev);
+        }
+    };
+
+    const studyPlanDropdownItems = [
+        { label: 'My Timetable', path: '/student/timetable' },
+        { label: 'Study Plan View', path: '/student/view-plan' },
+        { label: 'Study Journal', path: '/student/journal' },
+        { label: 'Analytics', path: '/student/analytics' },
+    ];
+
+    const isStudyPlanActive = [
+        '/student/timetable',
+        '/student/view-plan',
+        '/student/journal',
+        '/student/analytics',
+        '/student/create-plan',
+    ].includes(location.pathname);
 
     return (
         <nav className="flex justify-between items-center px-8 py-4 bg-white shadow-md sticky top-0 z-50 border-b border-gray-100">
@@ -52,49 +100,69 @@ const StudentNavbar = () => {
                 </Link>
             </div>
 
-            <div className="flex gap-8">
-                <Link
-                    to="/student/home"
-                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
-                >
+            <div className="flex gap-8 items-center">
+                <Link to="/student/home" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
                     Home
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link
-                    to="/student/courses"
-                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
-                >
+                <Link to="/student/courses" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
                     My Courses
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                
-                <Link
-                    to="/student/quizzes"
-                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
-                >
+                <Link to="/student/quizzes" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
                     My Quizzes
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link
-                    to="/student/ai_learning_lab"
-                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
-                >
+                <Link to="/student/ai_learning_lab" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
                     AI Learning Lab
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-
-
-                <Link
-                    to="/student/quiz-generator"
-                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
-                >
+                <Link to="/student/quiz-generator" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
                     AI Quiz Generator
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link
-                    to="/student/profile"
-                    className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group"
-                >
+
+                {/* My Study Plan nav item */}
+                <div className="relative" ref={dropdownRef}>
+                    <button
+                        onClick={handleStudyPlanClick}
+                        className={`flex items-center gap-1 font-medium transition-colors relative group ${
+                            isStudyPlanActive ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
+                        }`}
+                    >
+                        My Study Plan
+                        {hasPlan && (
+                            <svg
+                                className={`w-4 h-4 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`}
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        )}
+                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                    </button>
+
+                    {hasPlan && dropdownOpen && (
+                        <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+                            {studyPlanDropdownItems.map((item) => (
+                                <Link
+                                    key={item.path}
+                                    to={item.path}
+                                    onClick={() => setDropdownOpen(false)}
+                                    className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
+                                        location.pathname === item.path
+                                            ? 'text-blue-600 bg-blue-50'
+                                            : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                                    }`}
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <Link to="/student/profile" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
                     Profile
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
                 </Link>
@@ -104,11 +172,7 @@ const StudentNavbar = () => {
                 <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
                     <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
                         {profilePic ? (
-                            <img
-                                src={profilePic}
-                                alt="Profile"
-                                className="w-full h-full object-cover"
-                            />
+                            <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
                                 {user?.name?.charAt(0) || 'U'}
