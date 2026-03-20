@@ -277,22 +277,7 @@ const AILearningLab = () => {
         <div className="relative min-h-[calc(100vh-64px)] bg-slate-50 overflow-hidden font-['Manrope',sans-serif]">
             <div className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl"></div>
             <div className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-amber-200/30 blur-3xl"></div>
-
-            {/* Header */}
-            <div className="px-8 pt-8 pb-6">
-                <div className="max-w-screen-2xl mx-auto">
-                    <div className="flex items-center gap-3 text-blue-600">
-                        <div className="h-10 w-10 rounded-2xl bg-blue-100 flex items-center justify-center">
-                            <Sparkles size={20} />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-['DM_Serif_Display',serif] text-slate-900">AI Learning Lab</h1>
-                            <p className="text-sm text-slate-500">Use the power of AI to summarize your study materials and enhance your learning.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        
             <div className="px-8 pb-10">
                 <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Sidebar */}
