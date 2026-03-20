@@ -115,6 +115,7 @@ const parseRelatedResourcesInput = (input) => {
 const summarizeText = async (req, res) => {
     try {
         let text = req.body.text;
+        const summaryType = String(req.body.summaryType || 'paragraph').toLowerCase();
 
         if (req.file) {
             console.log("Processing PDF file...");
@@ -145,19 +146,28 @@ const summarizeText = async (req, res) => {
         console.log("Generating summary with model...");
 
         // Request structured JSON output
-        const prompt = `
-        Analyze the following text and provide a response in JSON format.
-        The JSON object must have two keys:
-        1. "summary": A concise summary of the text.
-        2. "relatedResources": An array of at least 3 related study resources found on the web (YouTube videos, articles, documentation). 
-           Each resource object must have:
-           - "title": Title of the resource
-           - "link": A valid URL (search for actual relevant links if possible, or generate highly probable search links)
-           - "type": One of "youtube", "website", "other"
+        const summaryStyleMap = {
+            paragraph: 'Write a standard, flowing paragraph that explains the main ideas clearly.',
+            qa: 'Return summary as an array of objects with keys "question" and "answer".',
+            glossary: 'Return summary as an array of objects with keys "term" and "definition".',
+            exam: 'Return summary as an array of strings, each string being a bullet-worthy exam fact.'
+        };
 
-        Text to analyze:
-        ${text}
-        `;
+          const summaryInstruction = summaryStyleMap[summaryType] || summaryStyleMap.paragraph;
+
+        const prompt = `
+          Analyze the following text and provide a response in JSON format.
+          The JSON object must have two keys:
+        1. "summary": A concise summary of the text. ${summaryInstruction}
+          2. "relatedResources": An array of at least 3 related study resources found on the web (YouTube videos, articles, documentation).
+              Each resource object must have:
+              - "title": Title of the resource
+              - "link": A valid URL (search for actual relevant links if possible, or generate highly probable search links)
+              - "type": One of "youtube", "website", "other"
+
+          Text to analyze:
+          ${text}
+          `;
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -165,11 +175,57 @@ const summarizeText = async (req, res) => {
 
         const parsedResponse = extractJsonObject(textResponse);
 
-        const summary =
+        const rawSummary =
             parsedResponse?.summary ||
             parsedResponse?.result ||
             parsedResponse?.text ||
             textResponse;
+
+        const formatSummaryByType = (value) => {
+            if (!value) return '';
+
+            if (summaryType === 'qa') {
+                if (Array.isArray(value)) {
+                    return value
+                        .map((item) => {
+                            const question = String(item?.question || item?.q || '').trim();
+                            const answer = String(item?.answer || item?.a || '').trim();
+                            if (!question && !answer) return null;
+                            return `Q: ${question}\nA: ${answer}`.trim();
+                        })
+                        .filter(Boolean)
+                        .join('\n\n');
+                }
+            }
+
+            if (summaryType === 'glossary') {
+                if (Array.isArray(value)) {
+                    return value
+                        .map((item) => {
+                            const term = String(item?.term || item?.key || '').trim();
+                            const definition = String(item?.definition || item?.value || '').trim();
+                            if (!term && !definition) return null;
+                            return `${term}: ${definition}`.trim();
+                        })
+                        .filter(Boolean)
+                        .join('\n');
+                }
+            }
+
+            if (summaryType === 'exam') {
+                if (Array.isArray(value)) {
+                    return value
+                        .map((item) => String(item || '').trim())
+                        .filter(Boolean)
+                        .map((item) => `• ${item}`)
+                        .join('\n');
+                }
+            }
+
+            return typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+        };
+
+        const summary = formatSummaryByType(rawSummary);
 
         const relatedResourcesCandidates = [
             normalizeRelatedResources(parsedResponse?.relatedResources),
