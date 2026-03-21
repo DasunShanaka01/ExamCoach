@@ -117,12 +117,16 @@ const summarizeText = async (req, res) => {
         let text = req.body.text;
         const summaryType = String(req.body.summaryType || 'paragraph').toLowerCase();
 
-        if (req.file) {
-            console.log("Processing PDF file...");
-            const dataBuffer = req.file.buffer;
+        if (req.files && req.files.length > 0) {
+            console.log("Processing PDF files...");
             try {
-                const pdfData = await pdfParse(dataBuffer);
-                text = pdfData.text;
+                const extractedTexts = await Promise.all(
+                    req.files.map(async (file) => {
+                        const pdfData = await pdfParse(file.buffer);
+                        return pdfData.text;
+                    })
+                );
+                text = extractedTexts.filter(Boolean).join("\n\n");
                 console.log("PDF Text extracted, length:", text.length);
             } catch (pdfError) {
                 console.error("Error parsing PDF:", pdfError);

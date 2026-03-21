@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, FileText, Save, Clock, RefreshCw, File, Loader2, Trash2, Search, Sparkles, BookOpen } from 'lucide-react';
+import { Upload, FileText, Save, Clock, RefreshCw, File, Loader2, Trash2, Search, Sparkles, BookOpen, Download } from 'lucide-react';
 
 const AILearningLab = () => {
     const [history, setHistory] = useState([]);
     const [activeTab, setActiveTab] = useState('upload'); // 'upload' or 'text'
     const [text, setText] = useState('');
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([]);
     const [summary, setSummary] = useState('');
     const [currentTitle, setCurrentTitle] = useState('');
     const [loading, setLoading] = useState(false);
@@ -78,6 +78,142 @@ const AILearningLab = () => {
 
     const selectedSummaryOption = summaryTypeOptions.find((option) => option.value === summaryType);
 
+    const escapeHtml = (value) =>
+        String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+    const splitSentences = (content) => {
+        if (!content) return [];
+        return content
+            .split(/(?<=[.!?])\s+/)
+            .map((sentence) => sentence.trim())
+            .filter(Boolean)
+            .slice(0, 5);
+    };
+
+    const renderSummaryContent = () => {
+        if (!summary) return null;
+
+        if (summaryType === 'qa') {
+            const blocks = summary
+                .split(/\n\s*\n/)
+                .map((block) => block.trim())
+                .filter(Boolean);
+
+            return (
+                <div className="space-y-4">
+                    {blocks.map((block, index) => {
+                        const lines = block.split(/\n/).map((line) => line.trim()).filter(Boolean);
+                        const questionLine = lines.find((line) => line.toLowerCase().startsWith('q:'));
+                        const answerLine = lines.find((line) => line.toLowerCase().startsWith('a:'));
+
+                        return (
+                            <div key={index} className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+                                <div className="flex items-start gap-3">
+                                    <div className="mt-1 rounded-xl bg-blue-600/10 p-2 text-blue-600">🧠</div>
+                                    <div className="space-y-2 text-base text-slate-700">
+                                        <div className="font-semibold text-slate-900">
+                                            Q{index + 1}. {questionLine ? questionLine.replace(/^Q:\s*/i, '') : `Question ${index + 1}`}
+                                        </div>
+                                        {answerLine && (
+                                            <div className="rounded-xl bg-white px-3 py-2 text-slate-600 shadow-sm">
+                                                <span className="font-semibold">Answer:</span> {answerLine.replace(/^A:\s*/i, '')}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        }
+
+        if (summaryType === 'glossary') {
+            const terms = summary
+                .split(/\n/)
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((line) => {
+                    const [term, ...rest] = line.split(':');
+                    return {
+                        term: term?.trim(),
+                        definition: rest.join(':').trim()
+                    };
+                })
+                .filter((entry) => entry.term);
+
+            return (
+                <div className="grid gap-3">
+                    {terms.map((entry, index) => (
+                        <div key={index} className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4">
+                            <div className="flex items-start gap-3">
+                                <div className="mt-1 rounded-xl bg-emerald-600/10 p-2 text-emerald-600">📘</div>
+                                <div>
+                                    <div className="text-base font-semibold text-slate-900">{entry.term}</div>
+                                    <div className="text-base text-slate-600 mt-1">{entry.definition || 'Definition not provided.'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        if (summaryType === 'exam') {
+            const points = summary
+                .split(/\n/)
+                .map((line) => line.replace(/^•\s*/, '').trim())
+                .filter(Boolean);
+
+            return (
+                <div className="space-y-3">
+                    {points.map((point, index) => (
+                        <div key={index} className="rounded-2xl border border-amber-100 bg-amber-50/40 p-4">
+                            <div className="flex items-start gap-3">
+                                <div className="mt-1 rounded-xl bg-amber-500/10 p-2 text-amber-600">🎯</div>
+                                <div className="text-base text-slate-700">
+                                    <span className="font-semibold">{index + 1}.</span> {point}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            );
+        }
+
+        const keyPoints = splitSentences(summary);
+        return (
+            <div className="space-y-5">
+                {keyPoints.length > 0 && (
+                    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                        <div className="flex items-center gap-2 text-base font-semibold text-slate-700 mb-3">
+                            ✨ Key Points
+                        </div>
+                        <div className="space-y-2">
+                            {keyPoints.map((point, index) => (
+                                <div key={index} className="flex items-start gap-3">
+                                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center">
+                                        {index + 1}
+                                    </span>
+                                    <span className="text-base text-slate-700">{point}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div className="rounded-2xl border border-slate-100 bg-white p-5 text-base text-slate-700 leading-relaxed">
+                    <span className="font-semibold">📌 Summary:</span> {summary}
+                </div>
+            </div>
+        );
+    };
+
     const getWordCount = (content) => {
         if (!content || typeof content !== 'string') return 0;
         return content.trim().split(/\s+/).filter(Boolean).length;
@@ -106,7 +242,14 @@ const AILearningLab = () => {
     };
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const selectedFiles = Array.from(e.target.files || []);
+        if (selectedFiles.length > 3) {
+            setError('You can upload up to 3 PDF files.');
+            setFiles(selectedFiles.slice(0, 3));
+        } else {
+            setError(null);
+            setFiles(selectedFiles);
+        }
         setSummary('');
         setRelatedResources([]);
         setCurrentTitle('');
@@ -119,7 +262,7 @@ const AILearningLab = () => {
     };
 
     const handleSummarize = async () => {
-        if (!text.trim() && !file) {
+        if (!text.trim() && files.length === 0) {
             setError('Please enter text or upload a PDF to summarize.');
             return;
         }
@@ -135,9 +278,17 @@ const AILearningLab = () => {
         if (activeTab === 'text' && text) {
             formData.append('text', text);
             setCurrentTitle(text.substring(0, 30) + (text.length > 30 ? '...' : ''));
-        } else if (activeTab === 'upload' && file) {
-            formData.append('file', file);
-            setCurrentTitle(file.name);
+        } else if (activeTab === 'upload' && files.length > 0) {
+            files.forEach((selectedFile) => {
+                formData.append('files', selectedFile);
+            });
+            if (files.length === 1) {
+                setCurrentTitle(files[0].name);
+            } else if (files.length === 2) {
+                setCurrentTitle(`${files[0].name} + ${files[1].name}`);
+            } else {
+                setCurrentTitle(`${files[0].name} + ${files[1].name} +${files.length - 2} more`);
+            }
         }
         formData.append('summaryType', summaryType);
 
@@ -185,8 +336,8 @@ const AILearningLab = () => {
 
             if (activeTab === 'text') {
                 formData.append('originalText', text);
-            } else if (file) {
-                formData.append('file', file);
+            } else if (files.length > 0) {
+                formData.append('file', files[0]);
             }
 
             const response = await fetch('http://localhost:5000/api/ai/save', {
@@ -206,6 +357,154 @@ const AILearningLab = () => {
         }
     };
 
+    const handleDownloadSummary = () => {
+        if (!summary) {
+            setError('No summary available to download.');
+            return;
+        }
+
+        const title = currentTitle || 'AI Summary';
+        const summaryTypeLabel = selectedSummaryOption?.label || 'Summary';
+        const buildSummaryHtml = () => {
+            if (summaryType === 'qa') {
+                const blocks = summary
+                    .split(/\n\s*\n/)
+                    .map((block) => block.trim())
+                    .filter(Boolean);
+
+                return blocks
+                    .map((block, index) => {
+                        const lines = block.split(/\n/).map((line) => line.trim()).filter(Boolean);
+                        const questionLine = lines.find((line) => line.toLowerCase().startsWith('q:'));
+                        const answerLine = lines.find((line) => line.toLowerCase().startsWith('a:'));
+                        const question = escapeHtml(questionLine ? questionLine.replace(/^Q:\s*/i, '') : `Question ${index + 1}`);
+                        const answer = escapeHtml(answerLine ? answerLine.replace(/^A:\s*/i, '') : '');
+
+                        return `
+                            <div class="card">
+                                <div class="icon">🧠</div>
+                                <div>
+                                    <div class="title">Q${index + 1}. ${question}</div>
+                                    ${answer ? `<div class="pill"><strong>Answer:</strong> ${answer}</div>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    })
+                    .join('');
+            }
+
+            if (summaryType === 'glossary') {
+                const terms = summary
+                    .split(/\n/)
+                    .map((line) => line.trim())
+                    .filter(Boolean)
+                    .map((line) => {
+                        const [term, ...rest] = line.split(':');
+                        return {
+                            term: term?.trim(),
+                            definition: rest.join(':').trim()
+                        };
+                    })
+                    .filter((entry) => entry.term);
+
+                return terms
+                    .map((entry) => `
+                        <div class="card">
+                            <div class="icon">📘</div>
+                            <div>
+                                <div class="title">${escapeHtml(entry.term)}</div>
+                                <div class="body">${escapeHtml(entry.definition || 'Definition not provided.')}</div>
+                            </div>
+                        </div>
+                    `)
+                    .join('');
+            }
+
+            if (summaryType === 'exam') {
+                const points = summary
+                    .split(/\n/)
+                    .map((line) => line.replace(/^•\s*/, '').trim())
+                    .filter(Boolean);
+
+                return points
+                    .map((point, index) => `
+                        <div class="card">
+                            <div class="icon">🎯</div>
+                            <div class="body"><strong>${index + 1}.</strong> ${escapeHtml(point)}</div>
+                        </div>
+                    `)
+                    .join('');
+            }
+
+            const keyPoints = splitSentences(summary)
+                .map((point, index) => `
+                    <div class="list-item">
+                        <span class="num">${index + 1}</span>
+                        <span>${escapeHtml(point)}</span>
+                    </div>
+                `)
+                .join('');
+
+            return `
+                ${keyPoints ? `
+                    <div class="section">
+                        <div class="section-title">✨ Key Points</div>
+                        ${keyPoints}
+                    </div>
+                ` : ''}
+                <div class="section">
+                    <div class="section-title">📌 Summary</div>
+                    <div class="body">${escapeHtml(summary).replace(/\n/g, '<br/>')}</div>
+                </div>
+            `;
+        };
+
+        const formattedSummary = buildSummaryHtml();
+        const printWindow = window.open('', '_blank', 'width=900,height=700');
+
+        if (!printWindow) {
+            setError('Popup blocked. Please allow popups to download the PDF.');
+            return;
+        }
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>${escapeHtml(title)}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 24px; color: #0f172a; }
+                        h1 { font-size: 22px; margin: 0 0 8px; }
+                        .meta { color: #64748b; font-size: 12px; margin-bottom: 16px; }
+                        .badge { display: inline-block; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 999px; padding: 4px 10px; font-size: 11px; margin-bottom: 16px; }
+                        .summary { font-size: 14px; line-height: 1.6; }
+                        .card { border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; margin-bottom: 12px; display: flex; gap: 12px; background: #f8fafc; }
+                        .icon { font-size: 18px; }
+                        .title { font-weight: 600; color: #0f172a; margin-bottom: 6px; }
+                        .body { color: #475569; }
+                        .pill { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px 10px; color: #475569; }
+                        .section { border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+                        .section-title { font-weight: 600; margin-bottom: 8px; }
+                        .list-item { display: flex; gap: 10px; margin-bottom: 6px; }
+                        .num { height: 22px; width: 22px; border-radius: 999px; background: #2563eb; color: #fff; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${escapeHtml(title)}</h1>
+                    <div class="meta">Generated on ${new Date().toLocaleDateString()}</div>
+                    <div class="badge">${escapeHtml(summaryTypeLabel)}</div>
+                    <div class="summary">${formattedSummary}</div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+
+        setTimeout(() => {
+            printWindow.print();
+            printWindow.onafterprint = () => printWindow.close();
+        }, 300);
+    };
+
     const loadHistoryItem = (item) => {
         setSelectedHistoryId(item._id);
         setSummary(item.summary);
@@ -215,11 +514,11 @@ const AILearningLab = () => {
         setActiveTab(item.type === 'pdf' ? 'upload' : 'text');
         if (item.type === 'text') {
             setText(item.originalContent);
-            setFile(null);
+            setFiles([]);
         } else {
             // For PDF, simply show upload tab state, but we can't set file input value programmatically
             setText('');
-            setFile(null);
+            setFiles([]);
         }
     };
 
@@ -254,7 +553,7 @@ const AILearningLab = () => {
                 setRelatedResources([]);
                 setCurrentTitle('');
                 setText('');
-                setFile(null);
+                setFiles([]);
                 setActiveResultTab('summary');
             }
 
@@ -413,6 +712,7 @@ const AILearningLab = () => {
                                                 type="file"
                                                 id="file-upload"
                                                 accept=".pdf"
+                                                multiple
                                                 onChange={handleFileChange}
                                                 className="hidden"
                                             />
@@ -422,10 +722,14 @@ const AILearningLab = () => {
                                             >
                                                 Choose File
                                             </label>
-                                            {file && (
-                                                <div className="mt-4 flex items-center gap-2 text-xs text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
-                                                    <File size={14} />
-                                                    <span className="truncate max-w-[200px]">{file.name}</span>
+                                            {files.length > 0 && (
+                                                <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-emerald-600">
+                                                    {files.map((selectedFile) => (
+                                                        <div key={selectedFile.name} className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+                                                            <File size={14} />
+                                                            <span className="truncate max-w-[200px]">{selectedFile.name}</span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             )}
                                         </div>
@@ -468,9 +772,14 @@ const AILearningLab = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <button onClick={handleSave} className="flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-medium px-3 py-1.5 rounded-full hover:bg-emerald-700 transition-colors shadow-sm">
-                                        <Save size={14} /> Save Note
-                                    </button>
+                                    <div className="flex items-center gap-2">
+                                        <button onClick={handleDownloadSummary} className="flex items-center gap-1.5 bg-white text-slate-600 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm">
+                                            <Download size={14} /> Download PDF
+                                        </button>
+                                        <button onClick={handleSave} className="flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-medium px-3 py-1.5 rounded-full hover:bg-emerald-700 transition-colors shadow-sm">
+                                            <Save size={14} /> Save Note
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Result Tabs */}
@@ -507,13 +816,13 @@ const AILearningLab = () => {
                                         </div>
                                     ) : (
                                         activeResultTab === 'summary' ? (
-                                            <div className="prose prose-sm max-w-none text-slate-700 leading-relaxed p-5 bg-white rounded-2xl border border-amber-100 shadow-sm relative whitespace-pre-line">
+                                            <div className="relative">
                                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-200 to-yellow-200 rounded-t-2xl"></div>
                                                 <span className="absolute -top-3 left-4 bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                                     AI Summary
                                                 </span>
-                                                {summary}
+                                                <div className="pt-5">{renderSummaryContent()}</div>
                                             </div>
                                         ) : (
                                             <div className="space-y-4">
