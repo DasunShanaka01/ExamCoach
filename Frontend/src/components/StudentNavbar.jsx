@@ -161,15 +161,10 @@ const StudentNavbar = () => {
                         </div>
                     )}
                 </div>
-
-                <Link to="/student/profile" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
-                    Profile
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
-                </Link>
             </div>
 
             <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full">
+                <Link to="/student/profile" className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer px-4 py-2 rounded-full">
                     <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
                         {profilePic ? (
                             <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
@@ -180,7 +175,7 @@ const StudentNavbar = () => {
                         )}
                     </div>
                     <span className="font-medium text-gray-800">{user?.name}</span>
-                </div>
+                </Link>
                 <button
                     onClick={handleLogout}
                     className="px-4 py-2 bg-white border-2 border-red-500 text-red-500 rounded-lg font-medium hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md"
