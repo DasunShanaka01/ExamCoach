@@ -13,7 +13,7 @@ const AILearningLabPage = () => {
                         <Sparkles size={20} />
                     </div>
                     <div>
-                        <h1 className="text-2xl font-['DM_Serif_Display',serif] text-slate-900">AI Learning Lab</h1>
+                        <h1 className="text-3xl font-semibold text-slate-900 flex items-center gap-2">AI Learning Lab</h1>
                         <p className="text-sm text-slate-500">Use the power of AI to summarize your study materials and enhance your learning.</p>
                     </div>
                 </div>
