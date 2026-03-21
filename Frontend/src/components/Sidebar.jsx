@@ -24,8 +24,6 @@ const Sidebar = ({ role }) => {
     const teacherMenuItems = [
         { path: '/teacher/dashboard', label: 'Dashboard', icon: 'chart' },
         { path: '/teacher/view-quizzes', label: 'My Quizzes', icon: 'quiz' },
-        { path: '/teacher/classes', label: 'My Classes', icon: 'book' },
-        { path: '/teacher/assignments', label: 'Assignments', icon: 'document' },
         { path: '/teacher/materials', label: 'Learning Materials', icon: 'document' },
         { path: '/teacher/profile', label: 'My Profile', icon: 'user' },
     ];
