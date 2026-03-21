@@ -336,3 +336,60 @@ exports.getAdminAnalytics = async (req, res) => {
     }
 };
 
+// @desc    Explain a concept simply (ELI5)
+// @route   POST /api/quiz/explain
+// @access  Private (Student)
+exports.explainConcept = async (req, res) => {
+    try {
+        const { question, correctAnswer, userAnswer, sourceContent } = req.body;
+
+        if (!question) {
+            return res.status(400).json({ success: false, error: 'Question is required for explanation.' });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        const prompt = `
+        You are a friendly, encouraging tutor for an Exam Preparation Platform.
+        A student got a quiz question wrong and asked for a simpler explanation.
+        
+        Question: "${question}"
+        Correct Answer: "${Array.isArray(correctAnswer) ? correctAnswer.join(', ') : correctAnswer}"
+        Student's Wrong Answer: "${Array.isArray(userAnswer) ? userAnswer.join(', ') : (userAnswer || 'Skipped')}"
+        
+        Context/Source Material:
+        ${sourceContent ? sourceContent.substring(0, 3000) + '...' : 'No source context provided.'}
+        
+        Task:
+        Explain the correct answer and the underlying concept like I am 5 years old (ELI5). 
+        Use very simple words, an easy-to-understand everyday analogy, and keep it under 3-4 sentences. Be encouraging!
+        Do NOT wrap the response in markdown, JSON, or any special formatting. Just return plain text.
+        `;
+
+        const result = await model.generateContent(prompt);
+        const response = result.response;
+
+        let text = "";
+        if (typeof response.text === 'function') {
+            text = response.text();
+        } else if (typeof response.text === 'string') {
+            text = response.text;
+        } else if (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts && response.candidates[0].content.parts[0].text) {
+            text = response.candidates[0].content.parts[0].text;
+        } else {
+            text = "Explanation unavailable due to API response structure.";
+            console.error("Unknown response structure:", response);
+        }
+
+        res.status(200).json({
+            success: true,
+            explanation: text.trim()
+        });
+
+    } catch (err) {
+        console.error("Explain Concept Error:", err);
+        res.status(500).json({ success: false, error: 'Failed to generate simple explanation.' });
+    }
+};
+

@@ -40,6 +40,10 @@ const AIQuizGenerator = () => {
     const [pdfUrl, setPdfUrl] = useState(null);
     const [userAnswers, setUserAnswers] = useState({}); // Object: keys are indices, values can be string or array
     const [score, setScore] = useState(0);
+    
+    // NEW: ELI5 States
+    const [explainLoading, setExplainLoading] = useState({});
+    const [simplerExplanations, setSimplerExplanations] = useState({});
 
     const questionTypes = [
         { id: 'MCQ', label: 'Multiple Choice (MCQ)' },
@@ -300,6 +304,39 @@ const AIQuizGenerator = () => {
         setError('');
         setTimeLeft(0);
         setSelectedTypes(['MCQ']);
+        setExplainLoading({});
+        setSimplerExplanations({});
+    };
+
+    const fetchSimplerExplanation = async (index, questionObj) => {
+        setExplainLoading(prev => ({ ...prev, [index]: true }));
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5000/api/quiz/explain', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    question: questionObj.question,
+                    correctAnswer: questionObj.correctAnswer,
+                    userAnswer: userAnswers[index],
+                    sourceContent: sourceText
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                setSimplerExplanations(prev => ({ ...prev, [index]: data.explanation }));
+            } else {
+                alert("Failed to get explanation: " + data.error);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("An error occurred while fetching explanation.");
+        } finally {
+            setExplainLoading(prev => ({ ...prev, [index]: false }));
+        }
     };
 
     const exportToPDF = () => {
@@ -577,11 +614,28 @@ const AIQuizGenerator = () => {
                                                                                 </div>
 
                                                                                 {!isCorrect && (
-                                                                                    <div className="p-3 rounded-lg bg-green-50 border border-green-200">
-                                                                                        <span className="block text-xs font-bold text-green-700 uppercase">Correct Answer</span>
-                                                                                        <div className="text-green-900 font-medium">
-                                                                                            {Array.isArray(cAns) ? cAns.join(', ') : cAns}
+                                                                                    <div className="space-y-3 mt-3">
+                                                                                        <div className="p-3 rounded-lg bg-green-50 border border-green-200">
+                                                                                            <span className="block text-xs font-bold text-green-700 uppercase">Correct Answer</span>
+                                                                                            <div className="text-green-900 font-medium">
+                                                                                                {Array.isArray(cAns) ? cAns.join(', ') : cAns}
+                                                                                            </div>
                                                                                         </div>
+                                                                                        
+                                                                                        {!simplerExplanations[index] ? (
+                                                                                            <button 
+                                                                                                onClick={() => fetchSimplerExplanation(index, q)} 
+                                                                                                disabled={explainLoading[index]}
+                                                                                                className="text-sm font-semibold text-violet-600 bg-violet-50 hover:bg-violet-100 px-4 py-2 rounded-lg border border-violet-200 transition-colors flex items-center justify-center w-full sm:w-auto mt-2"
+                                                                                            >
+                                                                                                {explainLoading[index] ? '🤔 Thinking...' : 'Explain simpler 🧠'}
+                                                                                            </button>
+                                                                                        ) : (
+                                                                                            <div className="p-4 rounded-xl bg-orange-50 border border-orange-200">
+                                                                                                <span className="block text-xs font-extrabold text-orange-600 uppercase mb-1">🧸 ELI5 Explanation</span>
+                                                                                                <p className="text-orange-900 text-sm leading-relaxed">{simplerExplanations[index]}</p>
+                                                                                            </div>
+                                                                                        )}
                                                                                     </div>
                                                                                 )}
                                                                             </>
