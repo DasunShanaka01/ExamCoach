@@ -5,47 +5,30 @@ import Footer from '../components/Footer';
 
 const StudentHome = () => {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [greeting, setGreeting] = useState('');
     const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem('user'));
-    const [studyPlan, setStudyPlan] = useState(null);
 
     useEffect(() => {
-        fetchStudyPlan();
-    }, []);
+        const hour = new Date().getHours();
+        if (hour < 12) setGreeting('Good morning');
+        else if (hour < 18) setGreeting('Good afternoon');
+        else setGreeting('Good evening');
 
-    const fetchStudyPlan = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            const data = await response.json();
-            if (data.success) {
-                setStudyPlan(data.data);
-            }
-        } catch (err) {
-            // Silently fail - user might not have a study plan yet
-            console.log('No study plan found');
-        }
-    };
-
-
-    useEffect(() => {
-        setLoading(false);
+        // Simulate a slight loading delay for smooth entrance
+        const timer = setTimeout(() => setLoading(false), 500);
+        return () => clearTimeout(timer);
     }, []);
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex flex-col">
+            <div className="min-h-screen bg-slate-50 flex flex-col">
                 <StudentNavbar />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-4">
-                        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
-                        <p className="text-gray-600 font-medium">Loading your dashboard...</p>
+                        <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                        <p className="text-gray-500 font-medium">Preparing your study space...</p>
                     </div>
                 </div>
             </div>
@@ -53,239 +36,215 @@ const StudentHome = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col">
+        <div className="min-h-screen bg-slate-50 flex flex-col">
             <StudentNavbar />
             
-            {/* Hero Section */}
-            <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+            {/* Dynamic Glassmorphic Hero Section */}
+            <div className="relative overflow-hidden bg-white border-b border-gray-100">
+                <div className="absolute inset-0">
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-indigo-400/20 to-violet-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-emerald-400/20 to-teal-400/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+                </div>
                 
-                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                    <div className="flex items-center gap-4 mb-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
-                            👋
-                        </div>
+                <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 lg:py-24">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                         <div>
-                            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 via-blue-800 to-purple-800 bg-clip-text text-transparent">
-                                Welcome back, {user?.firstName || user?.name || 'Student'}!
+                            <span className="inline-block py-1 px-3 rounded-full bg-indigo-50 text-indigo-700 text-sm font-semibold tracking-wide mb-4 border border-indigo-100">
+                                🚀 Ready to learn?
+                            </span>
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
+                                {greeting}, <br className="hidden md:block"/>
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600">
+                                    {user?.firstName || user?.name || 'Student'}!
+                                </span>
                             </h1>
-                            <p className="text-gray-600 mt-1">Here's what's happening with your learning journey today.</p>
+                            <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
+                                Your personal AI-powered study dashboard. Generate quizzes, explore courses, and track your progress all in one place.
+                            </p>
+                        </div>
+                        <div className="hidden md:flex items-center justify-center">
+                            {/* Decorative element */}
+                            <div className="relative w-48 h-48">
+                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl shadow-2xl transform rotate-6 animate-pulse opacity-20"></div>
+                                <div className="absolute inset-0 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-xl flex items-center justify-center text-6xl transform -rotate-3 transition-transform hover:rotate-0 duration-500">
+                                    🎓
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 flex-1">
-                {error && (
-                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3">
-                        <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <p className="text-red-700">{error}</p>
+            <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full space-y-12">
+                
+                {/* AI POWER TOOLS (The "Wow" Section) */}
+                <section>
+                    <div className="flex items-center gap-3 mb-6">
+                        <span className="text-2xl">✨</span>
+                        <h2 className="text-2xl font-bold text-gray-800 tracking-tight">AI Power Tools</h2>
                     </div>
-                )}
-
-                {/* Quick Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    {/* My Profile Card */}
-                    <div 
-                        onClick={() => navigate('/student/profile')}
-                        className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
-                    >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full blur-2xl opacity-60 -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div className="relative">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* AI Learning Lab */}
+                        <div 
+                            onClick={() => navigate('/student/ai_learning_lab')}
+                            className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl group-hover:bg-fuchsia-500/20 transition-colors duration-500"></div>
+                            
+                            <div className="relative z-10">
+                                <div className="w-16 h-16 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                    🤖
                                 </div>
-                                <span className="text-gray-400 group-hover:text-blue-600 transition-colors">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </span>
-                            </div>
-                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
-                                My Profile
-                            </h2>
-                            <p className="text-gray-600 text-sm">
-                                Manage your profile details and settings here.
-                            </p>
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                <span className="text-sm font-semibold text-blue-600 group-hover:text-blue-700 transition-colors flex items-center gap-1">
-                                    View Profile 
-                                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* My Quizzes Card */}
-                    <div 
-                        onClick={() => navigate('/student/quizzes')}
-                        className="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
-                    >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full blur-2xl opacity-60 -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div className="relative">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-fuchsia-700 transition-colors">AI Learning Lab</h3>
+                                <p className="text-gray-600 leading-relaxed mb-6">
+                                    Interact with an intelligent tutor to learn complex concepts through conversation and examples.
+                                </p>
+                                <div className="inline-flex items-center text-fuchsia-600 font-semibold group-hover:gap-2 transition-all">
+                                    Start Learning <span className="text-lg ml-1 group-hover:translate-x-1 transition-transform">→</span>
                                 </div>
-                                <span className="text-gray-400 group-hover:text-green-600 transition-colors">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </span>
-                            </div>
-                            <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition-colors">
-                                My Quizzes
-                            </h2>
-                            <p className="text-gray-600 text-sm">
-                                View your quiz history and track your progress.
-                            </p>
-                            <div className="mt-4 pt-4 border-t border-gray-100">
-                                <span className="text-sm font-semibold text-green-600 group-hover:text-green-700 transition-colors flex items-center gap-1">
-                                    View Results
-                                    <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                    </svg>
-                                </span>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Assignments/Progress Card */}
-                    <div className="group relative bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div className="relative">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform duration-300">
-                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                    </svg>
+                        {/* AI Quiz Generator */}
+                        <div 
+                            onClick={() => navigate('/student/quiz-generator')}
+                            className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl group-hover:bg-violet-500/20 transition-colors duration-500"></div>
+                            
+                            <div className="relative z-10">
+                                <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                    ✨
                                 </div>
-                                <span className="text-white/70">
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                    </svg>
-                                </span>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-violet-700 transition-colors">AI Quiz Generator</h3>
+                                <p className="text-gray-600 leading-relaxed mb-6">
+                                    Upload your PDFs or paste text notes to instantly generate mixed-type exams and test your knowledge.
+                                </p>
+                                <div className="inline-flex items-center text-violet-600 font-semibold group-hover:gap-2 transition-all">
+                                    Generate Quiz <span className="text-lg ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                                </div>
                             </div>
-                            <h2 className="text-xl font-bold text-white mb-2">
-                                My Progress
-                            </h2>
-                            <p className="text-white/80 text-sm">
-                                Track your learning achievements.
-                            </p>
-                            <div className="mt-4 pt-4 border-t border-white/20">
-                                <p className="text-sm font-semibold text-white/90">Keep up the great work!</p>
+                        </div>
+
+                        {/* Smart Study Planner */}
+                        <div 
+                            onClick={() => navigate('/student/view-plan')}
+                            className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                            
+                            <div className="relative z-10">
+                                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                    📅
+                                </div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-emerald-700 transition-colors">Study Planner</h3>
+                                <p className="text-gray-600 leading-relaxed mb-6">
+                                    Generate a personalized, time-blocked study schedule tailored to your upcoming exams.
+                                </p>
+                                <div className="inline-flex items-center text-emerald-600 font-semibold group-hover:gap-2 transition-all">
+                                    View Schedule <span className="text-lg ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    {/* Study Plan Card */}
-                    <div
-                        onClick={() => navigate('/student/view-plan')}
-                        className="group bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 hover:border-indigo-300 cursor-pointer"
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-lg">
-                                📅
-                            </div>
-                            <span className="text-gray-400 group-hover:text-indigo-600 transition-colors">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </span>
-                        </div>
-                        <h2 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-indigo-600 transition-colors">
-                            My Study Plan
-                        </h2>
-                        <p className="text-gray-600 text-sm">
-                            Generate or view your personalized study schedule.
-                        </p>
-                        <div className="mt-4 pt-4 border-t border-gray-100">
-                            <button className="text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-                                Manage Plan →
-                            </button>
-                        </div>
+                </section>
+
+                {/* CORE ACADEMIC HUB */}
+                <section>
+                    <div className="flex items-center gap-3 mb-6">
+                        <span className="text-2xl">📚</span>
+                        <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Core Academics</h2>
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <div onClick={() => navigate('/student/courses')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
+                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                📖
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Course Explorer</h3>
+                                <p className="text-sm text-gray-500 mt-1">Browse active courses & modules</p>
+                            </div>
+                        </div>
 
-
-                    {/* Assignments Card */}
-                    <div className="group bg-gradient-to-br from-purple-500 to-pink-600 p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 text-white">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="w-14 h-14 bg-white bg-opacity-20 rounded-lg flex items-center justify-center text-3xl shadow-lg">
+                        <div onClick={() => navigate('/student/quizzes')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-pink-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
+                            <div className="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-pink-600 group-hover:text-white transition-colors">
                                 📝
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Quick Links and Announcements */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center text-white">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-pink-600 transition-colors">My Quizzes</h3>
+                                <p className="text-sm text-gray-500 mt-1">Review your quiz history & scores</p>
                             </div>
-                            <h3 className="text-lg font-bold text-gray-800">Quick Links</h3>
                         </div>
-                        <div className="space-y-3">
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-50 to-transparent hover:from-blue-100 rounded-xl transition-all duration-300 text-sm font-medium text-blue-700 group">
-                                <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">📖</span>
-                                Browse Courses
-                                <svg className="w-4 h-4 ml-auto text-blue-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-green-50 to-transparent hover:from-green-100 rounded-xl transition-all duration-300 text-sm font-medium text-green-700 group">
-                                <span className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">📊</span>
-                                View Grades
-                                <svg className="w-4 h-4 ml-auto text-green-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                            <button className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-purple-50 to-transparent hover:from-purple-100 rounded-xl transition-all duration-300 text-sm font-medium text-purple-700 group">
-                                <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">💬</span>
-                                Contact Teacher
-                                <svg className="w-4 h-4 ml-auto text-purple-400 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
 
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center text-white">
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
-                                </svg>
+                        <div onClick={() => navigate('/student/analytics')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
+                            <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                                📊
                             </div>
-                            <h3 className="text-lg font-bold text-gray-800">Announcements</h3>
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-orange-600 transition-colors">Analytics</h3>
+                                <p className="text-sm text-gray-500 mt-1">Track your performance & growth</p>
+                            </div>
                         </div>
-                        <div className="space-y-3">
-                            <div className="p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl">
-                                <div className="flex items-start gap-3">
-                                    <span className="text-2xl">📢</span>
-                                    <div>
-                                        <p className="text-sm text-gray-700 font-medium">No new announcements</p>
-                                        <p className="text-xs text-gray-500 mt-1">You're all caught up!</p>
-                                    </div>
+
+                    </div>
+                </section>
+
+                {/* ORGANIZATION & TOOLS */}
+                <section>
+                    <div className="flex items-center gap-3 mb-6">
+                        <span className="text-2xl">🎒</span>
+                        <h2 className="text-2xl font-bold text-gray-800 tracking-tight">Organization & Tools</h2>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <div onClick={() => navigate('/student/journal')} className="group bg-slate-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-2xl">
+                                    📔
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white group-hover:text-slate-200">Study Journal</h3>
+                                    <p className="text-sm text-slate-400">Log your daily progress</p>
                                 </div>
                             </div>
+                            <span className="text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
                         </div>
+
+                        <div onClick={() => navigate('/student/timetable')} className="group bg-slate-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-2xl">
+                                    ⏰
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white group-hover:text-slate-200">Timetable</h3>
+                                    <p className="text-sm text-slate-400">View weekly schedules</p>
+                                </div>
+                            </div>
+                            <span className="text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
+                        </div>
+
+                        <div onClick={() => navigate('/student/profile')} className="group bg-slate-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-2xl">
+                                    👤
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white group-hover:text-slate-200">My Profile</h3>
+                                    <p className="text-sm text-slate-400">Manage account & settings</p>
+                                </div>
+                            </div>
+                            <span className="text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
+                        </div>
+
                     </div>
-                </div>
-            </div>
+                </section>
+                
+            </main>
+            
             <Footer />
         </div>
     );
