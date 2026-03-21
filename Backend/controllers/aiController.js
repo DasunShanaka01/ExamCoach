@@ -139,8 +139,7 @@ const summarizeText = async (req, res) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Use gemini-1.5-flash as it's often more reliable for free tier/tasks, fallback to pro if needed
-        // But user said gemini-2.5-flash worked for text. Let's keep it but add logging.
+        // Use gemini-1.5-flash 
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         console.log("Generating summary with model...");

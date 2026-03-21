@@ -1,10 +1,10 @@
-import StudentSidebar from '../components/StudentSidebar';
+import StudentNavbar from '../components/StudentNavbar';
 
 const StudentLayout = ({ children }) => {
     return (
-        <div className="min-h-screen bg-gray-50 flex">
-            <StudentSidebar />
-            <main className="flex-1 ml-64 p-8">
+        <div className="min-h-screen bg-gray-50">
+            <StudentNavbar />
+            <main className="p-8">
                 <div className="max-w-7xl mx-auto">
                     {children}
                 </div>
@@ -14,4 +14,3 @@ const StudentLayout = ({ children }) => {
 };
 
 export default StudentLayout;
-

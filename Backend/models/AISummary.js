@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const AISummarySchema = new mongoose.Schema({
-    user: {
+    user: {                                        // user : 69a097bc7f561f6f256f093a
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student', // Assuming 'Student' is the user model, adjustable if generic 'User'
         required: true
