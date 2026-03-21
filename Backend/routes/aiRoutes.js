@@ -5,7 +5,7 @@ const { summarizeText, saveSummary, getHistory, deleteHistoryItem, updateHistory
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-router.post('/summarize', upload.single('file'), summarizeText);
+router.post('/summarize', upload.array('files', 3), summarizeText);
 router.post('/save', upload.single('file'), saveSummary);
 router.get('/history/:userId', getHistory);
 router.put('/history/:id', updateHistoryItem);

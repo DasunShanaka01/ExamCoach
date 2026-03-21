@@ -25,18 +25,6 @@ const CourseExplorer = () => {
 				if (!subjectData.success) throw new Error(subjectData.error || 'Failed to load subjects');
 				setStreams(streamData.data || []);
 				setSubjects(subjectData.data || []);
-				
-				// Set initial stream if available
-				if (streamData.data?.length) {
-					const initialStreamId = streamData.data[0]._id;
-					setSelectedStream(initialStreamId);
-
-					// Filter subjects for this initial stream
-					const initialStreamSubjects = (subjectData.data || []).filter(s => s.stream?._id === initialStreamId);
-					if (initialStreamSubjects.length) {
-						setSelectedSubject(initialStreamSubjects[0]._id);
-					}
-				}
 				setError('');
 			} catch (err) {
 				setError(err.message);
@@ -48,7 +36,10 @@ const CourseExplorer = () => {
 	}, []);
 
 	useEffect(() => {
-		if (!selectedSubject) return;
+		if (!selectedSubject) {
+			setLessons([]);
+			return;
+		}
 		const fetchLessons = async () => {
 			try {
 				const res = await fetch(`${api}/api/subjects/${selectedSubject}/lessons`);
@@ -63,17 +54,14 @@ const CourseExplorer = () => {
 	}, [selectedSubject]);
 
 	const filteredSubjects = useMemo(() => {
-		if (!selectedStream) return subjects;
+		if (!selectedStream) return [];
 		return subjects.filter((s) => s.stream?._id === selectedStream);
 	}, [subjects, selectedStream]);
 
 	useEffect(() => {
-		if (filteredSubjects.length > 0) {
-			const currentSubj = filteredSubjects.find((s) => s._id === selectedSubject);
-			if (!currentSubj) {
-				setSelectedSubject(filteredSubjects[0]._id);
-			}
-		} else {
+		if (!selectedSubject) return;
+		const currentSubj = filteredSubjects.find((s) => s._id === selectedSubject);
+		if (!currentSubj) {
 			setSelectedSubject('');
 		}
 	}, [filteredSubjects, selectedSubject]);
@@ -106,9 +94,13 @@ const CourseExplorer = () => {
 								<h3 className="text-sm font-semibold text-gray-700 mb-2">Select Stream</h3>
 								<select
 									value={selectedStream}
-									onChange={(e) => setSelectedStream(e.target.value)}
+									onChange={(e) => {
+										setSelectedStream(e.target.value);
+										setSelectedSubject('');
+									}}
 									className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								>
+									<option value="" disabled>Select a stream</option>
 									{streams.map((stream) => (
 										<option key={stream._id} value={stream._id}>{stream.name}</option>
 									))}
@@ -128,7 +120,8 @@ const CourseExplorer = () => {
 											<p className="text-xs text-gray-500">{subj.teacher?.name}</p>
 										</button>
 									))}
-									{!filteredSubjects.length && <p className="text-sm text-gray-500">No subjects in this stream.</p>}
+									{!selectedStream && <p className="text-sm text-gray-500">Select a stream to view subjects.</p>}
+									{selectedStream && !filteredSubjects.length && <p className="text-sm text-gray-500">No subjects in this stream.</p>}
 								</div>
 							</div>
 						</div>
