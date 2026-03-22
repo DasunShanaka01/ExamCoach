@@ -18,6 +18,11 @@ const AISummarySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    summaryType: {
+        type: String,
+        enum: ['paragraph', 'qa', 'glossary', 'exam'],
+        default: 'paragraph'
+    },
     type: {
         type: String,
         enum: ['text', 'pdf'],

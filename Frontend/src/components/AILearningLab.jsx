@@ -331,6 +331,7 @@ const AILearningLab = () => {
             formData.append('userId', userId);
             formData.append('title', currentTitle || 'New Summary');
             formData.append('summary', summary);
+            formData.append('summaryType', summaryType);
             formData.append('relatedResources', JSON.stringify(relatedResources));
             formData.append('type', activeTab === 'upload' ? 'pdf' : 'text');
 
@@ -510,6 +511,7 @@ const AILearningLab = () => {
         setSummary(item.summary);
         setRelatedResources(normalizeRelatedResources(item.relatedResources));
         setCurrentTitle(item.title);
+        setSummaryType(item.summaryType || 'paragraph');
         setActiveResultTab('summary');
         setActiveTab(item.type === 'pdf' ? 'upload' : 'text');
         if (item.type === 'text') {
@@ -641,6 +643,9 @@ const AILearningLab = () => {
                                                     </div>
                                                     <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
                                                         <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                                                        <span className="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] uppercase">
+                                                            {item.summaryType || 'paragraph'}
+                                                        </span>
                                                         <span>{getWordCount(item.summary)} Words</span>
                                                     </div>
                                                 </div>
@@ -690,7 +695,8 @@ const AILearningLab = () => {
                                             <select
                                                 value={summaryType}
                                                 onChange={(e) => setSummaryType(e.target.value)}
-                                                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                                disabled={selectedHistoryId !== null}
+                                                className={`w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 ${selectedHistoryId !== null ? 'cursor-not-allowed opacity-70' : ''}`}
                                             >
                                                 {summaryTypeOptions.map((option) => (
                                                     <option key={option.value} value={option.value}>

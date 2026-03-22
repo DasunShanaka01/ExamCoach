@@ -259,7 +259,7 @@ const summarizeText = async (req, res) => {
 
 const saveSummary = async (req, res) => {
     try {
-        const { title, summary, type, originalText, userId } = req.body;
+        const { title, summary, type, originalText, userId, summaryType } = req.body;
         let originalContent = originalText;
         const parsedRelatedResources = parseRelatedResourcesInput(req.body.relatedResources);
 
@@ -280,6 +280,7 @@ const saveSummary = async (req, res) => {
                         title: title || req.file.originalname,
                         originalContent,
                         summary,
+                        summaryType: summaryType || 'paragraph',
                         relatedResources: parsedRelatedResources,
                         type: 'pdf'
                     });
@@ -299,6 +300,7 @@ const saveSummary = async (req, res) => {
                 title: title || 'Text Summary',
                 originalContent,
                 summary,
+                summaryType: summaryType || 'paragraph',
                 relatedResources: parsedRelatedResources,
                 type: 'text'
             });
