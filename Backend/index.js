@@ -41,7 +41,9 @@ app.set('io', io);
 
 // ── Express Middleware ───────────────────────────────────────
 app.use(express.json()); // Parse incoming JSON request bodies
-app.use(cors());          // Allow cross-origin requests from the frontend
+app.use(cors({
+  origin: "*"
+}));        // Allow cross-origin requests from the frontend
 
 // Health-check route
 app.get('/', (req, res) => {
