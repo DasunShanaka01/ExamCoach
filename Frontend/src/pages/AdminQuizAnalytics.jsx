@@ -15,7 +15,7 @@ const AdminQuizAnalytics = () => {
         const fetchStats = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch('http://localhost:5000/api/quiz/admin/stats', {
+                const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/quiz/admin/stats', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }

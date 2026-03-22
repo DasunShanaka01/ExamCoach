@@ -40,7 +40,7 @@ const TeacherProfile = () => {
             }
 
             // Fetch teacher profile
-            const response = await fetch(`http://localhost:5000/api/teachers/profile/${user.id}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/teachers/profile/${user.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -142,7 +142,7 @@ const TeacherProfile = () => {
             const token = localStorage.getItem('token');
             const user = JSON.parse(localStorage.getItem('user'));
 
-            const response = await fetch(`http://localhost:5000/api/teachers/profile/${user.id}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/teachers/profile/${user.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

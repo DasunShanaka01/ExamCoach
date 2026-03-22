@@ -231,7 +231,7 @@ const AILearningLab = () => {
 
     const fetchHistory = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/ai/history/${userId}`);
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/ai/history/${userId}`);
             if (response.ok) {
                 const data = await response.json();
                 setHistory(data);
@@ -294,7 +294,7 @@ const AILearningLab = () => {
 
         try {
             // Note: Ensure backend allows just file or just text
-            const response = await fetch('http://localhost:5000/api/ai/summarize', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/ai/summarize', {
                 method: 'POST',
                 body: formData,
             });
@@ -341,7 +341,7 @@ const AILearningLab = () => {
                 formData.append('file', files[0]);
             }
 
-            const response = await fetch('http://localhost:5000/api/ai/save', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/ai/save', {
                 method: 'POST',
                 body: formData
             });
@@ -536,7 +536,7 @@ const AILearningLab = () => {
             setDeletingHistoryId(itemId);
             setError(null);
 
-            const response = await fetch(`http://localhost:5000/api/ai/history/${itemId}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/ai/history/${itemId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

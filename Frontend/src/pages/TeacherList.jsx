@@ -21,7 +21,7 @@ const TeacherList = () => {
     const fetchTeachers = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/teachers', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/teachers', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -44,7 +44,7 @@ const TeacherList = () => {
         if (window.confirm('Are you sure you want to delete this teacher?')) {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:5000/api/teachers/${id}`, {
+                const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/teachers/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -105,7 +105,7 @@ const TeacherList = () => {
     const handleUpdate = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/teachers/${selectedTeacher._id}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/teachers/${selectedTeacher._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ const TeacherList = () => {
     const getProfilePicUrl = (picPath) => {
         if (!picPath) return null;
         if (picPath.startsWith('http')) return picPath;
-        return `http://localhost:5000/${picPath}`;
+        return `https://examcoach-backend-mnoy.onrender.com/${picPath}`;
     };
 
     return (

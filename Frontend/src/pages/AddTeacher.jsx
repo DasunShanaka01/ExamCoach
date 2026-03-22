@@ -45,7 +45,7 @@ const AddTeacher = () => {
                 data.append('profilePic', profilePic);
             }
 
-            const response = await fetch('http://localhost:5000/api/auth/add-teacher', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/auth/add-teacher', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

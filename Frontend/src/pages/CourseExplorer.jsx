@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import StudentNavbar from '../components/StudentNavbar';
 import LessonView from '../components/LessonView';
 
-const api = 'http://localhost:5000';
+const api = 'https://examcoach-backend-mnoy.onrender.com';
 
 const CourseExplorer = () => {
 	const [streams, setStreams] = useState([]);

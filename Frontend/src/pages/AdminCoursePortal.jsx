@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
 import LessonView from '../components/LessonView'; // Imported LessonView
 
-const api = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const api = import.meta.env.VITE_API_URL || 'https://examcoach-backend-mnoy.onrender.com';
 
 const AdminCoursePortal = () => {
 	const token = localStorage.getItem('token');

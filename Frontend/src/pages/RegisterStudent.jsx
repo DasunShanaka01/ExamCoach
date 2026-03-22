@@ -40,7 +40,7 @@ const RegisterStudent = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/register-student', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/auth/register-student', {
                 method: 'POST',
                 body: formData
             });
@@ -66,7 +66,7 @@ const RegisterStudent = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/verify-otp', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/auth/verify-otp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -31,7 +31,7 @@ const AnalyticsDashboard = () => {
         
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();

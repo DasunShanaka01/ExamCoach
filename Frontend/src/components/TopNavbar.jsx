@@ -15,7 +15,7 @@ const TopNavbar = ({ role, pageName }) => {
                 // Determine API endpoint based on role
                 let endpoint = '';
                 if (role === 'teacher') {
-                    endpoint = `http://localhost:5000/api/teachers/profile/${user.id}`;
+                    endpoint = `https://examcoach-backend-mnoy.onrender.com/api/teachers/profile/${user.id}`;
                 } else if (role === 'admin') {
                     // Admins don't have a profile picture endpoint, so skip
                     return;

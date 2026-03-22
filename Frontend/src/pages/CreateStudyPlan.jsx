@@ -71,7 +71,7 @@ const CreateStudyPlan = () => {
             formData.append('pdf', file);
 
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan/extract-topics', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/extract-topics', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -183,7 +183,7 @@ const CreateStudyPlan = () => {
             }
 
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', {
                 method: isEditMode ? 'PUT' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',

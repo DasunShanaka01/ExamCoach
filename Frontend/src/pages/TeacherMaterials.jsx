@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
 import LessonView from '../components/LessonView';
 
-const api = 'http://localhost:5000';
+const api = 'https://examcoach-backend-mnoy.onrender.com';
 
 const TeacherMaterials = () => {
     const user = JSON.parse(localStorage.getItem('user'));

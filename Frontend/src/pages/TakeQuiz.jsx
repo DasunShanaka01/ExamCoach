@@ -4,7 +4,7 @@ import { quizAPI } from '../services/api';
 import StudentNavbar from '../components/StudentNavbar';
 import io from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = 'https://examcoach-backend-mnoy.onrender.com';
 
 const TakeQuiz = () => {
     const { id } = useParams();

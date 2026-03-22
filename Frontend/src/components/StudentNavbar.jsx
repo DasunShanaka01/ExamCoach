@@ -15,7 +15,7 @@ const StudentNavbar = () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token || !user) return;
-                const response = await fetch(`http://localhost:5000/api/students/profile/${user.id}`, {
+                const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/students/profile/${user.id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -34,7 +34,7 @@ const StudentNavbar = () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) return;
-                const response = await fetch('http://localhost:5000/api/study-plan', {
+                const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();

@@ -19,9 +19,9 @@ const StudyPlanDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const [planRes, progRes, timetableProgRes] = await Promise.all([
-                fetch('http://localhost:5000/api/study-plan', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch('http://localhost:5000/api/study-plan/today-progress', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch('http://localhost:5000/api/study-plan/progress', { headers: { 'Authorization': `Bearer ${token}` } })
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/today-progress', { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/progress', { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
 
             const planData = await planRes.json();
@@ -41,7 +41,7 @@ const StudyPlanDashboard = () => {
     const handleToggleTask = async (day, taskIndex) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/study-plan/timetable/task/${day}/${taskIndex}`, {
+            await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/task/${day}/${taskIndex}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -55,7 +55,7 @@ const StudyPlanDashboard = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan/log-time', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/log-time', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

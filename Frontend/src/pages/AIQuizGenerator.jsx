@@ -90,7 +90,7 @@ const AIQuizGenerator = () => {
     const fetchHistory = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/quiz/history', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/quiz/history', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -105,7 +105,7 @@ const AIQuizGenerator = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/quiz/history/${quizId}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/quiz/history/${quizId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -177,7 +177,7 @@ const AIQuizGenerator = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/quiz/generate', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/quiz/generate', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
                 body: formData
@@ -269,7 +269,7 @@ const AIQuizGenerator = () => {
         // Save Result to DB
         try {
             const token = localStorage.getItem('token');
-            await fetch('http://localhost:5000/api/quiz/save', {
+            await fetch('https://examcoach-backend-mnoy.onrender.com/api/quiz/save', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -312,7 +312,7 @@ const AIQuizGenerator = () => {
         setExplainLoading(prev => ({ ...prev, [index]: true }));
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/quiz/explain', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/quiz/explain', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

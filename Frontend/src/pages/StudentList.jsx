@@ -19,7 +19,7 @@ const StudentList = () => {
     const fetchStudents = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/students', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/students', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -41,7 +41,7 @@ const StudentList = () => {
         setLoadingDetails(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/students/${studentId}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/students/${studentId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -72,7 +72,7 @@ const StudentList = () => {
         if (window.confirm('Are you sure you want to delete this student?')) {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:5000/api/students/${id}`, {
+                const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/students/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`

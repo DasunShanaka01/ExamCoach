@@ -22,7 +22,7 @@ const StudyPlanResult = () => {
     const fetchPlan = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -58,7 +58,7 @@ const StudyPlanResult = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -78,7 +78,7 @@ const StudyPlanResult = () => {
     const fetchTodayProgress = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan/today-progress', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/today-progress', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -95,7 +95,7 @@ const StudyPlanResult = () => {
     const handleLogTime = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan/log-time', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/log-time', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

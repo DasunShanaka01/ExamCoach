@@ -17,7 +17,7 @@ const StudyJournal = () => {
     const fetchJournal = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan/journal', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/journal', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -45,7 +45,7 @@ const StudyJournal = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/study-plan/timetable/note/${editingDay}`, {
+            await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/note/${editingDay}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const StudyJournal = () => {
 
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/study-plan/timetable/note/${day}`, {
+            await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/note/${day}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

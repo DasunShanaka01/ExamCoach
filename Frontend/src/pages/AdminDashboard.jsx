@@ -23,7 +23,7 @@ const AdminDashboard = () => {
         const fetchOverview = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const res = await fetch('http://localhost:5000/api/admin/overview', {
+                const res = await fetch('https://examcoach-backend-mnoy.onrender.com/api/admin/overview', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const json = await res.json();

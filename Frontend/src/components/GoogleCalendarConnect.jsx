@@ -12,7 +12,7 @@ const GoogleCalendarConnect = ({ studentId, studyPlanId }) => {
     const checkConnectionStatus = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/calendar/status', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/calendar/status', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -42,7 +42,7 @@ const GoogleCalendarConnect = ({ studentId, studyPlanId }) => {
                 return;
             }
 
-            const response = await fetch('http://localhost:5000/api/calendar/auth', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/calendar/auth', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -67,7 +67,7 @@ const GoogleCalendarConnect = ({ studentId, studyPlanId }) => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/calendar/disconnect', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/calendar/disconnect', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -93,7 +93,7 @@ const GoogleCalendarConnect = ({ studentId, studyPlanId }) => {
         setSyncing(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/calendar/sync/${studyPlanId}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/calendar/sync/${studyPlanId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

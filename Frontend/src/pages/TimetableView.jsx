@@ -29,10 +29,10 @@ const TimetableView = () => {
         try {
             const token = localStorage.getItem('token');
             const [timetableRes, progressRes] = await Promise.all([
-                fetch('http://localhost:5000/api/study-plan/timetable', {
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }),
-                fetch('http://localhost:5000/api/study-plan/progress', {
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/progress', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
             ]);
@@ -60,7 +60,7 @@ const TimetableView = () => {
     const handleToggleTask = async (day, taskIndex) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/study-plan/timetable/task/${day}/${taskIndex}`, {
+            await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/task/${day}/${taskIndex}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -80,7 +80,7 @@ const TimetableView = () => {
         setSavingNote(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/study-plan/timetable/note/${selectedDay}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/note/${selectedDay}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
