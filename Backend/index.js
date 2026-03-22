@@ -117,6 +117,9 @@ app.use('/api/lessons', require('./routes/lessonRoutes'));
 // AI Routes
 app.use('/api/ai', require('./routes/aiRoutes'));
 
+// Admin Routes
+app.use('/api/admin', require('./routes/platformOverviewRoutes'));
+
 // Error handler to return JSON (e.g., multer/cloudinary errors)
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     console.error('Unhandled error', err);
