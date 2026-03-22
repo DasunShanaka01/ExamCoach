@@ -14,6 +14,7 @@ const AdminCoursePortal = () => {
 	const [error, setError] = useState('');
 	const [subjectForm, setSubjectForm] = useState({ name: '', stream: '', teacher: '', description: '' });
 	const [editingId, setEditingId] = useState('');
+	const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
 	// New State for Lesson Management
 	const [viewingSubject, setViewingSubject] = useState(null);
 	const [lessons, setLessons] = useState([]);
@@ -222,10 +223,17 @@ const AdminCoursePortal = () => {
 			}
 			setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
 			setEditingId('');
+			setIsSubjectModalOpen(false);
 			setError('');
 		} catch (err) {
 			setError(err.message);
 		}
+	};
+
+	const handleOpenCreateSubject = () => {
+		setEditingId('');
+		setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
+		setIsSubjectModalOpen(true);
 	};
 
 	const handleEditClick = (subj) => {
@@ -236,6 +244,7 @@ const AdminCoursePortal = () => {
 			teacher: subj.teacher?._id || subj.teacher || '',
 			description: subj.description || ''
 		});
+		setIsSubjectModalOpen(true);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
@@ -285,6 +294,14 @@ const AdminCoursePortal = () => {
 										: 'Create streams, subjects, and assign teachers.'}
 								</p>
 							</div>
+							{!viewingSubject && (
+								<button
+									onClick={handleOpenCreateSubject}
+									className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition md:self-start"
+								>
+									Create Subject
+								</button>
+							)}
 							{viewingSubject && (
 								<button
 									onClick={() => { setViewingSubject(null); setLessons([]); setError(''); }}
@@ -382,9 +399,80 @@ const AdminCoursePortal = () => {
 							</div>
 						) : (
 							<div className="grid grid-cols-1 gap-6">
-								{/* Subject creator */}
 								<div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-									<h2 className="text-xl font-semibold text-gray-800 mb-4">Create Subject</h2>
+							
+
+									<div>
+										<h3 className="text-lg font-semibold text-gray-800 mb-3">Subjects by Stream</h3>
+										{Object.keys(groupedSubjects).length === 0 ? (
+											<p className="text-gray-500 text-sm">No subjects created yet.</p>
+										) : (
+											<div className="space-y-4">
+												{Object.entries(groupedSubjects).map(([streamName, list]) => (
+													<div key={streamName} className="border border-gray-100 rounded-lg">
+														<div className="px-4 py-2 bg-gray-50 font-semibold text-gray-700">{streamName}</div>
+														<div className="divide-y divide-gray-100">
+															{list.map((subj) => (
+																<div key={subj._id} className="px-4 py-3 flex items-start justify-between gap-4">
+																	<div>
+																		<p className="font-semibold text-gray-800">{subj.name}</p>
+																		<p className="text-sm text-gray-500">{subj.description || 'No description'}</p>
+																	</div>
+																	<div className="text-right">
+																		<p className="text-sm text-gray-700">Teacher</p>
+																		<p className="font-medium text-gray-900">{subj.teacher?.name || 'N/A'}</p>
+																		<p className="text-xs text-gray-500">{subj.teacher?.user?.email}</p>
+																		<div className="mt-2 flex gap-2 justify-end">
+																			<button
+																				onClick={() => { setViewingSubject(subj); setError(''); }}
+																				className="px-3 py-1 text-sm rounded bg-green-50 text-green-700 hover:bg-green-100"
+																			>
+																				View Lessons
+																			</button>
+																			<button
+																				onClick={() => handleEditClick(subj)}
+																				className="px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+																			>
+																				Edit
+																			</button>
+																			<button
+																				onClick={() => handleDelete(subj._id)}
+																				className="px-3 py-1 text-sm rounded bg-red-50 text-red-700 hover:bg-red-100"
+																			>
+																				Delete
+																			</button>
+																		</div>
+																	</div>
+																</div>
+															))}
+														</div>
+													</div>
+												))}
+											</div>
+										)}
+									</div>
+								</div>
+							</div>
+						)}
+
+						{!viewingSubject && isSubjectModalOpen && (
+							<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+								<div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl border border-gray-100 p-6 max-h-[90vh] overflow-y-auto">
+									<div className="flex items-center justify-between mb-4">
+										<h2 className="text-xl font-semibold text-gray-800">{editingId ? 'Edit Subject' : 'Create Subject'}</h2>
+										<button
+											type="button"
+											onClick={() => {
+												setIsSubjectModalOpen(false);
+												setEditingId('');
+												setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
+											}}
+											className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+										>
+											&times;
+										</button>
+									</div>
+
 									<form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubjectSubmit}>
 										<div className="md:col-span-2">
 											<label className="block text-sm font-semibold text-gray-700 mb-2">Subject Name</label>
@@ -439,71 +527,23 @@ const AdminCoursePortal = () => {
 											/>
 										</div>
 
-										<div className="md:col-span-2 flex justify-end gap-3">
-											{editingId && (
-												<button
-													type="button"
-													onClick={() => { setEditingId(''); setSubjectForm({ name: '', stream: '', teacher: '', description: '' }); }}
-													className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-												>
-													Cancel
-												</button>
-											)}
+										<div className="md:col-span-2 flex justify-end gap-3 mt-2">
+											<button
+												type="button"
+												onClick={() => {
+													setIsSubjectModalOpen(false);
+													setEditingId('');
+													setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
+												}}
+												className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+											>
+												Cancel
+											</button>
 											<button type="submit" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
 												{editingId ? 'Update Subject' : 'Create Subject'}
 											</button>
 										</div>
 									</form>
-
-									<div className="mt-8">
-										<h3 className="text-lg font-semibold text-gray-800 mb-3">Subjects by Stream</h3>
-										{Object.keys(groupedSubjects).length === 0 ? (
-											<p className="text-gray-500 text-sm">No subjects created yet.</p>
-										) : (
-											<div className="space-y-4">
-												{Object.entries(groupedSubjects).map(([streamName, list]) => (
-													<div key={streamName} className="border border-gray-100 rounded-lg">
-														<div className="px-4 py-2 bg-gray-50 font-semibold text-gray-700">{streamName}</div>
-														<div className="divide-y divide-gray-100">
-															{list.map((subj) => (
-																<div key={subj._id} className="px-4 py-3 flex items-start justify-between gap-4">
-																	<div>
-																		<p className="font-semibold text-gray-800">{subj.name}</p>
-																		<p className="text-sm text-gray-500">{subj.description || 'No description'}</p>
-																	</div>
-																	<div className="text-right">
-																		<p className="text-sm text-gray-700">Teacher</p>
-																		<p className="font-medium text-gray-900">{subj.teacher?.name || 'N/A'}</p>
-																		<p className="text-xs text-gray-500">{subj.teacher?.user?.email}</p>
-																		<div className="mt-2 flex gap-2 justify-end">
-																			<button
-																				onClick={() => { setViewingSubject(subj); setError(''); }}
-																				className="px-3 py-1 text-sm rounded bg-green-50 text-green-700 hover:bg-green-100"
-																			>
-																				View Lessons
-																			</button>
-																			<button
-																				onClick={() => handleEditClick(subj)}
-																				className="px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
-																			>
-																				Edit
-																			</button>
-																			<button
-																				onClick={() => handleDelete(subj._id)}
-																				className="px-3 py-1 text-sm rounded bg-red-50 text-red-700 hover:bg-red-100"
-																			>
-																				Delete
-																			</button>
-																		</div>
-																	</div>
-																</div>
-															))}
-														</div>
-													</div>
-												))}
-											</div>
-										)}
-									</div>
 								</div>
 							</div>
 						)}
