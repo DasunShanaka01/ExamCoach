@@ -92,27 +92,40 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen p-5 bg-gradient-to-br from-blue-50 to-indigo-100">
-            <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all hover:scale-105">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">
+        <div className="relative min-h-screen flex justify-center items-center p-4 overflow-hidden bg-slate-50">
+            {/* Animated Ambient Background */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-indigo-500/30 to-purple-600/30 rounded-full blur-[100px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-400/20 to-emerald-400/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+            </div>
+
+            {/* Glassmorphic Form Container */}
+            <div className="relative z-10 w-full max-w-md p-8 sm:p-10 bg-white/70 backdrop-blur-2xl border border-white/60 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+                
+                <div className="text-center mb-10">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg mb-6 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
                         {step === 1 ? 'Welcome Back' : 'Verify Email'}
                     </h2>
-                    <p className="text-gray-600">
-                        {step === 1 ? 'Login to ExamCoach' : 'Enter the OTP to verify your account'}
+                    <p className="text-gray-500 font-medium">
+                        {step === 1 ? 'Login to your ExamCoach account' : 'Enter the OTP to verify your account'}
                     </p>
                 </div>
 
                 {error && (
-                    <div className={`bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-6 ${step === 1 ? 'animate-shake' : ''}`}>
-                        <p className="font-medium">{error}</p>
+                    <div className={`bg-red-50/80 backdrop-blur-sm border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6 shadow-sm ${step === 1 ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}>
+                        <p className="font-semibold text-sm">{error}</p>
                     </div>
                 )}
 
                 {step === 1 ? (
                     <form onSubmit={handleLoginSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            <label className="block text-sm font-bold text-gray-700 mb-2">
                                 Email Address
                             </label>
                             <input
@@ -120,43 +133,51 @@ const Login = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                                className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                 placeholder="your.email@example.com"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                                Password
-                            </label>
+                            <div className="flex items-center justify-between mb-2">
+                                <label className="block text-sm font-bold text-gray-700">
+                                    Password
+                                </label>
+                                <Link to="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-800 font-bold transition-colors">
+                                    Forgot Password?
+                                </Link>
+                            </div>
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                                className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                 placeholder="••••••••"
                             />
-                            <div className="text-right mt-2">
-                                <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800 font-semibold transition-colors">
-                                    Forgot Password?
-                                </Link>
-                            </div>
                         </div>
 
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition-all mt-6 ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}`}
+                            className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transform transition-all mt-8 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg active:scale-95'}`}
                         >
-                            {loading ? 'Signing in...' : 'Sign In'}
+                            {loading ? (
+                                <span className="flex items-center justify-center gap-2">
+                                    <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Signing in...
+                                </span>
+                            ) : 'Sign In to Dashboard'}
                         </button>
                     </form>
                 ) : (
                     <form onSubmit={handleOTPSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-3 text-center">
-                                A 6-digit OTP has been sent to your email
+                            <label className="block text-sm font-bold text-gray-700 mb-4 text-center">
+                                A 6-digit code has been sent to your email
                             </label>
                             <input
                                 type="text"
@@ -164,7 +185,7 @@ const Login = () => {
                                 onChange={(e) => setOtp(e.target.value)}
                                 required
                                 maxLength="6"
-                                className="w-full text-center tracking-[1em] font-mono text-2xl px-4 py-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                                className="w-full text-center tracking-[1em] font-mono text-3xl px-4 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none text-gray-800 shadow-inner"
                                 placeholder="------"
                             />
                         </div>
@@ -172,23 +193,25 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transform transition-all mt-6 ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}`}
+                            className={`w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transform transition-all mt-8 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg active:scale-95'}`}
                         >
-                            {loading ? 'Verifying...' : 'Verify Email & Login'}
+                            {loading ? 'Verifying...' : 'Verify & Login'}
                         </button>
                     </form>
                 )}
 
                 {step === 1 && (
-                    <p className="mt-6 text-center text-gray-600">
-                        Don't have an account?{' '}
-                        <Link
-                            to="/register"
-                            className="text-blue-600 hover:text-blue-800 font-semibold transition-colors"
-                        >
-                            Register as Student
-                        </Link>
-                    </p>
+                    <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+                        <p className="text-gray-500 font-medium">
+                            Don't have an account?{' '}
+                            <Link
+                                to="/register"
+                                className="text-indigo-600 hover:text-indigo-800 font-bold transition-colors"
+                            >
+                                Register now
+                            </Link>
+                        </p>
+                    </div>
                 )}
             </div>
         </div>
