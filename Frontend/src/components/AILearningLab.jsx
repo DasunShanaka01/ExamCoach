@@ -112,15 +112,15 @@ const AILearningLab = () => {
                         const answerLine = lines.find((line) => line.toLowerCase().startsWith('a:'));
 
                         return (
-                            <div key={index} className="rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+                            <div key={index} className="rounded-2xl border border-brand-50 bg-brand-50/40 p-4">
                                 <div className="flex items-start gap-3">
-                                    <div className="mt-1 rounded-xl bg-blue-600/10 p-2 text-blue-600">🧠</div>
-                                    <div className="space-y-2 text-base text-slate-700">
-                                        <div className="font-semibold text-slate-900">
+                                    <div className="mt-1 rounded-xl bg-brand-700/10 p-2 text-brand-700">🧠</div>
+                                    <div className="space-y-2 text-base text-gray-700">
+                                        <div className="font-semibold text-gray-900">
                                             Q{index + 1}. {questionLine ? questionLine.replace(/^Q:\s*/i, '') : `Question ${index + 1}`}
                                         </div>
                                         {answerLine && (
-                                            <div className="rounded-xl bg-white px-3 py-2 text-slate-600 shadow-sm">
+                                            <div className="rounded-xl bg-white px-3 py-2 text-gray-600 shadow-sm">
                                                 <span className="font-semibold">Answer:</span> {answerLine.replace(/^A:\s*/i, '')}
                                             </div>
                                         )}
@@ -150,12 +150,12 @@ const AILearningLab = () => {
             return (
                 <div className="grid gap-3">
                     {terms.map((entry, index) => (
-                        <div key={index} className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4">
+                        <div key={index} className="rounded-2xl border border-brand-50 bg-brand-50/40 p-4">
                             <div className="flex items-start gap-3">
-                                <div className="mt-1 rounded-xl bg-emerald-600/10 p-2 text-emerald-600">📘</div>
+                                <div className="mt-1 rounded-xl bg-brand-700/10 p-2 text-brand-700">📘</div>
                                 <div>
-                                    <div className="text-base font-semibold text-slate-900">{entry.term}</div>
-                                    <div className="text-base text-slate-600 mt-1">{entry.definition || 'Definition not provided.'}</div>
+                                    <div className="text-base font-semibold text-gray-900">{entry.term}</div>
+                                    <div className="text-base text-gray-600 mt-1">{entry.definition || 'Definition not provided.'}</div>
                                 </div>
                             </div>
                         </div>
@@ -176,7 +176,7 @@ const AILearningLab = () => {
                         <div key={index} className="rounded-2xl border border-amber-100 bg-amber-50/40 p-4">
                             <div className="flex items-start gap-3">
                                 <div className="mt-1 rounded-xl bg-amber-500/10 p-2 text-amber-600">🎯</div>
-                                <div className="text-base text-slate-700">
+                                <div className="text-base text-gray-700">
                                     <span className="font-semibold">{index + 1}.</span> {point}
                                 </div>
                             </div>
@@ -190,24 +190,24 @@ const AILearningLab = () => {
         return (
             <div className="space-y-5">
                 {keyPoints.length > 0 && (
-                    <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
-                        <div className="flex items-center gap-2 text-base font-semibold text-slate-700 mb-3">
+                    <div className="rounded-2xl border border-brand-50 bg-brand-50 p-5">
+                        <div className="flex items-center gap-2 text-base font-semibold text-gray-700 mb-3">
                             ✨ Key Points
                         </div>
                         <div className="space-y-2">
                             {keyPoints.map((point, index) => (
                                 <div key={index} className="flex items-start gap-3">
-                                    <span className="h-6 w-6 rounded-full bg-blue-600 text-white text-xs font-semibold flex items-center justify-center">
+                                    <span className="h-6 w-6 rounded-full bg-brand-700 text-white text-xs font-semibold flex items-center justify-center">
                                         {index + 1}
                                     </span>
-                                    <span className="text-base text-slate-700">{point}</span>
+                                    <span className="text-base text-gray-700">{point}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
                 )}
 
-                <div className="rounded-2xl border border-slate-100 bg-white p-5 text-base text-slate-700 leading-relaxed">
+                <div className="rounded-2xl border border-brand-50 bg-white p-5 text-base text-gray-700 leading-relaxed">
                     <span className="font-semibold">📌 Summary:</span> {summary}
                 </div>
             </div>
@@ -575,42 +575,42 @@ const AILearningLab = () => {
     });
 
     return (
-        <div className="relative min-h-[calc(100vh-64px)] bg-slate-50 overflow-hidden font-['Manrope',sans-serif]">
-            <div className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-blue-200/40 blur-3xl"></div>
+        <div className="relative min-h-[calc(100vh-64px)] bg-brand-50 overflow-hidden font-['Manrope',sans-serif]">
+            <div className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-brand-300/40 blur-3xl"></div>
             <div className="pointer-events-none absolute bottom-0 left-0 h-64 w-64 rounded-full bg-amber-200/30 blur-3xl"></div>
         
             <div className="px-8 pb-10">
                 <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
                     {/* Sidebar */}
                     <div className="lg:col-span-4">
-                        <div className="bg-white/90 backdrop-blur rounded-3xl border border-slate-200 shadow-sm p-5 flex flex-col gap-4">
+                        <div className="bg-white/90 backdrop-blur rounded-3xl border border-gray-200 shadow-sm p-5 flex flex-col gap-4">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                                    <Clock size={16} className="text-slate-500" />
+                                <h2 className="text-sm font-semibold text-brand-900 flex items-center gap-2">
+                                    <Clock size={16} className="text-brand-700" />
                                     History (My Notes)
                                 </h2>
-                                <span className="text-[11px] bg-slate-100 text-slate-600 px-2 py-1 rounded-full">{history.length}</span>
+                                <span className="text-[11px] bg-brand-50 text-gray-600 px-2 py-1 rounded-full">{history.length}</span>
                             </div>
 
                             <div className="relative">
-                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                 <input
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search summaries..."
-                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                    className="w-full rounded-xl border border-gray-200 bg-brand-50 pl-9 pr-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-300"
                                 />
                             </div>
 
-                            <div className="text-xs uppercase tracking-wide text-slate-400 flex items-center gap-2">
-                                <div className="h-1.5 w-1.5 rounded-full bg-blue-500"></div>
+                            <div className="text-xs uppercase tracking-wide text-gray-400 flex items-center gap-2">
+                                <div className="h-1.5 w-1.5 rounded-full bg-brand-700"></div>
                                 My Notes
                             </div>
 
                             <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
                                 {filteredHistory.length === 0 ? (
-                                    <div className="text-center py-8 text-slate-400 text-sm bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                    <div className="text-center py-8 text-gray-400 text-sm bg-brand-50 rounded-2xl border border-dashed border-gray-200">
                                         No history yet.
                                     </div>
                                 ) : (
@@ -618,20 +618,20 @@ const AILearningLab = () => {
                                         <div
                                             key={item._id}
                                             onClick={() => loadHistoryItem(item)}
-                                            className={`group p-3 rounded-2xl border transition-all cursor-pointer hover:shadow-sm ${selectedHistoryId === item._id ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-white border-slate-200/60 hover:bg-slate-50'}`}
+                                            className={`group p-3 rounded-2xl border transition-all cursor-pointer hover:shadow-sm ${selectedHistoryId === item._id ? 'bg-brand-50 border-brand-300 shadow-sm' : 'bg-white border-gray-200/60 hover:bg-brand-50'}`}
                                         >
                                             <div className="flex items-start gap-3">
-                                                <div className={`mt-1 p-2 rounded-xl ${item.type === 'pdf' ? 'bg-rose-50 text-rose-500' : 'bg-blue-50 text-blue-500'}`}>
+                                                <div className={`mt-1 p-2 rounded-xl ${item.type === 'pdf' ? 'bg-brand-50 text-brand-700' : 'bg-brand-50 text-brand-700'}`}>
                                                     {item.type === 'pdf' ? <FileText size={16} /> : <File size={16} />}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-start justify-between gap-2">
-                                                        <h4 className={`text-sm font-medium truncate ${selectedHistoryId === item._id ? 'text-blue-700' : 'text-slate-700'}`}>{item.title}</h4>
+                                                        <h4 className={`text-sm font-medium truncate ${selectedHistoryId === item._id ? 'text-brand-900' : 'text-gray-700'}`}>{item.title}</h4>
                                                         <button
                                                             type="button"
                                                             onClick={(e) => handleDeleteHistoryItem(e, item._id)}
                                                             disabled={deletingHistoryId === item._id}
-                                                            className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition disabled:opacity-40"
+                                                            className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-gray-400 hover:text-brand-700 hover:bg-brand-50 transition disabled:opacity-40"
                                                             title="Delete note"
                                                         >
                                                             {deletingHistoryId === item._id ? (
@@ -641,9 +641,9 @@ const AILearningLab = () => {
                                                             )}
                                                         </button>
                                                     </div>
-                                                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-400">
+                                                    <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
                                                         <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                                                        <span className="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500 text-[10px] uppercase">
+                                                        <span className="px-1.5 py-0.5 rounded-full bg-brand-50 text-brand-700 text-[10px] uppercase">
                                                             {item.summaryType || 'paragraph'}
                                                         </span>
                                                         <span>{getWordCount(item.summary)} Words</span>
@@ -661,28 +661,28 @@ const AILearningLab = () => {
                     <div className="lg:col-span-8">
                         <div className="flex flex-col gap-6">
                             {/* Input Card */}
-                            <div className="bg-white/90 backdrop-blur rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                                <div className="p-5 border-b border-slate-100 flex items-start justify-between">
+                            <div className="bg-white/90 backdrop-blur rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+                                <div className="p-5 border-b border-brand-50 flex items-start justify-between">
                                     <div>
-                                        <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                                            <BookOpen size={18} className="text-blue-600" />
+                                        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                            <BookOpen size={18} className="text-brand-700" />
                                             Generate Summary
                                         </h2>
-                                        <p className="text-xs text-slate-500 mt-1">Upload your study materials and let our AI generate concise summaries.</p>
+                                        <p className="text-xs text-brand-700 mt-1">Upload your study materials and let our AI generate concise summaries.</p>
                                     </div>
                                 </div>
 
                                 {/* Tabs */}
-                                <div className="flex border-b border-slate-100 bg-slate-50/60">
+                                <div className="flex border-b border-brand-50 bg-brand-50/60">
                                     <button
                                         onClick={() => setActiveTab('upload')}
-                                        className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${activeTab === 'upload' ? 'bg-white text-blue-600 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-700 hover:bg-white/60'}`}
+                                        className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${activeTab === 'upload' ? 'bg-white text-brand-700 border-b-2 border-brand-700' : 'text-brand-700 hover:text-gray-700 hover:bg-white/60'}`}
                                     >
                                         <Upload size={16} /> Upload PDF
                                     </button>
                                     <button
                                         onClick={() => setActiveTab('text')}
-                                        className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${activeTab === 'text' ? 'bg-white text-blue-600 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-700 hover:bg-white/60'}`}
+                                        className={`flex-1 py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 ${activeTab === 'text' ? 'bg-white text-brand-700 border-b-2 border-brand-700' : 'text-brand-700 hover:text-gray-700 hover:bg-white/60'}`}
                                     >
                                         <FileText size={16} /> Paste Text
                                     </button>
@@ -690,13 +690,13 @@ const AILearningLab = () => {
 
                                 <div className="p-6 flex flex-col gap-4">
                                     <div>
-                                        <label className="text-xs font-semibold text-slate-600">Summary Type</label>
+                                        <label className="text-xs font-semibold text-gray-600">Summary Type</label>
                                         <div className="mt-2">
                                             <select
                                                 value={summaryType}
                                                 onChange={(e) => setSummaryType(e.target.value)}
                                                 disabled={selectedHistoryId !== null}
-                                                className={`w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 ${selectedHistoryId !== null ? 'cursor-not-allowed opacity-70' : ''}`}
+                                                className={`w-full rounded-2xl border border-gray-200 bg-brand-50 px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-300 ${selectedHistoryId !== null ? 'cursor-not-allowed opacity-70' : ''}`}
                                             >
                                                 {summaryTypeOptions.map((option) => (
                                                     <option key={option.value} value={option.value}>
@@ -707,12 +707,12 @@ const AILearningLab = () => {
                                         </div>
                                     </div>
                                     {activeTab === 'upload' ? (
-                                        <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-blue-200 rounded-2xl bg-blue-50/40 hover:bg-white hover:border-blue-300 transition-all">
+                                        <div className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-brand-300 rounded-2xl bg-brand-50/40 hover:bg-white hover:border-brand-300 transition-all">
                                             <div className="p-4 bg-white rounded-2xl shadow-sm mb-4">
-                                                <Upload className="w-8 h-8 text-blue-500" />
+                                                <Upload className="w-8 h-8 text-brand-700" />
                                             </div>
-                                            <p className="text-sm font-medium text-slate-700 mb-1">Click to upload or drag and drop</p>
-                                            <p className="text-xs text-slate-400 mb-5">PDF files only (max 10MB)</p>
+                                            <p className="text-sm font-medium text-gray-700 mb-1">Click to upload or drag and drop</p>
+                                            <p className="text-xs text-gray-400 mb-5">PDF files only (max 10MB)</p>
 
                                             <input
                                                 type="file"
@@ -724,14 +724,14 @@ const AILearningLab = () => {
                                             />
                                             <label
                                                 htmlFor="file-upload"
-                                                className="cursor-pointer bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-50 transition-all shadow-sm"
+                                                className="cursor-pointer bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-brand-50 transition-all shadow-sm"
                                             >
                                                 Choose File
                                             </label>
                                             {files.length > 0 && (
-                                                <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-emerald-600">
+                                                <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-brand-700">
                                                     {files.map((selectedFile) => (
-                                                        <div key={selectedFile.name} className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+                                                        <div key={selectedFile.name} className="flex items-center gap-2 bg-brand-50 px-3 py-1.5 rounded-full border border-brand-50">
                                                             <File size={14} />
                                                             <span className="truncate max-w-[200px]">{selectedFile.name}</span>
                                                         </div>
@@ -741,19 +741,19 @@ const AILearningLab = () => {
                                         </div>
                                     ) : (
                                         <textarea
-                                            className="w-full min-h-[260px] p-4 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-200 focus:border-transparent resize-none bg-slate-50 focus:bg-white transition-colors text-sm"
+                                            className="w-full min-h-[260px] p-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-brand-300 focus:border-transparent resize-none bg-brand-50 focus:bg-white transition-colors text-sm"
                                             placeholder="Paste your lecture notes or text here..."
                                             value={text}
                                             onChange={handleTextChange}
                                         ></textarea>
                                     )}
 
-                                    {error && <p className="text-rose-500 text-sm text-center bg-rose-50 py-2 rounded-xl">{error}</p>}
+                                    {error && <p className="text-brand-700 text-sm text-center bg-brand-50 py-2 rounded-xl">{error}</p>}
 
                                     <button
                                         onClick={handleSummarize}
                                         disabled={loading}
-                                        className="w-full bg-blue-600 text-white font-semibold py-3 px-4 rounded-2xl hover:bg-blue-700 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                        className="w-full bg-brand-700 text-white font-semibold py-3 px-4 rounded-2xl hover:bg-brand-900 transition-all disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                     >
                                         {loading ? <Loader2 className="animate-spin" size={20} /> : <RefreshCw size={20} />}
                                         {loading ? 'Analyzing Content...' : 'Generate New Summary'}
@@ -762,62 +762,62 @@ const AILearningLab = () => {
                             </div>
 
                             {/* Output Card */}
-                            <div className="bg-white/90 backdrop-blur rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-                                <div className="px-5 pt-5 pb-3 border-b border-slate-100 flex justify-between items-start">
+                            <div className="bg-white/90 backdrop-blur rounded-3xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                                <div className="px-5 pt-5 pb-3 border-b border-brand-50 flex justify-between items-start">
                                     <div>
-                                        <h3 className="text-lg font-semibold text-slate-900">AI Summary Preview</h3>
-                                        <p className="text-xs text-slate-500 mt-1">AI Generated • {new Date().toLocaleDateString()}</p>
+                                        <h3 className="text-lg font-semibold text-gray-900">AI Summary Preview</h3>
+                                        <p className="text-xs text-brand-700 mt-1">AI Generated • {new Date().toLocaleDateString()}</p>
                                         {selectedSummaryOption && (
                                             <div className="mt-2 flex flex-wrap items-center gap-2">
-                                                <span className="inline-flex items-center text-[11px] font-semibold text-blue-700 bg-blue-50 border border-blue-100 px-2.5 py-1 rounded-full">
+                                                <span className="inline-flex items-center text-[11px] font-semibold text-brand-900 bg-brand-50 border border-brand-50 px-2.5 py-1 rounded-full">
                                                     {selectedSummaryOption.label}
                                                 </span>
-                                                <span className="text-[11px] text-slate-500">
+                                                <span className="text-[11px] text-brand-700">
                                                     {selectedSummaryOption.description}
                                                 </span>
                                             </div>
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <button onClick={handleDownloadSummary} className="flex items-center gap-1.5 bg-white text-slate-600 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-200 hover:bg-slate-50 transition-colors shadow-sm">
+                                        <button onClick={handleDownloadSummary} className="flex items-center gap-1.5 bg-white text-gray-600 text-xs font-medium px-3 py-1.5 rounded-full border border-gray-200 hover:bg-brand-50 transition-colors shadow-sm">
                                             <Download size={14} /> Download PDF
                                         </button>
-                                        <button onClick={handleSave} className="flex items-center gap-1.5 bg-emerald-600 text-white text-xs font-medium px-3 py-1.5 rounded-full hover:bg-emerald-700 transition-colors shadow-sm">
+                                        <button onClick={handleSave} className="flex items-center gap-1.5 bg-brand-700 text-white text-xs font-medium px-3 py-1.5 rounded-full hover:bg-brand-900 transition-colors shadow-sm">
                                             <Save size={14} /> Save Note
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Result Tabs */}
-                                <div className="flex border-b border-slate-100 bg-white sticky top-0 z-10">
+                                <div className="flex border-b border-brand-50 bg-white sticky top-0 z-10">
                                     <button
                                         onClick={() => setActiveResultTab('summary')}
-                                        className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${activeResultTab === 'summary' ? 'border-amber-400 text-amber-800 bg-amber-50/60' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
+                                        className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${activeResultTab === 'summary' ? 'border-amber-400 text-amber-800 bg-amber-50/60' : 'border-transparent text-brand-700 hover:text-gray-700 hover:bg-brand-50'}`}
                                     >
                                         Summary
                                     </button>
                                     <button
                                         onClick={() => setActiveResultTab('resources')}
-                                        className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${activeResultTab === 'resources' ? 'border-blue-400 text-blue-700 bg-blue-50/60' : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}
+                                        className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 ${activeResultTab === 'resources' ? 'border-brand-300 text-brand-900 bg-brand-50/60' : 'border-transparent text-brand-700 hover:text-gray-700 hover:bg-brand-50'}`}
                                     >
                                         Related Resources
                                     </button>
                                 </div>
 
-                                <div className="relative flex-1 p-6 overflow-y-auto bg-gradient-to-br from-slate-50 via-white to-blue-50/40">
+                                <div className="relative flex-1 p-6 overflow-y-auto bg-gradient-to-br from-brand-50 via-white to-brand-50/40">
                                     {loading ? (
                                         <div className="space-y-4 animate-pulse">
-                                            <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                                            <div className="h-4 bg-slate-200 rounded w-full"></div>
-                                            <div className="h-4 bg-slate-200 rounded w-5/6"></div>
-                                            <div className="h-4 bg-slate-200 rounded w-4/5"></div>
+                                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                            <div className="h-4 bg-gray-200 rounded w-full"></div>
+                                            <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                                            <div className="h-4 bg-gray-200 rounded w-4/5"></div>
                                         </div>
                                     ) : !summary ? (
-                                        <div className="flex-1 flex flex-col items-center justify-center text-center py-14 text-slate-400">
+                                        <div className="flex-1 flex flex-col items-center justify-center text-center py-14 text-gray-400">
                                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
-                                                <FileText size={28} className="text-slate-300" />
+                                                <FileText size={28} className="text-gray-300" />
                                             </div>
-                                            <h3 className="text-base font-semibold text-slate-600 mb-1">Ready to Summarize</h3>
+                                            <h3 className="text-base font-semibold text-gray-600 mb-1">Ready to Summarize</h3>
                                             <p className="max-w-xs text-sm">Upload a document or paste text to see the AI-generated summary here.</p>
                                         </div>
                                     ) : (
@@ -834,9 +834,9 @@ const AILearningLab = () => {
                                             <div className="space-y-4">
                                                 {relatedResources.length > 0 ? (
                                                     relatedResources.map((resource, index) => (
-                                                        <div key={index} className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                                                        <div key={index} className="p-4 bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                                             <div className="flex items-start gap-3">
-                                                                <div className={`p-2 rounded-xl ${resource.type === 'youtube' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                                <div className={`p-2 rounded-xl ${resource.type === 'youtube' ? 'bg-brand-50 text-brand-700' : 'bg-brand-50 text-brand-700'}`}>
                                                                     {resource.type === 'youtube' ? (
                                                                         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
                                                                     ) : (
@@ -844,8 +844,8 @@ const AILearningLab = () => {
                                                                     )}
                                                                 </div>
                                                                 <div className="flex-1">
-                                                                    <h4 className="font-medium text-slate-900 mb-1">{resource.title}</h4>
-                                                                    <a href={resource.link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline flex items-center gap-1">
+                                                                    <h4 className="font-medium text-gray-900 mb-1">{resource.title}</h4>
+                                                                    <a href={resource.link} target="_blank" rel="noopener noreferrer" className="text-sm text-brand-700 hover:underline flex items-center gap-1">
                                                                         View Resource <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                                                                     </a>
                                                                 </div>
@@ -853,7 +853,7 @@ const AILearningLab = () => {
                                                         </div>
                                                     ))
                                                 ) : (
-                                                    <div className="text-center py-8 text-slate-500">
+                                                    <div className="text-center py-8 text-brand-700">
                                                         No related resources found.
                                                     </div>
                                                 )}

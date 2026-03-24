@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import LessonView from '../components/LessonView'; // Imported LessonView
 
 const api = import.meta.env.VITE_API_URL || 'https://examcoach-backend-mnoy.onrender.com';
@@ -277,55 +278,53 @@ const AdminCoursePortal = () => {
 	}, [subjects]);
 
 	return (
-		<div className="flex min-h-screen bg-gray-50">
+		<div className="flex min-h-screen bg-brand-50">
 			<Sidebar role="admin" />
-			<div className="flex-1 ml-64">
+			<div className="flex-1 ml-64 bg-brand-50 pb-12">
 				<TopNavbar role="admin" pageName="Course Management" />
+
+				<PageHeader 
+					icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+					title={viewingSubject ? `Lessons: ${viewingSubject.name}` : 'Course Management'}
+					subtitle={viewingSubject 
+						? `Manage lessons and materials for ${viewingSubject.name}` 
+						: 'Create streams, subjects, and assign teachers.'}
+				>
+					{!viewingSubject && (
+						<button
+							onClick={handleOpenCreateSubject}
+							className="px-6 py-2.5 bg-white text-brand-800 rounded-xl font-semibold hover:bg-brand-50 shadow-md transition-all whitespace-nowrap"
+						>
+							+ Create Subject
+						</button>
+					)}
+					{viewingSubject && (
+						<button
+							onClick={() => { setViewingSubject(null); setLessons([]); setError(''); }}
+							className="px-6 py-2.5 bg-white/20 text-white rounded-xl shadow-md font-semibold hover:bg-white/30 transition-all whitespace-nowrap border border-white/30"
+						>
+							← Back to Courses
+						</button>
+					)}
+				</PageHeader>
+
 				<div className="p-8">
-					<div className="max-w-7xl mx-auto">
-						<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-							<div>
-								<h1 className="text-3xl font-bold text-gray-800">
-									{viewingSubject ? `Lessons: ${viewingSubject.name}` : 'Course Management'}
-								</h1>
-								<p className="text-gray-600">
-									{viewingSubject 
-										? `Manage lessons and materials for ${viewingSubject.name}` 
-										: 'Create streams, subjects, and assign teachers.'}
-								</p>
-							</div>
-							{!viewingSubject && (
-								<button
-									onClick={handleOpenCreateSubject}
-									className="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition md:self-start"
-								>
-									Create Subject
-								</button>
-							)}
-							{viewingSubject && (
-								<button
-									onClick={() => { setViewingSubject(null); setLessons([]); setError(''); }}
-									className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-								>
-									← Back to Courses
-								</button>
-							)}
-						</div>
+					<div className="max-w-7xl mx-auto relative z-10 -mt-10">
 
 						{error && (
-							<div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-6">
+							<div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6">
 								<p className="font-medium">{error}</p>
 							</div>
 						)}
 
 						{loading ? (
 							<div className="flex justify-center items-center h-64">
-								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
 							</div>
 						) : viewingSubject ? (
 							<div className="grid grid-cols-1 gap-6">
 								{/* Lesson Creator */}
-								<div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+								<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 									<h2 className="text-xl font-semibold text-gray-800 mb-4">{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
 									<form className="grid grid-cols-1 gap-4" onSubmit={handleLessonSubmit}>
 										<div>
@@ -335,7 +334,7 @@ const AdminCoursePortal = () => {
 												value={lessonForm.title}
 												onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
 												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
 												placeholder="Week 1: Introduction"
 											/>
 										</div>
@@ -345,7 +344,7 @@ const AdminCoursePortal = () => {
 												value={lessonForm.description}
 												onChange={(e) => setLessonForm({ ...lessonForm, description: e.target.value })}
 												rows="2"
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
 												placeholder="Overview of the lesson..."
 											/>
 										</div>
@@ -369,7 +368,7 @@ const AdminCoursePortal = () => {
 													type="url"
 													value={lessonForm.link}
 													onChange={(e) => setLessonForm({ ...lessonForm, link: e.target.value })}
-													className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+													className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
 													placeholder="https://zoom.us/..."
 												/>
 											</div>
@@ -384,7 +383,7 @@ const AdminCoursePortal = () => {
 													Cancel
 												</button>
 											)}
-											<button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition">
+											<button type="submit" className="px-6 py-2.5 bg-brand-700 text-white rounded-lg hover:bg-brand-900 font-medium transition">
 												{editingLessonId ? 'Update Lesson' : 'Add Lesson'}
 											</button>
 										</div>
@@ -399,7 +398,7 @@ const AdminCoursePortal = () => {
 							</div>
 						) : (
 							<div className="grid grid-cols-1 gap-6">
-								<div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+								<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 							
 
 									<div>
@@ -431,7 +430,7 @@ const AdminCoursePortal = () => {
 																			</button>
 																			<button
 																				onClick={() => handleEditClick(subj)}
-																				className="px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+																				className="px-3 py-1 text-sm rounded bg-brand-50 text-brand-900 hover:bg-brand-50"
 																			>
 																				Edit
 																			</button>
@@ -481,7 +480,7 @@ const AdminCoursePortal = () => {
 												value={subjectForm.name}
 												onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
 												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
 												placeholder="Chemistry"
 											/>
 										</div>
@@ -492,7 +491,7 @@ const AdminCoursePortal = () => {
 												value={subjectForm.stream}
 												onChange={(e) => setSubjectForm({ ...subjectForm, stream: e.target.value })}
 												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
 											>
 												<option value="">Select Stream</option>
 												{streams.map((stream) => (
@@ -507,7 +506,7 @@ const AdminCoursePortal = () => {
 												value={subjectForm.teacher}
 												onChange={(e) => setSubjectForm({ ...subjectForm, teacher: e.target.value })}
 												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
 											>
 												<option value="">Select Teacher</option>
 												{teachers.map((teacher) => (
@@ -522,7 +521,7 @@ const AdminCoursePortal = () => {
 												value={subjectForm.description}
 												onChange={(e) => setSubjectForm({ ...subjectForm, description: e.target.value })}
 												rows="3"
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
 												placeholder="Brief about syllabus coverage"
 											/>
 										</div>
@@ -539,7 +538,7 @@ const AdminCoursePortal = () => {
 											>
 												Cancel
 											</button>
-											<button type="submit" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+											<button type="submit" className="px-6 py-3 bg-brand-900 text-white rounded-lg hover:bg-green-700 transition">
 												{editingId ? 'Update Subject' : 'Create Subject'}
 											</button>
 										</div>

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import { quizAPI } from '../services/api';
 import CheatingAlert from '../components/CheatingAlert';
 
@@ -54,28 +55,28 @@ const QuizAttempts = () => {
     const totalCheaters = attempts.filter(a => (a.tabSwitchCount || 0) > 0).length;
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <CheatingAlert />
             <Sidebar role="teacher" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="teacher" pageName="Quiz Attempts" />
+                <PageHeader 
+                    icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    title="Quiz Attempts"
+                    subtitle={quizTitle ? `Results for: ${quizTitle}` : "Student performance and analytics"}
+                >
+                    <button onClick={() => navigate(-1)} className="px-6 py-2.5 bg-white/20 text-white rounded-xl shadow-md font-semibold hover:bg-white/30 transition-all whitespace-nowrap border border-white/30">
+                        ← Back to Quizzes
+                    </button>
+                </PageHeader>
                 <div className="p-8">
-                    <div className="max-w-6xl mx-auto">
-                        {/* Back button and title */}
-                        <button onClick={() => navigate(-1)} className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-4 inline-flex items-center gap-1">
-                            ← Back to Quizzes
-                        </button>
-
-                        <header className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-800">Quiz Attempts</h1>
-                            {quizTitle && <p className="text-gray-500 mt-1">Results for: <span className="font-medium text-gray-700">{quizTitle}</span></p>}
-                        </header>
+                    <div className="max-w-6xl mx-auto relative z-10 -mt-8">
 
                         {error && <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6">{error}</div>}
 
                         {loading ? (
                             <div className="flex items-center justify-center py-20">
-                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-700"></div>
                                 <span className="ml-3 text-gray-500">Loading attempts...</span>
                             </div>
                         ) : attempts.length === 0 ? (
@@ -94,25 +95,25 @@ const QuizAttempts = () => {
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Average Final Score</p>
-                                        <p className="text-2xl font-bold text-blue-600">
+                                        <p className="text-2xl font-bold text-brand-700">
                                             {attempts.length > 0 ? Math.round(attempts.reduce((sum, a) => sum + (a.percentage ?? 0), 0) / attempts.length) : 0}%
                                         </p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Highest Final Score</p>
-                                        <p className="text-2xl font-bold text-green-600">
+                                        <p className="text-2xl font-bold text-brand-700">
                                             {attempts.length > 0 ? Math.round(Math.max(...attempts.map(a => a.percentage ?? 0))) : 0}%
                                         </p>
                                     </div>
                                     <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
                                         <p className="text-sm text-gray-500">Pass Rate (≥50%)</p>
-                                        <p className="text-2xl font-bold text-purple-600">
+                                        <p className="text-2xl font-bold text-brand-700">
                                             {attempts.length > 0 ? Math.round(attempts.filter(a => (a.percentage ?? 0) >= 50).length / attempts.length * 100) : 0}%
                                         </p>
                                     </div>
                                     <div className={`rounded-xl shadow-sm p-4 border ${totalCheaters > 0 ? 'bg-red-50 border-red-200' : 'bg-white border-gray-100'}`}>
                                         <p className="text-sm text-gray-500">Tab Switches</p>
-                                        <p className={`text-2xl font-bold ${totalCheaters > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                        <p className={`text-2xl font-bold ${totalCheaters > 0 ? 'text-red-600' : 'text-brand-700'}`}>
                                             {totalCheaters > 0 ? `${totalCheaters} 🚨` : '0 ✅'}
                                         </p>
                                         <p className="text-xs text-gray-400 mt-0.5">{totalCheaters > 0 ? 'students flagged' : 'no cheating detected'}</p>
@@ -152,7 +153,7 @@ const QuizAttempts = () => {
                                                             {attempt.score} / {attempt.totalQuestions}
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`inline-flex items-center gap-1 text-sm font-bold ${switches > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                                            <span className={`inline-flex items-center gap-1 text-sm font-bold ${switches > 0 ? 'text-red-600' : 'text-brand-700'}`}>
                                                                 {switches > 0 ? `🚨 ${switches}` : '✅ 0'}
                                                             </span>
                                                         </td>

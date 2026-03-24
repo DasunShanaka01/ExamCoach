@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import LessonView from '../components/LessonView';
 
 const api = 'https://examcoach-backend-mnoy.onrender.com';
@@ -138,37 +139,38 @@ const TeacherMaterials = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <Sidebar role="teacher" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="teacher" pageName="Learning Materials" />
+                
+                <PageHeader 
+                    icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    title="Learning Materials"
+                    subtitle="Upload lesson content for your assigned subjects"
+                />
+
                 <div className="p-8">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-800">Learning Materials</h1>
-                                <p className="text-gray-600">Upload lesson content for your assigned subjects.</p>
-                            </div>
-                        </div>
+                    <div className="max-w-7xl mx-auto relative z-10 -mt-8">
 
                         {error && (
-                            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-4">
+                            <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-4">
                                 <p className="font-medium">{error}</p>
                             </div>
                         )}
 
                         {loading ? (
                             <div className="flex justify-center items-center h-64">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                                     <h2 className="text-lg font-semibold text-gray-800 mb-4">Select Subject</h2>
                                     <select
                                         value={selectedSubject}
                                         onChange={(e) => setSelectedSubject(e.target.value)}
-                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                     >
                                         {subjects.map((subj) => (
                                             <option key={subj._id} value={subj._id}>{subj.name} ({subj.stream?.name})</option>
@@ -184,14 +186,14 @@ const TeacherMaterials = () => {
                                                 onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
                                                 required
                                                 placeholder="Lesson title"
-                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                             />
                                             <textarea
                                                 value={lessonForm.description}
                                                 onChange={(e) => setLessonForm({ ...lessonForm, description: e.target.value })}
                                                 rows="3"
                                                 placeholder="Optional description"
-                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                             />
                                             <div>
                                                 <label className="block text-sm font-semibold text-gray-700 mb-2">Material Links (one per line)</label>
@@ -200,7 +202,7 @@ const TeacherMaterials = () => {
                                                     onChange={(e) => setMaterialLinks(e.target.value)}
                                                     rows="3"
                                                     placeholder="https://..."
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                 />
                                             </div>
                                             <div>
@@ -223,7 +225,7 @@ const TeacherMaterials = () => {
                                                         Cancel
                                                     </button>
                                                 )}
-                                                <button type="submit" className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                                                <button type="submit" className="flex-1 py-3 bg-brand-700 text-white rounded-lg hover:bg-brand-900 transition">
                                                     {editingId ? 'Update Lesson' : 'Upload Lesson'}
                                                 </button>
                                             </div>

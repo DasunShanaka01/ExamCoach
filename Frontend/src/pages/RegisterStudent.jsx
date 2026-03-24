@@ -91,18 +91,18 @@ const RegisterStudent = () => {
     };
 
     return (
-        <div className="relative min-h-screen flex justify-center items-center p-4 overflow-hidden bg-slate-50">
+        <div className="relative min-h-screen flex justify-center items-center p-4 overflow-hidden bg-brand-50">
             {/* Animated Ambient Background */}
             <div className="absolute inset-0 z-0">
-                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-indigo-500/30 to-purple-600/30 rounded-full blur-[100px] animate-pulse"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-400/20 to-emerald-400/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-gradient-to-br from-brand-900/30 to-brand-300/30 rounded-full blur-[100px] animate-pulse"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-brand-700/20 to-brand-50/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }}></div>
             </div>
 
             {/* Glassmorphic Form Container */}
             <div className="relative z-10 w-full max-w-2xl p-8 sm:p-10 bg-white/70 backdrop-blur-2xl border border-white/60 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
                 
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg mb-6 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-700 to-brand-900 text-white shadow-lg mb-6 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                         </svg>
@@ -133,7 +133,7 @@ const RegisterStudent = () => {
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     required
-                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
+                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-brand-700 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                     placeholder="John"
                                 />
                             </div>
@@ -147,7 +147,7 @@ const RegisterStudent = () => {
                                     value={lastName}
                                     onChange={(e) => setLastName(e.target.value)}
                                     required
-                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
+                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-brand-700 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                     placeholder="Doe"
                                 />
                             </div>
@@ -161,7 +161,7 @@ const RegisterStudent = () => {
                                 type="file"
                                 onChange={(e) => setProfilePic(e.target.files[0])}
                                 accept="image/*"
-                                className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-100 file:text-indigo-700 hover:file:bg-indigo-200 cursor-pointer"
+                                className="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-brand-700 transition-all outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-900 hover:file:bg-brand-300 cursor-pointer"
                             />
                         </div>
 
@@ -174,7 +174,7 @@ const RegisterStudent = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
+                                className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-brand-700 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                 placeholder="your.email@example.com"
                             />
                         </div>
@@ -190,7 +190,7 @@ const RegisterStudent = () => {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                     minLength="6"
-                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
+                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-brand-700 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -205,7 +205,7 @@ const RegisterStudent = () => {
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                     minLength="6"
-                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
+                                    className="w-full px-5 py-3.5 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-brand-700 focus:bg-white transition-all outline-none font-medium text-gray-800 placeholder-gray-400"
                                     placeholder="••••••••"
                                 />
                             </div>
@@ -214,7 +214,7 @@ const RegisterStudent = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transform transition-all mt-8 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg active:scale-95'}`}
+                            className={`w-full bg-gradient-to-r from-brand-700 to-brand-900 text-white font-bold py-3.5 px-4 rounded-xl hover:from-brand-900 hover:to-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2 transform transition-all mt-8 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg active:scale-95'}`}
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -239,7 +239,7 @@ const RegisterStudent = () => {
                                 onChange={(e) => setOtp(e.target.value)}
                                 required
                                 maxLength="6"
-                                className="w-full text-center tracking-[1em] font-mono text-3xl px-4 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all outline-none text-gray-800 shadow-inner"
+                                className="w-full text-center tracking-[1em] font-mono text-3xl px-4 py-4 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:bg-white transition-all outline-none text-gray-800 shadow-inner"
                                 placeholder="------"
                             />
                         </div>
@@ -247,7 +247,7 @@ const RegisterStudent = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold py-3.5 px-4 rounded-xl hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transform transition-all mt-8 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg active:scale-95'}`}
+                            className={`w-full bg-gradient-to-r from-brand-700 to-brand-900 text-white font-bold py-3.5 px-4 rounded-xl hover:from-brand-900 hover:to-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2 transform transition-all mt-8 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 hover:shadow-lg active:scale-95'}`}
                         >
                             {loading ? 'Verifying...' : 'Verify & Login'}
                         </button>
@@ -260,7 +260,7 @@ const RegisterStudent = () => {
                             Already have an account?{' '}
                             <Link
                                 to="/login"
-                                className="text-indigo-600 hover:text-indigo-800 font-bold transition-colors"
+                                className="text-brand-700 hover:text-brand-900 font-bold transition-colors"
                             >
                                 Login here
                             </Link>

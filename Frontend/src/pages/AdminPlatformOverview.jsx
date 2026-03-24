@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import {
     BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
     Tooltip, Legend, ResponsiveContainer
@@ -39,19 +40,22 @@ const AdminPlatformOverview = () => {
     }, []);
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <Sidebar role="admin" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="admin" pageName="Platform Overview" />
-                <div className="p-8 max-w-7xl mx-auto">
-                    <header className="mb-8">
-                        <h1 className="text-3xl font-bold text-gray-800">Platform Overview</h1>
-                        <p className="text-gray-500 mt-1">System-wide analytics and health indicators</p>
-                    </header>
+                
+                <PageHeader 
+                    icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    title="Platform Overview"
+                    subtitle="System-wide analytics and health indicators"
+                />
+
+                <div className="p-8 max-w-7xl mx-auto space-y-8 relative z-10 -mt-8">
 
                     {loading && (
                         <div className="flex justify-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600" />
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-700" />
                         </div>
                     )}
 
@@ -64,18 +68,18 @@ const AdminPlatformOverview = () => {
 
                             {/* ── Totals ── */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                                <StatCard label="Total Students" value={data.totals.totalStudents} color="text-blue-600" sub={`+${data.newRegistrations.studentsThisMonth} this month`} />
-                                <StatCard label="Total Teachers" value={data.totals.totalTeachers} color="text-green-600" sub={`+${data.newRegistrations.teachersThisMonth} this month`} />
-                                <StatCard label="Total Streams" value={data.totals.totalStreams} color="text-purple-600" />
+                                <StatCard label="Total Students" value={data.totals.totalStudents} color="text-brand-700" sub={`+${data.newRegistrations.studentsThisMonth} this month`} />
+                                <StatCard label="Total Teachers" value={data.totals.totalTeachers} color="text-brand-700" sub={`+${data.newRegistrations.teachersThisMonth} this month`} />
+                                <StatCard label="Total Streams" value={data.totals.totalStreams} color="text-brand-700" />
                                 <StatCard label="Total Subjects" value={data.totals.totalSubjects} color="text-orange-500" />
                             </div>
 
                             {/* ── Quick highlights ── */}
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                                <StatCard label="New Students (Week)" value={data.newRegistrations.studentsThisWeek} color="text-blue-500" />
+                                <StatCard label="New Students (Week)" value={data.newRegistrations.studentsThisWeek} color="text-brand-700" />
                                 <StatCard label="New Teachers (Week)" value={data.newRegistrations.teachersThisWeek} color="text-green-500" />
-                                <StatCard label="Active Students (30d)" value={data.recentlyActiveStudents} color="text-indigo-600" sub="Registered in last 30 days" />
-                                <StatCard label="Google Calendar Integrations" value={data.googleCalendarIntegrations} color="text-teal-600" sub="Students connected" />
+                                <StatCard label="Active Students (30d)" value={data.recentlyActiveStudents} color="text-brand-700" sub="Registered in last 30 days" />
+                                <StatCard label="Google Calendar Integrations" value={data.googleCalendarIntegrations} color="text-brand-700" sub="Students connected" />
                             </div>
 
                             {/* ── Registration Trend ── */}
@@ -98,8 +102,8 @@ const AdminPlatformOverview = () => {
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                                 <h2 className="text-lg font-bold text-gray-800 mb-6">AI Usage — Last 6 Months</h2>
                                 <div className="grid grid-cols-2 gap-6 mb-6">
-                                    <StatCard label="Groq Total" value={data.aiUsage.groqTotal} color="text-violet-600" sub={`Quizzes: ${data.aiUsage.groqQuizzes} · Study Plans: ${data.aiUsage.groqStudyPlans}`} />
-                                    <StatCard label="Gemini Total" value={data.aiUsage.geminiTotal} color="text-pink-600" />
+                                    <StatCard label="Groq Total" value={data.aiUsage.groqTotal} color="text-brand-700" sub={`Quizzes: ${data.aiUsage.groqQuizzes} · Study Plans: ${data.aiUsage.groqStudyPlans}`} />
+                                    <StatCard label="Gemini Total" value={data.aiUsage.geminiTotal} color="text-brand-700" />
                                 </div>
                                 <ResponsiveContainer width="100%" height={260}>
                                     <BarChart data={data.aiUsage.trend}>

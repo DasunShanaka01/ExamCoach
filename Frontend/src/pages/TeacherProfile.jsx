@@ -178,12 +178,12 @@ const TeacherProfile = () => {
 
     if (loading) {
         return (
-            <div className="flex min-h-screen bg-gray-50">
+            <div className="flex min-h-screen bg-brand-50">
                 <Sidebar role="teacher" />
                 <div className="flex-1 ml-64">
                     <TopNavbar role="teacher" pageName="My Profile" />
                     <div className="flex items-center justify-center h-screen">
-                        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-brand-700"></div>
                     </div>
                 </div>
             </div>
@@ -191,7 +191,7 @@ const TeacherProfile = () => {
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <Sidebar role="teacher" />
             <div className="flex-1 ml-64">
                 <TopNavbar role="teacher" pageName="My Profile" />
@@ -199,7 +199,7 @@ const TeacherProfile = () => {
                     <div className="max-w-4xl mx-auto">
                         <div className="bg-white rounded-xl shadow-md overflow-hidden">
                             {/* Header */}
-                            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white">
+                            <div className="bg-gradient-to-r from-brand-700 to-brand-900 p-8 text-white">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-4">
                                         <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-3xl font-bold backdrop-blur-sm overflow-hidden">
@@ -211,14 +211,14 @@ const TeacherProfile = () => {
                                         </div>
                                         <div>
                                             <h1 className="text-3xl font-bold">{profileData.name}</h1>
-                                            <p className="text-blue-100 flex items-center gap-2 mt-1">
+                                            <p className="text-brand-50 flex items-center gap-2 mt-1">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                                 </svg>
                                                 {profileData.email}
                                             </p>
                                             {profileData.subject && (
-                                                <p className="text-blue-100 flex items-center gap-2 mt-1">
+                                                <p className="text-brand-50 flex items-center gap-2 mt-1">
                                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                                     </svg>
@@ -230,7 +230,7 @@ const TeacherProfile = () => {
                                     {!isEditing && (
                                         <button
                                             onClick={handleEdit}
-                                            className="px-6 py-2 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors flex items-center gap-2"
+                                            className="px-6 py-2 bg-white text-brand-700 rounded-lg font-medium hover:bg-brand-50 transition-colors flex items-center gap-2"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -265,7 +265,7 @@ const TeacherProfile = () => {
                                     <form onSubmit={handleSubmit}>
                                         {/* Profile Picture Upload */}
                                         <div className="mb-6 flex flex-col items-center">
-                                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500 mb-4">
+                                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-brand-700 mb-4">
                                                 {imagePreview ? (
                                                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                                                 ) : (
@@ -274,7 +274,7 @@ const TeacherProfile = () => {
                                                     </div>
                                                 )}
                                             </div>
-                                            <label className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                            <label className="px-4 py-2 bg-brand-700 text-white rounded-lg cursor-pointer hover:bg-brand-900 transition-colors flex items-center gap-2">
                                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -298,7 +298,7 @@ const TeacherProfile = () => {
                                                     name="name"
                                                     value={editData.name}
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                     required
                                                 />
                                             </div>
@@ -309,7 +309,7 @@ const TeacherProfile = () => {
                                                     name="subject"
                                                     value={editData.subject}
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                     placeholder="e.g., Mathematics"
                                                 />
                                             </div>
@@ -320,7 +320,7 @@ const TeacherProfile = () => {
                                                     name="qualification"
                                                     value={editData.qualification}
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                     placeholder="e.g., M.Sc., B.Ed."
                                                 />
                                             </div>
@@ -331,7 +331,7 @@ const TeacherProfile = () => {
                                                     name="experience"
                                                     value={editData.experience}
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                     min="0"
                                                 />
                                             </div>
@@ -342,7 +342,7 @@ const TeacherProfile = () => {
                                                     name="phone"
                                                     value={editData.phone}
                                                     onChange={handleChange}
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                 />
                                             </div>
                                             <div className="md:col-span-2">
@@ -352,7 +352,7 @@ const TeacherProfile = () => {
                                                     value={editData.bio}
                                                     onChange={handleChange}
                                                     rows="4"
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                                     placeholder="Tell us about yourself..."
                                                 ></textarea>
                                             </div>
@@ -362,7 +362,7 @@ const TeacherProfile = () => {
                                             <button
                                                 type="submit"
                                                 disabled={saving}
-                                                className="px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                                                className="px-6 py-2 bg-gradient-to-r from-brand-700 to-brand-900 text-white rounded-lg font-medium hover:from-brand-900 hover:to-brand-900 transition-all disabled:opacity-50 flex items-center gap-2"
                                             >
                                                 {saving ? (
                                                     <>

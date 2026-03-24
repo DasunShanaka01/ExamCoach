@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 
 const StudentList = () => {
     const [students, setStudents] = useState([]);
@@ -94,20 +95,21 @@ const StudentList = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <Sidebar role="admin" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="admin" pageName="Manage Students" />
+                <PageHeader 
+                    icon="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    title="Manage Students"
+                    subtitle="View and manage all registered students. Click on a row to view details."
+                />
                 <div className="p-8">
-                    <div className="max-w-7xl mx-auto">
-                        <header className="mb-8">
-                            <h1 className="text-3xl font-bold text-gray-800 mb-2">Manage Students</h1>
-                            <p className="text-gray-600">View and manage all registered students. Click on a row to view details.</p>
-                        </header>
+                    <div className="max-w-7xl mx-auto relative z-10 -mt-8">
 
                         {loading ? (
                             <div className="flex justify-center items-center h-64">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                             </div>
                         ) : error ? (
                             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md">
@@ -144,7 +146,7 @@ const StudentList = () => {
                                                     <tr
                                                         key={student._id}
                                                         onClick={() => handleRowClick(student._id)}
-                                                        className="hover:bg-blue-50 transition-colors cursor-pointer"
+                                                        className="hover:bg-brand-50 transition-colors cursor-pointer"
                                                     >
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200 shadow-sm">
@@ -155,7 +157,7 @@ const StudentList = () => {
                                                                         className="w-full h-full object-cover"
                                                                     />
                                                                 ) : (
-                                                                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                                                                    <div className="w-full h-full bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center text-white font-bold">
                                                                         {student.firstName?.charAt(0)}
                                                                     </div>
                                                                 )}
@@ -173,9 +175,9 @@ const StudentList = () => {
                                                             {student.dob ? new Date(student.dob).toLocaleDateString() : 'N/A'}
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
-                                                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${student.gender === 'Male' ? 'bg-blue-100 text-blue-800' :
-                                                                student.gender === 'Female' ? 'bg-pink-100 text-pink-800' :
-                                                                    'bg-purple-100 text-purple-800'
+                                                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${student.gender === 'Male' ? 'bg-brand-50 text-brand-900' :
+                                                                student.gender === 'Female' ? 'bg-brand-50 text-brand-900' :
+                                                                    'bg-brand-50 text-brand-900'
                                                                 }`}>
                                                                 {student.gender || 'N/A'}
                                                             </span>
@@ -206,12 +208,12 @@ const StudentList = () => {
                     <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                         {loadingDetails ? (
                             <div className="flex justify-center items-center p-12">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                             </div>
                         ) : selectedStudent && (
                             <>
                                 {/* Modal Header */}
-                                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white relative">
+                                <div className="bg-gradient-to-r from-brand-700 to-brand-900 p-6 text-white relative">
                                     <button
                                         onClick={closeModal}
                                         className="absolute top-4 right-4 text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors"
@@ -232,7 +234,7 @@ const StudentList = () => {
                                         </div>
                                         <div>
                                             <h2 className="text-2xl font-bold">{selectedStudent.firstName} {selectedStudent.lastName}</h2>
-                                            <p className="text-blue-100 mt-1">{selectedStudent.user?.email}</p>
+                                            <p className="text-brand-50 mt-1">{selectedStudent.user?.email}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -240,7 +242,7 @@ const StudentList = () => {
                                 {/* Modal Body */}
                                 <div className="p-6">
                                     <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg className="w-5 h-5 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                         </svg>
                                         Personal Information

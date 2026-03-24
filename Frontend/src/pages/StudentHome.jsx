@@ -23,11 +23,11 @@ const StudentHome = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-slate-50 flex flex-col">
+            <div className="min-h-screen bg-brand-50 flex flex-col">
                 <StudentNavbar />
                 <div className="flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-4">
-                        <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+                        <div className="w-12 h-12 border-4 border-brand-300 border-t-brand-700 rounded-full animate-spin"></div>
                         <p className="text-gray-500 font-medium">Preparing your study space...</p>
                     </div>
                 </div>
@@ -36,25 +36,25 @@ const StudentHome = () => {
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col">
+        <div className="min-h-screen bg-brand-50 flex flex-col">
             <StudentNavbar />
             
             {/* Dynamic Glassmorphic Hero Section */}
             <div className="relative overflow-hidden bg-white border-b border-gray-100">
                 <div className="absolute inset-0">
-                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-indigo-400/20 to-violet-400/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-emerald-400/20 to-teal-400/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
+                    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-brand-300/20 to-brand-900/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+                    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-brand-700/20 to-brand-50/40 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3"></div>
                 </div>
                 
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 lg:py-24">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
                         <div>
-                            <span className="inline-block py-1 px-3 rounded-full bg-indigo-50 text-indigo-700 text-sm font-semibold tracking-wide mb-4 border border-indigo-100">
+                            <span className="inline-block py-1 px-3 rounded-full bg-brand-50 text-brand-900 text-sm font-semibold tracking-wide mb-4 border border-brand-300">
                                 🚀 Ready to learn?
                             </span>
                             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-4">
                                 {greeting}, <br className="hidden md:block"/>
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-700 via-brand-900 to-brand-700">
                                     {user?.firstName || user?.name || 'Student'}!
                                 </span>
                             </h1>
@@ -65,7 +65,7 @@ const StudentHome = () => {
                         <div className="hidden md:flex items-center justify-center">
                             {/* Decorative element */}
                             <div className="relative w-48 h-48">
-                                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl shadow-2xl transform rotate-6 animate-pulse opacity-20"></div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-brand-700 to-brand-300 rounded-2xl shadow-2xl transform rotate-6 animate-pulse opacity-30"></div>
                                 <div className="absolute inset-0 bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-xl flex items-center justify-center text-6xl transform -rotate-3 transition-transform hover:rotate-0 duration-500">
                                     🎓
                                 </div>
@@ -89,18 +89,18 @@ const StudentHome = () => {
                             onClick={() => navigate('/student/ai_learning_lab')}
                             className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-fuchsia-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl group-hover:bg-fuchsia-500/20 transition-colors duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-br from-brand-900/5 to-brand-700/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-brand-900/10 rounded-full blur-3xl group-hover:bg-brand-900/20 transition-colors duration-500"></div>
                             
                             <div className="relative z-10">
-                                <div className="w-16 h-16 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                <div className="w-16 h-16 bg-gradient-to-br from-brand-900 to-brand-700 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                     🤖
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-fuchsia-700 transition-colors">AI Learning Lab</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-900 transition-colors">AI Learning Lab</h3>
                                 <p className="text-gray-600 leading-relaxed mb-6">
                                     Interact with an intelligent tutor to learn complex concepts through conversation and examples.
                                 </p>
-                                <div className="inline-flex items-center text-fuchsia-600 font-semibold group-hover:gap-2 transition-all">
+                                <div className="inline-flex items-center text-brand-900 font-semibold group-hover:gap-2 transition-all">
                                     Start Learning <span className="text-lg ml-1 group-hover:translate-x-1 transition-transform">→</span>
                                 </div>
                             </div>
@@ -111,18 +111,18 @@ const StudentHome = () => {
                             onClick={() => navigate('/student/quiz-generator')}
                             className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-violet-500/10 rounded-full blur-3xl group-hover:bg-violet-500/20 transition-colors duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-br from-brand-700/5 to-brand-900/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-brand-700/10 rounded-full blur-3xl group-hover:bg-brand-700/20 transition-colors duration-500"></div>
                             
                             <div className="relative z-10">
-                                <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                <div className="w-16 h-16 bg-gradient-to-br from-brand-700 to-brand-900 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                     ✨
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-violet-700 transition-colors">AI Quiz Generator</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-700 transition-colors">AI Quiz Generator</h3>
                                 <p className="text-gray-600 leading-relaxed mb-6">
                                     Upload your PDFs or paste text notes to instantly generate mixed-type exams and test your knowledge.
                                 </p>
-                                <div className="inline-flex items-center text-violet-600 font-semibold group-hover:gap-2 transition-all">
+                                <div className="inline-flex items-center text-brand-700 font-semibold group-hover:gap-2 transition-all">
                                     Generate Quiz <span className="text-lg ml-1 group-hover:translate-x-1 transition-transform">→</span>
                                 </div>
                             </div>
@@ -133,18 +133,18 @@ const StudentHome = () => {
                             onClick={() => navigate('/student/view-plan')}
                             className="group relative bg-white rounded-3xl p-8 shadow-sm hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 border border-gray-100 overflow-hidden cursor-pointer"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-teal-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-colors duration-500"></div>
+                            <div className="absolute inset-0 bg-gradient-to-br from-brand-300/10 to-brand-700/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div className="absolute -right-12 -top-12 w-40 h-40 bg-brand-300/20 rounded-full blur-3xl group-hover:bg-brand-300/30 transition-colors duration-500"></div>
                             
                             <div className="relative z-10">
-                                <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
+                                <div className="w-16 h-16 bg-gradient-to-br from-brand-300 to-brand-700 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
                                     📅
                                 </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-emerald-700 transition-colors">Study Planner</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-brand-700 transition-colors">Study Planner</h3>
                                 <p className="text-gray-600 leading-relaxed mb-6">
                                     Generate a personalized, time-blocked study schedule tailored to your upcoming exams.
                                 </p>
-                                <div className="inline-flex items-center text-emerald-600 font-semibold group-hover:gap-2 transition-all">
+                                <div className="inline-flex items-center text-brand-700 font-semibold group-hover:gap-2 transition-all">
                                     View Schedule <span className="text-lg ml-1 group-hover:translate-x-1 transition-transform">→</span>
                                 </div>
                             </div>
@@ -160,32 +160,32 @@ const StudentHome = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
-                        <div onClick={() => navigate('/student/courses')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
-                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <div onClick={() => navigate('/student/courses')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-brand-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
+                            <div className="w-12 h-12 bg-brand-50 text-brand-900 rounded-xl flex items-center justify-center text-2xl group-hover:bg-brand-900 group-hover:text-white transition-colors">
                                 📖
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Course Explorer</h3>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-brand-900 transition-colors">Course Explorer</h3>
                                 <p className="text-sm text-gray-500 mt-1">Browse active courses & modules</p>
                             </div>
                         </div>
 
-                        <div onClick={() => navigate('/student/quizzes')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-pink-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
-                            <div className="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                        <div onClick={() => navigate('/student/quizzes')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-brand-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
+                            <div className="w-12 h-12 bg-brand-50 text-brand-700 rounded-xl flex items-center justify-center text-2xl group-hover:bg-brand-700 group-hover:text-white transition-colors">
                                 📝
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-pink-600 transition-colors">My Quizzes</h3>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-brand-700 transition-colors">My Quizzes</h3>
                                 <p className="text-sm text-gray-500 mt-1">Review your quiz history & scores</p>
                             </div>
                         </div>
 
-                        <div onClick={() => navigate('/student/analytics')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-orange-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
-                            <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center text-2xl group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                        <div onClick={() => navigate('/student/analytics')} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:border-brand-300 hover:shadow-lg transition-all cursor-pointer flex items-start gap-4">
+                            <div className="w-12 h-12 bg-brand-50 text-brand-900 rounded-xl flex items-center justify-center text-2xl group-hover:bg-brand-900 group-hover:text-white transition-colors">
                                 📊
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-orange-600 transition-colors">Analytics</h3>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-brand-900 transition-colors">Analytics</h3>
                                 <p className="text-sm text-gray-500 mt-1">Track your performance & growth</p>
                             </div>
                         </div>
@@ -201,43 +201,43 @@ const StudentHome = () => {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
-                        <div onClick={() => navigate('/student/journal')} className="group bg-slate-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
+                        <div onClick={() => navigate('/student/journal')} className="group bg-brand-900 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-2xl">
+                                <div className="w-12 h-12 bg-brand-700 text-white rounded-xl flex items-center justify-center text-2xl">
                                     📔
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-white group-hover:text-slate-200">Study Journal</h3>
-                                    <p className="text-sm text-slate-400">Log your daily progress</p>
+                                    <h3 className="text-lg font-bold text-white group-hover:text-brand-50">Study Journal</h3>
+                                    <p className="text-sm text-brand-300">Log your daily progress</p>
                                 </div>
                             </div>
-                            <span className="text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
+                            <span className="text-brand-300 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
                         </div>
 
-                        <div onClick={() => navigate('/student/timetable')} className="group bg-slate-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
+                        <div onClick={() => navigate('/student/timetable')} className="group bg-brand-900 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-2xl">
+                                <div className="w-12 h-12 bg-brand-700 text-white rounded-xl flex items-center justify-center text-2xl">
                                     ⏰
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-white group-hover:text-slate-200">Timetable</h3>
-                                    <p className="text-sm text-slate-400">View weekly schedules</p>
+                                    <h3 className="text-lg font-bold text-white group-hover:text-brand-50">Timetable</h3>
+                                    <p className="text-sm text-brand-300">View weekly schedules</p>
                                 </div>
                             </div>
-                            <span className="text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
+                            <span className="text-brand-300 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
                         </div>
 
-                        <div onClick={() => navigate('/student/profile')} className="group bg-slate-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
+                        <div onClick={() => navigate('/student/profile')} className="group bg-brand-900 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all cursor-pointer flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-slate-700 text-white rounded-xl flex items-center justify-center text-2xl">
+                                <div className="w-12 h-12 bg-brand-700 text-white rounded-xl flex items-center justify-center text-2xl">
                                     👤
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold text-white group-hover:text-slate-200">My Profile</h3>
-                                    <p className="text-sm text-slate-400">Manage account & settings</p>
+                                    <h3 className="text-lg font-bold text-white group-hover:text-brand-50">My Profile</h3>
+                                    <p className="text-sm text-brand-300">Manage account & settings</p>
                                 </div>
                             </div>
-                            <span className="text-slate-500 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
+                            <span className="text-brand-300 group-hover:text-white transition-colors group-hover:translate-x-1 transform">→</span>
                         </div>
 
                     </div>

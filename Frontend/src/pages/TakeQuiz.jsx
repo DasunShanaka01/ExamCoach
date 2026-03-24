@@ -246,17 +246,17 @@ const TakeQuiz = () => {
         if (timeLeft === null) return 'text-gray-600';
         if (timeLeft <= 60) return 'text-red-600 animate-pulse';
         if (timeLeft <= 300) return 'text-orange-500';
-        return 'text-green-600';
+        return 'text-brand-700';
     };
 
     // Loading state
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-brand-50">
                 <StudentNavbar />
                 <div className="flex items-center justify-center h-[calc(100vh-64px)]">
                     <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700 mx-auto mb-4"></div>
                         <p className="text-gray-500">Loading quiz...</p>
                     </div>
                 </div>
@@ -267,7 +267,7 @@ const TakeQuiz = () => {
     // Error state (no quiz loaded)
     if (error && !quizData && !quizMeta) {
         return (
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-brand-50">
                 <StudentNavbar />
                 <div className="flex items-center justify-center h-[calc(100vh-64px)]">
                     <div className="bg-red-50 text-red-700 p-6 rounded-xl max-w-md text-center">
@@ -283,12 +283,12 @@ const TakeQuiz = () => {
     // Credential verification screen (shown before quiz starts)
     if (!accessGranted && quizMeta) {
         return (
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-brand-50">
                 <StudentNavbar />
                 <div className="flex items-center justify-center h-[calc(100vh-64px)]">
                     <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full mx-4">
                         <div className="text-center mb-6">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
+                            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-50 rounded-full mb-4">
                                 <span className="text-3xl">🔐</span>
                             </div>
                             <h2 className="text-2xl font-bold text-gray-800">{quizMeta.title}</h2>
@@ -319,7 +319,7 @@ const TakeQuiz = () => {
                                     value={enrollmentKey}
                                     onChange={(e) => setEnrollmentKey(e.target.value)}
                                     placeholder="Enter enrollment key"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none transition-colors"
                                     required
                                 />
                             </div>
@@ -330,7 +330,7 @@ const TakeQuiz = () => {
                                     value={quizPassword}
                                     onChange={(e) => setQuizPassword(e.target.value)}
                                     placeholder="Enter quiz password"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none transition-colors"
                                     required
                                 />
                             </div>
@@ -345,7 +345,7 @@ const TakeQuiz = () => {
                                 <button
                                     type="submit"
                                     disabled={verifying}
-                                    className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex-1 px-4 py-3 bg-brand-700 text-white rounded-lg hover:bg-brand-900 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {verifying ? 'Verifying...' : 'Start Quiz →'}
                                 </button>
@@ -360,14 +360,14 @@ const TakeQuiz = () => {
     // Rules & quiz info screen (shown after enrollment, before quiz starts)
     if (showQuizWarning && quizData) {
         return (
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-brand-50">
                 <StudentNavbar />
                 <div className="flex items-center justify-center h-[calc(100vh-64px)]">
                     <div className="bg-white rounded-2xl shadow-lg p-8 max-w-lg w-full mx-4">
                         {/* Quiz Info */}
                         <div className="text-center mb-5">
                             <h2 className="text-2xl font-bold text-gray-800">{quizData.title}</h2>
-                            <p className="text-blue-600 font-medium mt-1">{quizData.subject}</p>
+                            <p className="text-brand-700 font-medium mt-1">{quizData.subject}</p>
                         </div>
                         <div className="grid grid-cols-3 gap-3 mb-5">
                             <div className="bg-gray-50 rounded-lg p-3 text-center">
@@ -384,7 +384,7 @@ const TakeQuiz = () => {
                             </div>
                         </div>
                         {quizData.description && (
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-5 text-sm text-blue-800">
+                            <div className="bg-brand-50 border border-brand-300 rounded-lg p-3 mb-5 text-sm text-brand-900">
                                 <span className="font-semibold">Description:</span> {quizData.description}
                             </div>
                         )}
@@ -412,7 +412,7 @@ const TakeQuiz = () => {
                                     type="checkbox"
                                     checked={rulesAgreed}
                                     onChange={(e) => setRulesAgreed(e.target.checked)}
-                                    className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                    className="w-5 h-5 rounded border-gray-300 text-brand-700 focus:ring-brand-700"
                                 />
                                 <span className="text-sm text-gray-700 font-medium">I have read and agree to the quiz rules</span>
                             </label>
@@ -420,7 +420,7 @@ const TakeQuiz = () => {
                             <button
                                 onClick={() => setShowQuizWarning(false)}
                                 disabled={!rulesAgreed}
-                                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="w-full px-6 py-3 bg-brand-700 text-white rounded-lg hover:bg-brand-900 transition-colors font-medium text-lg disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 Continue to Quiz →
                             </button>
@@ -440,7 +440,7 @@ const TakeQuiz = () => {
         const passed = finalPercentage >= 50;
         const allAttemptsUsed = result.allAttemptsUsed;
         return (
-            <div className="min-h-screen bg-gray-50">
+            <div className="min-h-screen bg-brand-50">
                 <StudentNavbar />
                 <div className="max-w-3xl mx-auto p-8 mt-8">
 
@@ -488,9 +488,9 @@ const TakeQuiz = () => {
                         <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 ${passed ? 'bg-green-100' : 'bg-red-100'}`}>
                             <span className="text-4xl">{passed ? '🎉' : '📝'}</span>
                         </div>
-                        <h2 className="text-3xl font-bold text-gray-800 mb-2">Quiz Completed!</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Quiz Completed!</h2>
 
-                        <div className={`text-6xl font-extrabold mb-2 ${passed ? 'text-green-600' : 'text-red-600'}`}>
+                        <div className={`text-6xl font-extrabold mb-2 ${passed ? 'text-brand-700' : 'text-red-600'}`}>
                             {finalPercentage}%
                         </div>
                         <p className="text-gray-600 mb-2">
@@ -514,15 +514,15 @@ const TakeQuiz = () => {
                         )}
 
                         {!allAttemptsUsed && (
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                                <p className="text-sm text-blue-700">
+                            <div className="bg-brand-50 border border-brand-300 rounded-lg p-3 mb-4">
+                                <p className="text-sm text-brand-900">
                                     You have <span className="font-bold">{result.maxAttempts - result.attemptsMade}</span> attempt(s) remaining. Explanations will be shown after your final attempt.
                                 </p>
                             </div>
                         )}
 
                         <div className="flex gap-4 justify-center mt-6">
-                            <button onClick={() => navigate('/student/quizzes')} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                            <button onClick={() => navigate('/student/quizzes')} className="px-6 py-3 bg-brand-700 text-white rounded-lg hover:bg-brand-900 transition-colors font-medium">
                                 View All Quizzes
                             </button>
                             <button onClick={() => navigate('/student/home')} className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium">
@@ -542,7 +542,7 @@ const TakeQuiz = () => {
                                     <div key={index} className={`bg-white rounded-xl shadow-md p-6 border-l-4 ${q.isCorrect ? 'border-green-500' : 'border-red-500'}`}>
                                         <div className="flex items-start justify-between mb-3">
                                             <h4 className="font-semibold text-gray-800">
-                                                <span className="text-blue-600 mr-2">Q{index + 1}.</span>
+                                                <span className="text-brand-700 mr-2">Q{index + 1}.</span>
                                                 {q.question}
                                             </h4>
                                             <span className={`text-xs font-bold px-2 py-1 rounded-full ${q.isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -560,14 +560,14 @@ const TakeQuiz = () => {
                                                 }`}>
                                                     <span className="font-medium mr-2">{String.fromCharCode(65 + oi)}.</span>
                                                     {opt}
-                                                    {oi === q.correctAnswer && <span className="ml-2 text-green-600">✓</span>}
+                                                    {oi === q.correctAnswer && <span className="ml-2 text-brand-700">✓</span>}
                                                     {oi === q.studentAnswer && oi !== q.correctAnswer && <span className="ml-2 text-red-500">(Your answer)</span>}
                                                 </div>
                                             ))}
                                         </div>
                                         {q.explanation && (
-                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                                <p className="text-sm text-blue-800">
+                                            <div className="bg-brand-50 border border-brand-300 rounded-lg p-3">
+                                                <p className="text-sm text-brand-900">
                                                     <span className="font-semibold">💡 Explanation:</span> {q.explanation}
                                                 </p>
                                             </div>
@@ -588,7 +588,7 @@ const TakeQuiz = () => {
     const answeredCount = answers.filter(a => a !== null).length;
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-brand-50">
             <StudentNavbar />
             <div className="max-w-4xl mx-auto p-6 mt-4">
                 {/* Tab switch warning */}
@@ -634,7 +634,7 @@ const TakeQuiz = () => {
                 {question && (
                     <div className="bg-white rounded-xl shadow-md p-8 mb-6">
                         <div className="flex items-center gap-3 mb-6">
-                            <span className="bg-blue-600 text-white text-sm font-bold px-3 py-1 rounded-full">
+                            <span className="bg-brand-700 text-white text-sm font-bold px-3 py-1 rounded-full">
                                 Q{currentQuestion + 1}
                             </span>
                             <span className="text-gray-400 text-sm">of {totalQuestions}</span>
@@ -651,12 +651,12 @@ const TakeQuiz = () => {
                                         onClick={() => handleAnswer(currentQuestion, idx)}
                                         className={`w-full text-left p-4 rounded-lg border-2 transition-all duration-200 ${
                                             isSelected
-                                                ? 'border-blue-600 bg-blue-50 text-blue-800 shadow-sm'
-                                                : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50/50 text-gray-700'
+                                                ? 'border-brand-700 bg-brand-50 text-brand-900 shadow-sm'
+                                                : 'border-gray-200 bg-white hover:border-brand-300 hover:bg-brand-50/50 text-gray-700'
                                         }`}
                                     >
                                         <span className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-sm font-medium mr-3 ${
-                                            isSelected ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600'
+                                            isSelected ? 'bg-brand-700 text-white' : 'bg-gray-100 text-gray-600'
                                         }`}>
                                             {String.fromCharCode(65 + idx)}
                                         </span>
@@ -685,9 +685,9 @@ const TakeQuiz = () => {
                                 onClick={() => setCurrentQuestion(i)}
                                 className={`w-8 h-8 rounded-full text-xs font-medium transition-all ${
                                     i === currentQuestion
-                                        ? 'bg-blue-600 text-white scale-110'
+                                        ? 'bg-brand-700 text-white scale-110'
                                         : answers[i] !== null
-                                        ? 'bg-green-500 text-white'
+                                        ? 'bg-brand-700 text-white'
                                         : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                                 }`}
                             >
@@ -699,7 +699,7 @@ const TakeQuiz = () => {
                     {currentQuestion < totalQuestions - 1 ? (
                         <button
                             onClick={() => setCurrentQuestion(currentQuestion + 1)}
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            className="px-6 py-3 bg-brand-700 text-white rounded-lg hover:bg-brand-900 transition-colors font-medium"
                         >
                             Next →
                         </button>
@@ -707,7 +707,7 @@ const TakeQuiz = () => {
                         <button
                             onClick={handleSubmit}
                             disabled={submitted}
-                            className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
+                            className="px-6 py-3 bg-brand-900 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50"
                         >
                             {submitted ? 'Submitting...' : 'Submit Quiz'}
                         </button>
@@ -718,9 +718,9 @@ const TakeQuiz = () => {
                 <div className="mt-6 bg-white rounded-xl shadow-md p-4">
                     <p className="text-sm text-gray-500 mb-2 font-medium">Question Overview</p>
                     <div className="flex gap-1 items-center text-xs text-gray-500">
-                        <span className="w-3 h-3 bg-green-500 rounded-full inline-block"></span> Answered
+                        <span className="w-3 h-3 bg-brand-700 rounded-full inline-block"></span> Answered
                         <span className="ml-3 w-3 h-3 bg-gray-200 rounded-full inline-block"></span> Unanswered
-                        <span className="ml-3 w-3 h-3 bg-blue-600 rounded-full inline-block"></span> Current
+                        <span className="ml-3 w-3 h-3 bg-brand-700 rounded-full inline-block"></span> Current
                     </div>
                 </div>
             </div>

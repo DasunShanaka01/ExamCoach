@@ -47,9 +47,9 @@ const Sidebar = ({ role }) => {
     return (
         <div className="w-64 bg-gradient-to-b from-gray-800 via-gray-900 to-black text-white flex flex-col fixed h-screen left-0 top-0 shadow-2xl">
             {/* Header */}
-            <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
+            <div className="p-6 bg-gradient-to-r from-brand-700 to-brand-900 shadow-lg">
                 <h3 className="text-2xl font-bold mb-1 text-white">ExamCoach</h3>
-                <p className="text-sm text-blue-100 flex items-center gap-2">
+                <p className="text-sm text-brand-50 flex items-center gap-2">
                     {role === 'admin' ? (
                         <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>Admin Portal</>
                     ) : (
@@ -72,7 +72,7 @@ const Sidebar = ({ role }) => {
                                     className={`
                                         flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
                                         ${active
-                                            ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg transform scale-105'
+                                            ? 'bg-gradient-to-r from-brand-700 to-brand-900 text-white shadow-lg transform scale-105'
                                             : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:translate-x-1'
                                         }
                                     `}
@@ -89,7 +89,7 @@ const Sidebar = ({ role }) => {
             {/* Footer */}
             <div className="p-6 border-t border-gray-700 bg-gray-900">
                 <div className="flex items-center gap-3 mb-4 p-3 bg-gray-800 rounded-lg">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-brand-700 to-brand-900 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
                         {user?.name?.charAt(0) || 'U'}
                     </div>
                     <div className="flex-1 min-w-0">

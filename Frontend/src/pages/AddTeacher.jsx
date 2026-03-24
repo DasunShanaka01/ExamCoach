@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 
 const AddTeacher = () => {
     const navigate = useNavigate();
@@ -67,28 +68,28 @@ const AddTeacher = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <Sidebar role="admin" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="admin" pageName="Add New Teacher" />
+                <PageHeader 
+                    icon="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    title="Add New Teacher"
+                    subtitle="Fill in the details to register a new teacher"
+                >
+                    <Link
+                        to="/admin/teachers"
+                        className="px-6 py-2.5 bg-white/20 text-white rounded-xl shadow-md font-semibold hover:bg-white/30 transition-all whitespace-nowrap border border-white/30"
+                    >
+                        ← Back to List
+                    </Link>
+                </PageHeader>
                 <div className="p-8">
-                    <div className="max-w-5xl mx-auto">
-                        <div className="flex justify-between items-center mb-8">
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-800">Add New Teacher</h1>
-                                <p className="text-gray-600 mt-1">Fill in the details to register a new teacher</p>
-                            </div>
-                            <Link
-                                to="/admin/teachers"
-                                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-                            >
-                                ← Back to List
-                            </Link>
-                        </div>
+                    <div className="max-w-5xl mx-auto relative z-10 -mt-8">
 
                         <div className="bg-white rounded-xl shadow-lg p-8">
                             {error && (
-                                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-6">
+                                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6">
                                     <p className="font-medium">{error}</p>
                                 </div>
                             )}
@@ -109,7 +110,7 @@ const AddTeacher = () => {
                                                 type="file"
                                                 onChange={handleFileChange}
                                                 accept="image/*"
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-50 file:text-brand-900 hover:file:bg-brand-50"
                                             />
                                         </div>
 
@@ -122,7 +123,7 @@ const AddTeacher = () => {
                                                 name="name"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="John Doe"
                                             />
                                         </div>
@@ -136,7 +137,7 @@ const AddTeacher = () => {
                                                 name="email"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="john@example.com"
                                             />
                                         </div>
@@ -151,7 +152,7 @@ const AddTeacher = () => {
                                                 onChange={handleChange}
                                                 required
                                                 minLength="6"
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="Min. 6 characters"
                                             />
                                         </div>
@@ -165,7 +166,7 @@ const AddTeacher = () => {
                                                 name="dob"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                             />
                                         </div>
 
@@ -177,7 +178,7 @@ const AddTeacher = () => {
                                                 name="gender"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                             >
                                                 <option value="">Select Gender</option>
                                                 <option value="Male">Male</option>
@@ -195,7 +196,7 @@ const AddTeacher = () => {
                                                 name="contactNo"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="+94 77 123 4567"
                                             />
                                         </div>
@@ -209,7 +210,7 @@ const AddTeacher = () => {
                                                 name="nic"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="123456789V"
                                             />
                                         </div>
@@ -223,7 +224,7 @@ const AddTeacher = () => {
                                                 onChange={handleChange}
                                                 required
                                                 rows="3"
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="Full address with city and postal code"
                                             />
                                         </div>
@@ -246,7 +247,7 @@ const AddTeacher = () => {
                                                 name="subject"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="Mathematics, Science, etc."
                                             />
                                         </div>
@@ -260,7 +261,7 @@ const AddTeacher = () => {
                                                 name="qualification"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="B.Sc, M.Sc, Ph.D, etc."
                                             />
                                         </div>
@@ -274,7 +275,7 @@ const AddTeacher = () => {
                                                 name="experience"
                                                 onChange={handleChange}
                                                 required
-                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 placeholder="5 years teaching experience at ABC School"
                                             />
                                         </div>
@@ -293,7 +294,7 @@ const AddTeacher = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-6 py-3 bg-gradient-to-r from-brand-700 to-brand-900 text-white font-medium rounded-lg hover:from-brand-700 hover:to-brand-900 transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {loading ? (
                                             <span className="flex items-center gap-2">

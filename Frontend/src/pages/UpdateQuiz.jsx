@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import CheatingAlert from '../components/CheatingAlert';
 import { quizAPI } from '../services/api';
 
@@ -128,12 +129,12 @@ const UpdateQuiz = () => {
 
     if (loading) {
         return (
-            <div className="flex min-h-screen bg-gray-50">
+            <div className="flex min-h-screen bg-brand-50">
                 <Sidebar role="teacher" />
                 <div className="flex-1 ml-64">
                     <TopNavbar role="teacher" pageName="Update Quiz" />
                     <div className="flex items-center justify-center py-20">
-                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-700"></div>
                         <span className="ml-3 text-gray-500">Loading quiz...</span>
                     </div>
                 </div>
@@ -142,20 +143,22 @@ const UpdateQuiz = () => {
     }
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <CheatingAlert />
             <Sidebar role="teacher" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="teacher" pageName="Update Quiz" />
+                <PageHeader 
+                    icon="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    title="Update Quiz"
+                    subtitle="Edit quiz details and questions"
+                >
+                    <button onClick={() => navigate(-1)} className="px-6 py-2.5 bg-white/20 text-white rounded-xl shadow-md font-semibold hover:bg-white/30 transition-all whitespace-nowrap border border-white/30">
+                        ← Back to Quizzes
+                    </button>
+                </PageHeader>
                 <div className="p-8">
-                    <div className="max-w-4xl mx-auto">
-                        <header className="mb-8">
-                            <button onClick={() => navigate(-1)} className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-2 inline-flex items-center gap-1">
-                                ← Back to Quizzes
-                            </button>
-                            <h1 className="text-3xl font-bold text-gray-800">Update Quiz</h1>
-                            <p className="text-gray-500 mt-1">Edit quiz details and questions</p>
-                        </header>
+                    <div className="max-w-4xl mx-auto relative z-10 -mt-8">
 
                         {error && <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6">{error}</div>}
 
@@ -173,8 +176,8 @@ const UpdateQuiz = () => {
                                                 onClick={() => setFormData({...formData, examCategory: cat})}
                                                 className={`flex-1 py-2.5 rounded-lg border-2 text-sm font-bold transition-all ${
                                                     formData.examCategory === cat
-                                                        ? 'border-blue-600 bg-blue-600 text-white shadow-md'
-                                                        : 'border-gray-300 text-gray-500 hover:border-blue-400 hover:text-blue-600'
+                                                        ? 'border-brand-700 bg-brand-700 text-white shadow-md'
+                                                        : 'border-gray-300 text-gray-500 hover:border-brand-300 hover:text-brand-700'
                                                 }`}>
                                                 {cat === 'AL' ? 'A/L — Advanced Level' : 'O/L — Ordinary Level'}
                                             </button>
@@ -187,31 +190,31 @@ const UpdateQuiz = () => {
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
                                         <input type="text" required value={formData.title}
                                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div className="md:col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                         <textarea value={formData.description}
                                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                            rows="2" className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            rows="2" className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Subject *</label>
                                         <input type="text" required value={formData.subject}
                                             onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Time Limit (minutes)</label>
                                         <input type="number" min="1" value={formData.timeLimit}
                                             onChange={(e) => setFormData({ ...formData, timeLimit: parseInt(e.target.value) || 30 })}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Max Attempts</label>
                                         <input type="number" min="1" value={formData.maxAttempts}
                                             onChange={(e) => setFormData({ ...formData, maxAttempts: parseInt(e.target.value) || 1 })}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                         <p className="text-xs text-gray-400 mt-1">Number of times a student can attempt this quiz</p>
                                     </div>
                                     <div>
@@ -219,26 +222,26 @@ const UpdateQuiz = () => {
                                         <input type="text" value={formData.enrollmentKey}
                                             onChange={(e) => setFormData({ ...formData, enrollmentKey: e.target.value })}
                                             placeholder="e.g. QUIZ-2026-001"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Quiz Password</label>
                                         <input type="text" value={formData.quizPassword}
                                             onChange={(e) => setFormData({ ...formData, quizPassword: e.target.value })}
                                             placeholder="Password for students"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Enrollment Start</label>
                                         <input type="datetime-local" value={formData.enrollmentStartTime}
                                             onChange={(e) => setFormData({ ...formData, enrollmentStartTime: e.target.value })}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">Enrollment End</label>
                                         <input type="datetime-local" value={formData.enrollmentEndTime}
                                             onChange={(e) => setFormData({ ...formData, enrollmentEndTime: e.target.value })}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                 </div>
                             </div>
@@ -256,7 +259,7 @@ const UpdateQuiz = () => {
                                             <div key={i} className="flex items-start justify-between p-4 bg-gray-50 rounded-lg border">
                                                 <div className="flex-1">
                                                     <p className="font-medium text-gray-800">
-                                                        <span className="text-blue-600 font-bold mr-2">Q{i + 1}.</span>
+                                                        <span className="text-brand-700 font-bold mr-2">Q{i + 1}.</span>
                                                         {q.question}
                                                     </p>
                                                     <div className="mt-2 grid grid-cols-2 gap-1 text-sm text-gray-600">
@@ -284,7 +287,7 @@ const UpdateQuiz = () => {
                                         <input type="text" name="question" value={currentQuestion.question}
                                             onChange={handleQuestionChange}
                                             placeholder="Enter your question"
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         {currentQuestion.options.map((opt, i) => (
@@ -293,7 +296,7 @@ const UpdateQuiz = () => {
                                                 <input type="text" name={`option-${i}`} value={opt}
                                                     onChange={handleQuestionChange}
                                                     placeholder={`Option ${String.fromCharCode(65 + i)}`}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                             </div>
                                         ))}
                                     </div>
@@ -302,7 +305,7 @@ const UpdateQuiz = () => {
                                             <label className="block text-sm font-medium text-gray-700 mb-1">Correct Answer</label>
                                             <select name="correctAnswer" value={currentQuestion.correctAnswer}
                                                 onChange={(e) => setCurrentQuestion({ ...currentQuestion, correctAnswer: parseInt(e.target.value) })}
-                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none">
                                                 {currentQuestion.options.map((_, i) => (
                                                     <option key={i} value={i}>Option {String.fromCharCode(65 + i)}</option>
                                                 ))}
@@ -313,11 +316,11 @@ const UpdateQuiz = () => {
                                             <input type="text" name="explanation" value={currentQuestion.explanation}
                                                 onChange={handleQuestionChange}
                                                 placeholder="Why is this correct?"
-                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-brand-700 outline-none" />
                                         </div>
                                     </div>
                                     <button type="button" onClick={addQuestion}
-                                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                        className="px-6 py-2 bg-brand-900 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
                                         + Add Question
                                     </button>
                                 </div>
@@ -326,7 +329,7 @@ const UpdateQuiz = () => {
                             {/* Submit */}
                             <div className="flex gap-4">
                                 <button type="submit" disabled={saving}
-                                    className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md disabled:opacity-50">
+                                    className="px-8 py-3 bg-brand-700 text-white rounded-lg hover:bg-brand-900 transition-colors font-medium shadow-md disabled:opacity-50">
                                     {saving ? 'Saving...' : 'Save Changes'}
                                 </button>
                                 <button type="button" onClick={() => navigate('/teacher/view-quizzes')}

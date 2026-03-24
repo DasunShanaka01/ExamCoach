@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 
 const TeacherList = () => {
     const [teachers, setTeachers] = useState([]);
@@ -151,28 +152,28 @@ const TeacherList = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-brand-50">
             <Sidebar role="admin" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="admin" pageName="Manage Teachers" />
+                <PageHeader 
+                    icon="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    title="Manage Teachers"
+                    subtitle="View and manage all teachers"
+                >
+                    <Link
+                        to="/admin/add-teacher"
+                        className="bg-white text-brand-800 font-semibold py-2.5 px-6 rounded-xl shadow-md hover:bg-brand-50 transition-all whitespace-nowrap flex items-center gap-2"
+                    >
+                        + Add New Teacher
+                    </Link>
+                </PageHeader>
                 <div className="p-8">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="flex justify-between items-center mb-8">
-                            <div>
-                                <h1 className="text-3xl font-bold text-gray-800">Manage Teachers</h1>
-                                <p className="text-gray-600 mt-1">View and manage all teachers</p>
-                            </div>
-                            <Link
-                                to="/admin/add-teacher"
-                                className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition-all hover:scale-105 active:scale-95 shadow-lg"
-                            >
-                                + Add New Teacher
-                            </Link>
-                        </div>
+                    <div className="max-w-7xl mx-auto relative z-10 -mt-8">
 
                         {loading ? (
                             <div className="flex justify-center items-center h-64">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                             </div>
                         ) : error ? (
                             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md">
@@ -196,7 +197,7 @@ const TeacherList = () => {
                                                 <tr
                                                     key={teacher._id}
                                                     onClick={() => handleRowClick(teacher)}
-                                                    className="hover:bg-blue-50 cursor-pointer transition-colors"
+                                                    className="hover:bg-brand-50 cursor-pointer transition-colors"
                                                     title="Click to view details"
                                                 >
                                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -206,7 +207,7 @@ const TeacherList = () => {
                                                         <div className="text-gray-600">{teacher.user?.email || 'N/A'}</div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                                        <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-brand-50 text-brand-900">
                                                             {teacher.subject}
                                                         </span>
                                                     </td>
@@ -216,7 +217,7 @@ const TeacherList = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                                         <button
                                                             onClick={(e) => handleEditClick(teacher, e)}
-                                                            className="bg-blue-500 text-white px-3 py-1.5 rounded-md hover:bg-blue-600 transition-colors shadow-sm"
+                                                            className="bg-brand-700 text-white px-3 py-1.5 rounded-md hover:bg-brand-700 transition-colors shadow-sm"
                                                         >
                                                             Edit
                                                         </button>
@@ -265,7 +266,7 @@ const TeacherList = () => {
                                                     value={editFormData.name}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -276,7 +277,7 @@ const TeacherList = () => {
                                                     value={editFormData.email}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -287,7 +288,7 @@ const TeacherList = () => {
                                                     value={editFormData.subject}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -298,7 +299,7 @@ const TeacherList = () => {
                                                     value={editFormData.contactNo}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -309,7 +310,7 @@ const TeacherList = () => {
                                                     value={editFormData.dob}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -319,7 +320,7 @@ const TeacherList = () => {
                                                     value={editFormData.gender}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 >
                                                     <option value="">Select Gender</option>
                                                     <option value="Male">Male</option>
@@ -336,7 +337,7 @@ const TeacherList = () => {
                                                 onChange={handleEditChange}
                                                 required
                                                 rows="3"
-                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                             />
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -348,7 +349,7 @@ const TeacherList = () => {
                                                     value={editFormData.qualification}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -359,7 +360,7 @@ const TeacherList = () => {
                                                     value={editFormData.experience}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                             <div className="md:col-span-2">
@@ -370,7 +371,7 @@ const TeacherList = () => {
                                                     value={editFormData.nic}
                                                     onChange={handleEditChange}
                                                     required
-                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -378,7 +379,7 @@ const TeacherList = () => {
                                 ) : (
                                     <div>
                                         <div className="text-center mb-6">
-                                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-100 mx-auto shadow-lg">
+                                            <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-brand-50 mx-auto shadow-lg">
                                                 {selectedTeacher.profilePic ? (
                                                     <img
                                                         src={getProfilePicUrl(selectedTeacher.profilePic)}
@@ -386,7 +387,7 @@ const TeacherList = () => {
                                                         className="w-full h-full object-cover"
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-4xl font-bold">
+                                                    <div className="w-full h-full bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center text-white text-4xl font-bold">
                                                         {selectedTeacher.name?.charAt(0) || 'T'}
                                                     </div>
                                                 )}
@@ -449,7 +450,7 @@ const TeacherList = () => {
                                         </button>
                                         <button
                                             onClick={handleUpdate}
-                                            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md"
+                                            className="px-6 py-2 bg-gradient-to-r from-brand-700 to-brand-900 text-white font-medium rounded-lg hover:from-brand-700 hover:to-brand-900 transition-all shadow-md"
                                         >
                                             Save Changes
                                         </button>
@@ -464,7 +465,7 @@ const TeacherList = () => {
                                         </button>
                                         <button
                                             onClick={() => setIsEditing(true)}
-                                            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all shadow-md"
+                                            className="px-6 py-2 bg-gradient-to-r from-brand-700 to-brand-900 text-white font-medium rounded-lg hover:from-brand-700 hover:to-brand-900 transition-all shadow-md"
                                         >
                                             Edit Details
                                         </button>

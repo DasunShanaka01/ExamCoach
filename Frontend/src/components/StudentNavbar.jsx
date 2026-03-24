@@ -91,9 +91,9 @@ const StudentNavbar = () => {
             <div className="navbar-brand">
                 <Link
                     to="/student/home"
-                    className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-2"
+                    className="text-2xl font-bold bg-gradient-to-r from-brand-700 to-brand-900 bg-clip-text text-transparent hover:from-brand-900 hover:to-brand-900 transition-all flex items-center gap-2"
                 >
-                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-6 h-6 text-brand-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
                     ExamCoach
@@ -101,25 +101,25 @@ const StudentNavbar = () => {
             </div>
 
             <div className="flex gap-8 items-center">
-                <Link to="/student/home" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
+                <Link to="/student/home" className="text-gray-700 font-medium hover:text-brand-700 transition-colors relative group">
                     Home
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-700 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link to="/student/courses" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
+                <Link to="/student/courses" className="text-gray-700 font-medium hover:text-brand-700 transition-colors relative group">
                     My Courses
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-700 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link to="/student/quizzes" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
+                <Link to="/student/quizzes" className="text-gray-700 font-medium hover:text-brand-700 transition-colors relative group">
                     My Quizzes
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-700 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link to="/student/ai_learning_lab" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
+                <Link to="/student/ai_learning_lab" className="text-gray-700 font-medium hover:text-brand-700 transition-colors relative group">
                     AI Learning Lab
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-700 group-hover:w-full transition-all duration-300"></span>
                 </Link>
-                <Link to="/student/quiz-generator" className="text-gray-700 font-medium hover:text-blue-600 transition-colors relative group">
+                <Link to="/student/quiz-generator" className="text-gray-700 font-medium hover:text-brand-700 transition-colors relative group">
                     AI Quiz Generator
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-700 group-hover:w-full transition-all duration-300"></span>
                 </Link>
 
                 {/* My Study Plan nav item */}
@@ -127,7 +127,7 @@ const StudentNavbar = () => {
                     <button
                         onClick={handleStudyPlanClick}
                         className={`flex items-center gap-1 font-medium transition-colors relative group ${
-                            isStudyPlanActive ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
+                            isStudyPlanActive ? 'text-brand-700' : 'text-gray-700 hover:text-brand-700'
                         }`}
                     >
                         My Study Plan
@@ -139,7 +139,7 @@ const StudentNavbar = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
                         )}
-                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+                        <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-brand-700 group-hover:w-full transition-all duration-300"></span>
                     </button>
 
                     {hasPlan && dropdownOpen && (
@@ -151,8 +151,8 @@ const StudentNavbar = () => {
                                     onClick={() => setDropdownOpen(false)}
                                     className={`block px-4 py-2.5 text-sm font-medium transition-colors ${
                                         location.pathname === item.path
-                                            ? 'text-blue-600 bg-blue-50'
-                                            : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600'
+                                            ? 'text-brand-700 bg-brand-50'
+                                            : 'text-gray-700 hover:bg-gray-50 hover:text-brand-700'
                                     }`}
                                 >
                                     {item.label}
@@ -169,7 +169,7 @@ const StudentNavbar = () => {
                         {profilePic ? (
                             <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                         ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
+                            <div className="w-full h-full bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center text-white font-semibold text-sm">
                                 {user?.name?.charAt(0) || 'U'}
                             </div>
                         )}

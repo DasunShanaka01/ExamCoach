@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import { quizAPI } from '../services/api';
 import CheatingAlert from '../components/CheatingAlert';
 
@@ -35,48 +36,27 @@ const ViewQuizzes = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+        <div className="flex min-h-screen bg-gradient-to-br from-brand-50 to-gray-100">
             <CheatingAlert />
             <Sidebar role="teacher" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="teacher" pageName="View Quizzes" />
                 
-                {/* Hero Section */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-20"></div>
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-violet-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-                    
-                    <div className="relative p-8">
-                        <div className="max-w-7xl mx-auto">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white shadow-lg">
-                                        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h1 className="text-3xl font-bold text-white">Available Quizzes</h1>
-                                        <p className="text-white/80 mt-1">Browse and manage all your quizzes</p>
-                                    </div>
-                                </div>
-                                <button onClick={() => navigate('/teacher/create-quiz')} className="px-6 py-3 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all font-semibold shadow-lg flex items-center gap-2 border border-white/30">
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    Create New Quiz
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <PageHeader 
+                    icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    title="Available Quizzes"
+                    subtitle="Browse and manage all your quizzes"
+                >
+                    <button onClick={() => navigate('/teacher/create-quiz')} className="px-6 py-2.5 bg-white text-brand-800 rounded-xl font-semibold hover:bg-brand-50 shadow-md transition-all whitespace-nowrap flex items-center gap-2">
+                        + Create New Quiz
+                    </button>
+                </PageHeader>
 
                 <div className="p-8">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-7xl mx-auto relative z-10 -mt-8">
                         {loading && (
                             <div className="flex items-center justify-center py-20">
-                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mr-4"></div>
+                                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-700 mr-4"></div>
                                 <span className="text-gray-500">Loading quizzes...</span>
                             </div>
                         )}
@@ -99,7 +79,7 @@ const ViewQuizzes = () => {
                                 </div>
                                 <p className="text-gray-600 text-lg font-medium">No quizzes available yet.</p>
                                 <p className="text-gray-400 text-sm mt-2 mb-6">Create your first quiz to get started</p>
-                                <button onClick={() => navigate('/teacher/create-quiz')} className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-lg transition-all font-semibold flex items-center gap-2 mx-auto">
+                                <button onClick={() => navigate('/teacher/create-quiz')} className="px-6 py-3 bg-gradient-to-r from-brand-700 to-brand-900 text-white rounded-xl hover:shadow-lg transition-all font-semibold flex items-center gap-2 mx-auto">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                     </svg>
@@ -111,17 +91,17 @@ const ViewQuizzes = () => {
                                 {quizzes.map((quiz) => (
                                     <div key={quiz._id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border border-gray-100 flex flex-col transform hover:-translate-y-1">
                                         <div className="flex items-start justify-between mb-4">
-                                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
+                                            <div className="w-12 h-12 bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform">
                                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                                 </svg>
                                             </div>
-                                            <span className="text-xs font-semibold px-3 py-1 bg-blue-50 text-blue-600 rounded-full border border-blue-100">
+                                            <span className="text-xs font-semibold px-3 py-1 bg-brand-50 text-brand-700 rounded-full border border-brand-50">
                                                 {quiz.subject}
                                             </span>
                                         </div>
                                         
-                                        <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">{quiz.title}</h3>
+                                        <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-brand-700 transition-colors">{quiz.title}</h3>
                                         <p className="text-gray-500 text-sm mb-4 flex-1 line-clamp-2">{quiz.description || 'No description available'}</p>
                                         
                                         <div className="flex items-center gap-4 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-100">
@@ -153,13 +133,13 @@ const ViewQuizzes = () => {
                                         </p>
                                         
                                         <div className="flex gap-2 mt-auto">
-                                            <button onClick={() => navigate(`/teacher/quiz-attempts/${quiz._id}`)} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-xl hover:shadow-md hover:from-emerald-600 hover:to-green-700 transition-all text-sm font-semibold flex items-center justify-center gap-1.5">
+                                            <button onClick={() => navigate(`/teacher/quiz-attempts/${quiz._id}`)} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-brand-700 to-green-600 text-white rounded-xl hover:shadow-md hover:from-brand-700 hover:to-green-700 transition-all text-sm font-semibold flex items-center justify-center gap-1.5">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                                 </svg>
                                                 Results
                                             </button>
-                                            <button onClick={() => handleUpdateQuiz(quiz._id)} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-md hover:from-blue-600 hover:to-indigo-700 transition-all text-sm font-semibold flex items-center justify-center gap-1.5">
+                                            <button onClick={() => handleUpdateQuiz(quiz._id)} className="flex-1 px-4 py-2.5 bg-gradient-to-r from-brand-700 to-brand-900 text-white rounded-xl hover:shadow-md hover:from-brand-700 hover:to-brand-900 transition-all text-sm font-semibold flex items-center justify-center gap-1.5">
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 </svg>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import StudentLayout from '../layouts/StudentLayout';
+import PageHeader from '../components/PageHeader';
 import GoogleCalendarConnect from '../components/GoogleCalendarConnect';
 
 const StudyPlanResult = () => {
@@ -135,7 +136,7 @@ const StudyPlanResult = () => {
         return (
             <StudentLayout>
                 <div className="flex justify-center items-center p-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                 </div>
             </StudentLayout>
         );
@@ -154,30 +155,30 @@ const StudyPlanResult = () => {
     if (!plan) return null;
 
     return (
-        <StudentLayout>
+        <StudentLayout
+            header={
+                <PageHeader
+                    icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    title="Your Personalized Study Plan"
+                    subtitle="AI-generated plan based on your subjects and exam dates"
+                >
+                    <Link
+                        to="/student/create-plan"
+                        state={{ plan }}
+                        className="px-4 py-2 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl transition-all"
+                    >
+                        Edit Plan
+                    </Link>
+                    <button
+                        onClick={handleDelete}
+                        className="px-4 py-2 bg-red-500/80 hover:bg-red-600 text-white font-semibold rounded-xl transition-all"
+                    >
+                        Delete Plan
+                    </button>
+                </PageHeader>
+            }
+        >
             <div>
-
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Your Personalized Study Plan</h1>
-                    </div>
-                    <div>
-                        <Link
-                            to="/student/create-plan"
-                            state={{ plan }}
-                            className="text-blue-600 hover:text-blue-800 font-semibold mr-6"
-                        >
-                            Edit Plan
-                        </Link>
-                        <button
-                            onClick={handleDelete}
-                            className="px-4 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                        >
-                            Delete Plan
-                        </button>
-                    </div>
-                </div>
-
                 {/* Next Exam Warning Box */}
                 {plan.daysUntilNextExam !== undefined && (
                     <div className="mb-8 bg-red-50 border-l-4 border-red-500 rounded-lg p-6 shadow-md">
@@ -208,7 +209,7 @@ const StudyPlanResult = () => {
                     <div className="md:col-span-1 space-y-6">
                         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
                             <h3 className="text-gray-500 text-sm font-semibold uppercase tracking-wider mb-2">Daily Goal</h3>
-                            <p className="text-4xl font-bold text-blue-600">{plan.studyHoursPerDay} <span className="text-lg text-gray-400 font-normal">hours</span></p>
+                            <p className="text-4xl font-bold text-brand-700">{plan.studyHoursPerDay} <span className="text-lg text-gray-400 font-normal">hours</span></p>
                         </div>
 
                         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
@@ -218,7 +219,7 @@ const StudyPlanResult = () => {
                                     <div key={idx} className="flex justify-between items-center text-sm">
                                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${sub.isWeak
                                             ? 'bg-red-100 text-red-800 border border-red-200'
-                                            : 'bg-green-100 text-green-800 border border-green-200'
+                                            : 'bg-brand-50 text-brand-900 border border-green-200'
                                             }`}>
                                             {sub.name}
                                         </span>
@@ -230,7 +231,7 @@ const StudyPlanResult = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-indigo-500 to-purple-600 p-6 rounded-xl shadow-lg text-white">
+                        <div className="bg-gradient-to-br from-brand-700 to-brand-900 p-6 rounded-xl shadow-lg text-white">
                             <h3 className="text-white text-opacity-80 text-sm font-semibold uppercase mb-4">Motivation</h3>
                             <p className="text-lg italic">"Consistency is the key to mastery. Stick to the plan!"</p>
                         </div>
@@ -247,7 +248,7 @@ const StudyPlanResult = () => {
                                 {plan.generatedPlan.map((item, index) => (
                                     <div key={index} className="p-6 hover:bg-gray-50 transition-colors">
                                         <div className="flex items-center gap-4 mb-4">
-                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${item.isWeak ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${item.isWeak ? 'bg-red-100 text-red-600' : 'bg-brand-50 text-brand-700'
                                                 }`}>
                                                 {item.subject.charAt(0)}
                                             </div>
@@ -268,10 +269,10 @@ const StudyPlanResult = () => {
                                         <div className="pl-16">
                                             {/* Display extracted topics if available */}
                                             {plan.subjects.find(s => s.name === item.subject)?.topics?.length > 0 ? (
-                                                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100">
+                                                <div className="p-4 bg-brand-50 rounded-lg border border-brand-50">
                                                     <div className="flex flex-wrap gap-2">
                                                         {plan.subjects.find(s => s.name === item.subject).topics.map((topic, tidx) => (
-                                                            <span key={tidx} className="text-sm bg-white text-blue-700 px-3 py-1.5 rounded-full border border-blue-200">
+                                                            <span key={tidx} className="text-sm bg-white text-brand-900 px-3 py-1.5 rounded-full border border-brand-300">
                                                                 {topic}
                                                             </span>
                                                         ))}

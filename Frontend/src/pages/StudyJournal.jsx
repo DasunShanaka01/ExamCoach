@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentLayout from '../layouts/StudentLayout';
+import PageHeader from '../components/PageHeader';
 import { FiBook, FiCalendar, FiEdit2, FiTrash2, FiCheck } from 'react-icons/fi';
 
 const StudyJournal = () => {
@@ -85,7 +86,7 @@ const StudyJournal = () => {
         return (
             <StudentLayout>
                 <div className="flex justify-center items-center p-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                 </div>
             </StudentLayout>
         );
@@ -100,7 +101,7 @@ const StudyJournal = () => {
                     <p className="text-gray-600 mb-8">Start adding notes to your daily study sessions in the timetable.</p>
                     <button
                         onClick={() => navigate('/student/timetable')}
-                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all"
+                        className="bg-gradient-to-r from-brand-700 to-brand-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-brand-900 transition-all"
                     >
                         Go to Timetable
                     </button>
@@ -110,22 +111,25 @@ const StudyJournal = () => {
     }
 
     return (
-        <StudentLayout>
+        <StudentLayout
+            header={
+                <PageHeader
+                    icon="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4m4 0h4a2 2 0 012 2v14a2 2 0 01-2 2h-4m-4 0V3"
+                    title="Study Journal"
+                    subtitle="Your daily study notes and reflections"
+                />
+            }
+        >
             <div>
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800">Study Journal</h1>
-                    <p className="text-gray-500 mt-2">Your daily study notes and reflections</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                     {journal.map((entry) => {
                         const isEditing = editingDay === entry.day;
                         const stickyColors = [
                             'bg-yellow-100 border-yellow-300',
-                            'bg-pink-100 border-pink-300',
-                            'bg-blue-100 border-blue-300',
+                            'bg-brand-50 border-brand-300',
+                            'bg-brand-50 border-brand-300',
                             'bg-green-100 border-green-300',
-                            'bg-purple-100 border-purple-300'
+                            'bg-brand-50 border-brand-300'
                         ];
                         const colorClass = stickyColors[entry.day % stickyColors.length];
 
@@ -157,7 +161,7 @@ const StudyJournal = () => {
                                         {isEditing ? (
                                             <button
                                                 onClick={handleDone}
-                                                className="p-1.5 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                                                className="p-1.5 bg-brand-700 text-white rounded-md hover:bg-brand-900 transition-colors"
                                                 title="Done"
                                             >
                                                 <FiCheck className="w-4 h-4" />

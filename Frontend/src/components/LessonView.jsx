@@ -1,10 +1,10 @@
 const getBadge = (type) => {
 	const colors = {
 		video: 'bg-red-100 text-red-700',
-		pdf: 'bg-blue-100 text-blue-700',
-		doc: 'bg-green-100 text-green-700',
+		pdf: 'bg-brand-50 text-brand-900',
+		doc: 'bg-brand-50 text-brand-700',
 		ppt: 'bg-orange-100 text-orange-700',
-		link: 'bg-teal-100 text-teal-700',
+		link: 'bg-brand-50 text-brand-700',
 		default: 'bg-gray-100 text-gray-700'
 	};
 	return colors[type] || colors.default;
@@ -47,7 +47,7 @@ const LessonView = ({ lessons = [], onDelete, onEdit }) => {
 	return (
 		<div className="space-y-4">
 			{lessons.map((lesson) => (
-				<div key={lesson._id} className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+				<div key={lesson._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 					<div className="flex items-start justify-between gap-4">
 						<div>
 							<h3 className="text-lg font-semibold text-gray-800">{lesson.title}</h3>
@@ -57,7 +57,7 @@ const LessonView = ({ lessons = [], onDelete, onEdit }) => {
 						{(onDelete || onEdit) && (
 							<button
 								onClick={() => onEdit ? onEdit(lesson) : onDelete(lesson._id)}
-								className="px-3 py-1 text-sm bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100"
+								className="px-3 py-1 text-sm bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-300/20"
 							>
 								{onEdit ? 'Edit' : 'Delete'}
 							</button>
@@ -84,7 +84,7 @@ const LessonView = ({ lessons = [], onDelete, onEdit }) => {
 										href={href}
 										target="_blank"
 										rel="noreferrer"
-										className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-blue-400 hover:shadow-sm transition"
+										className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl hover:border-brand-300 hover:shadow-sm transition"
 									>
 										<span className={`px-2 py-1 text-xs font-semibold rounded ${getBadge(type)}`}>
 											{type.toUpperCase()}
@@ -93,7 +93,7 @@ const LessonView = ({ lessons = [], onDelete, onEdit }) => {
 											<p className="text-sm font-medium text-gray-800 truncate">{file.originalName || file.url || 'Material'}</p>
 											<p className="text-xs text-gray-500">{size}</p>
 										</div>
-										<span className="text-blue-600 text-sm">View</span>
+										<span className="text-brand-700 text-sm">View</span>
 									</a>
 								);
 							})}

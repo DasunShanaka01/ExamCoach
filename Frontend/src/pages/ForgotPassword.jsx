@@ -37,21 +37,21 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen p-5 bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="flex justify-center items-center min-h-screen p-5 bg-gradient-to-br from-brand-50 to-brand-50">
             <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all hover:scale-105">
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Forgot Password</h2>
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password</h2>
                     <p className="text-gray-600">Enter your email to receive a reset link</p>
                 </div>
 
                 {message && (
-                    <div className="bg-green-50 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-md mb-6">
+                    <div className="bg-green-50 border-l-4 border-green-500 text-green-700 px-4 py-3 rounded-xl mb-6">
                         <p className="font-medium">{message}</p>
                     </div>
                 )}
 
                 {error && (
-                    <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-6 animate-shake">
+                    <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6 animate-shake">
                         <p className="font-medium">{error}</p>
                     </div>
                 )}
@@ -66,7 +66,7 @@ const ForgotPassword = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent transition-all outline-none"
                             placeholder="your.email@example.com"
                         />
                     </div>
@@ -74,7 +74,7 @@ const ForgotPassword = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className={`w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold py-3 px-4 rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transform transition-all hover:scale-105 active:scale-95 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`w-full bg-gradient-to-r from-brand-700 to-brand-900 text-white font-semibold py-3 px-4 rounded-lg hover:from-brand-700 hover:to-brand-900 focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2 transform transition-all hover:scale-105 active:scale-95 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         {loading ? 'Sending...' : 'Send Reset Link'}
                     </button>
@@ -84,7 +84,7 @@ const ForgotPassword = () => {
                     Remembered your password?{' '}
                     <Link
                         to="/login"
-                        className="text-blue-600 hover:text-blue-800 font-semibold transition-colors"
+                        className="text-brand-700 hover:text-brand-900 font-semibold transition-colors"
                     >
                         Login
                     </Link>

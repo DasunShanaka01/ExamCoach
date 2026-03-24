@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import StudentLayout from '../layouts/StudentLayout';
+import PageHeader from '../components/PageHeader';
 
 const CreateStudyPlan = () => {
     const navigate = useNavigate();
@@ -211,15 +212,21 @@ const CreateStudyPlan = () => {
     };
 
     return (
-        <StudentLayout>
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-xl shadow-lg p-8">
-                    <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
-                        {isEditMode ? 'Edit Your Study Plan' : 'Create Your Study Plan'}
-                    </h2>
+        <StudentLayout
+            header={
+                <PageHeader
+                    icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    title={isEditMode ? 'Edit Study Plan' : 'Create Study Plan'}
+                    subtitle={isEditMode ? 'Update your subjects and study preferences' : 'Set up your personalised AI-powered study schedule'}
+                />
+            }
+        >
+
+            <div className="max-w-4xl mx-auto mt-8">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 
                     {error && (
-                        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-6">
+                        <div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6">
                             {error}
                         </div>
                     )}
@@ -237,7 +244,7 @@ const CreateStudyPlan = () => {
                                 required
                                 min="1"
                                 max="24"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
                                 placeholder="e.g. 4"
                             />
                         </div>
@@ -257,7 +264,7 @@ const CreateStudyPlan = () => {
                                             type="text"
                                             value={currentSubject.name}
                                             onChange={(e) => setCurrentSubject({ ...currentSubject, name: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
                                             placeholder="e.g., Mathematics"
                                         />
                                     </div>
@@ -267,7 +274,7 @@ const CreateStudyPlan = () => {
                                             type="date"
                                             value={currentSubject.examDate}
                                             onChange={(e) => setCurrentSubject({ ...currentSubject, examDate: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
                                         />
                                     </div>
                                     <div className="flex items-end">
@@ -276,7 +283,7 @@ const CreateStudyPlan = () => {
                                                 type="checkbox"
                                                 checked={currentSubject.isWeak}
                                                 onChange={(e) => setCurrentSubject({ ...currentSubject, isWeak: e.target.checked })}
-                                                className="form-checkbox h-5 w-5 text-blue-600 rounded"
+                                                className="form-checkbox h-5 w-5 text-brand-700 rounded"
                                             />
                                             <span className="ml-2 text-sm text-gray-700">Weak Subject?</span>
                                         </label>
@@ -288,7 +295,7 @@ const CreateStudyPlan = () => {
                                     <label className="block text-xs font-semibold text-gray-500 mb-2">Upload Study Material (PDF)</label>
                                     <div className="flex items-center gap-3">
                                         <label className="flex-1 cursor-pointer">
-                                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-brand-700 transition-colors">
                                                 <div className="flex items-center justify-center gap-2 text-gray-600">
                                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -311,8 +318,8 @@ const CreateStudyPlan = () => {
                                     </p>
                                     {uploadingPdf && (
                                         <div className="mt-2 flex items-center gap-2">
-                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                                            <p className="text-sm text-blue-600">Extracting topics from PDF...</p>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-brand-700"></div>
+                                            <p className="text-sm text-brand-700">Extracting topics from PDF...</p>
                                         </div>
                                     )}
                                 </div>
@@ -323,20 +330,20 @@ const CreateStudyPlan = () => {
                                         <div className="flex items-center justify-between mb-2">
                                             <h4 className="text-sm font-semibold text-gray-700">Extracted Topics ({extractedTopics.length})</h4>
                                             {ocrUsed && (
-                                                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-semibold">
+                                                <span className="text-xs bg-brand-50 text-brand-900 px-2 py-1 rounded-full font-semibold">
                                                     📷 OCR Used
                                                 </span>
                                             )}
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {extractedTopics.map((topic, idx) => (
-                                                <span key={idx} className="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+                                                <span key={idx} className="bg-brand-50 text-brand-900 text-xs px-3 py-1 rounded-full">
                                                     {topic}
                                                 </span>
                                             ))}
                                         </div>
                                         {ocrUsed && (
-                                            <p className="text-xs text-blue-600 mt-2">
+                                            <p className="text-xs text-brand-700 mt-2">
                                                 ℹ️ This PDF was processed using OCR (Optical Character Recognition) for scanned content
                                             </p>
                                         )}
@@ -347,7 +354,7 @@ const CreateStudyPlan = () => {
                                     type="button"
                                     onClick={handleAddSubject}
                                     disabled={uploadingPdf}
-                                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full bg-brand-700 text-white py-3 rounded-lg hover:bg-brand-900 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Add Subject
                                 </button>
@@ -364,21 +371,21 @@ const CreateStudyPlan = () => {
                                         <div
                                             key={index}
                                             onClick={() => handleEditSubject(subject)}
-                                            className="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-lg shadow-sm cursor-pointer hover:border-blue-500 transition-colors group"
+                                            className="flex items-center justify-between bg-white border border-gray-200 p-4 rounded-lg shadow-sm cursor-pointer hover:border-brand-700 transition-colors group"
                                             title="Click to edit"
                                         >
                                             <div className="flex items-center gap-4 flex-1">
-                                                <div className={`w-2 h-10 rounded-full ${subject.isWeak ? 'bg-red-500' : 'bg-green-500'}`}></div>
+                                                <div className={`w-2 h-10 rounded-full ${subject.isWeak ? 'bg-red-500' : 'bg-brand-700'}`}></div>
                                                 <div className="flex-1">
                                                     <div className="flex items-center gap-2">
-                                                        <h4 className="font-bold text-gray-800 group-hover:text-blue-600">{subject.name}</h4>
+                                                        <h4 className="font-bold text-gray-800 group-hover:text-brand-700">{subject.name}</h4>
                                                         {subject.isWeak && (
                                                             <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold">Weak Area</span>
                                                         )}
                                                     </div>
                                                     <p className="text-sm text-gray-500">Exam: {new Date(subject.examDate).toLocaleDateString()}</p>
                                                     {subject.topics && subject.topics.length > 0 && (
-                                                        <p className="text-xs text-green-600 mt-1">{subject.topics.length} topics extracted</p>
+                                                        <p className="text-xs text-brand-700 mt-1">{subject.topics.length} topics extracted</p>
                                                     )}
                                                 </div>
                                             </div>
@@ -403,7 +410,7 @@ const CreateStudyPlan = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-bold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-indigo-800 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-gradient-to-r from-brand-700 to-brand-900 text-white font-bold py-3 px-6 rounded-lg hover:from-brand-900 hover:to-brand-900 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {loading 
                                 ? (isEditMode ? 'Updating Plan...' : 'Generating Plan...') 
