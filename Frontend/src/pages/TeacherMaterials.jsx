@@ -20,6 +20,9 @@ const TeacherMaterials = () => {
     const [files, setFiles] = useState([]);
     const [materialLinks, setMaterialLinks] = useState(''); // one URL per line
     const [editingId, setEditingId] = useState('');
+    const [isDragging, setIsDragging] = useState(false);
+
+    const selectedFiles = Array.from(files || []);
 
     useEffect(() => {
         const loadSubjects = async () => {
@@ -207,13 +210,50 @@ const TeacherMaterials = () => {
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-semibold text-gray-700 mb-2">Materials</label>
-                                                <input
-                                                    type="file"
-                                                    multiple
-                                                    accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi,.mkv,.jpg,.jpeg,.png"
-                                                    onChange={(e) => setFiles(e.target.files)}
-                                                    className="w-full text-sm text-gray-700"
-                                                />
+                                                <label
+                                                    htmlFor="materials-upload"
+                                                    onDragOver={(e) => {
+                                                        e.preventDefault();
+                                                        setIsDragging(true);
+                                                    }}
+                                                    onDragLeave={() => setIsDragging(false)}
+                                                    onDrop={(e) => {
+                                                        e.preventDefault();
+                                                        setIsDragging(false);
+                                                        if (e.dataTransfer?.files?.length) {
+                                                            setFiles(e.dataTransfer.files);
+                                                        }
+                                                    }}
+                                                    className={`flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-6 py-8 text-center transition ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-blue-200 bg-blue-50/40 hover:bg-blue-50'}`}
+                                                >
+                                                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white shadow-sm">
+                                                        <svg viewBox="0 0 24 24" className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2">
+                                                            <path d="M12 16V6" />
+                                                            <path d="M8 10l4-4 4 4" />
+                                                            <path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2" />
+                                                        </svg>
+                                                    </span>
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-gray-700">Click to upload or drag and drop</p>
+                                                        <p className="text-xs text-gray-500">PDF, DOCX, PPTX, images (max 10MB)</p>
+                                                    </div>
+                                                    <span className="mt-1 rounded-full border border-blue-200 bg-white px-4 py-1.5 text-xs font-semibold text-blue-700 shadow-sm">
+                                                        Choose File
+                                                    </span>
+                                                    <input
+                                                        id="materials-upload"
+                                                        type="file"
+                                                        multiple
+                                                        accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi,.mkv,.jpg,.jpeg,.png"
+                                                        onChange={(e) => setFiles(e.target.files)}
+                                                        className="sr-only"
+                                                    />
+                                                </label>
+                                                {selectedFiles.length > 0 && (
+                                                    <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600">
+                                                        {selectedFiles.map((file) => file.name).join(', ')}
+                                                    </div>
+                                                )}
                                             </div>
                                             <div className="flex gap-2">
                                                 {editingId && (
