@@ -1,7 +1,5 @@
 // API Base URL
-const API_BASE_URL = process.env.NODE_ENV === 'production'
-  ? '' // Relative URLs for production
-  : ''; // Relative URLs for development (proxied by Vite)
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://examcoach-backend-mnoy.onrender.com';
 
 // Helper function to get auth token
 const getAuthToken = () => localStorage.getItem('token');

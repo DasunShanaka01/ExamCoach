@@ -39,6 +39,7 @@ const Sidebar = ({ role }) => {
             document: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>,
             quiz: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>,
             user: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>,
+            globe: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
         };
         return icons[iconName];
     };
@@ -46,9 +47,9 @@ const Sidebar = ({ role }) => {
     return (
         <div className="w-64 bg-gradient-to-b from-gray-800 via-gray-900 to-black text-white flex flex-col fixed h-screen left-0 top-0 shadow-2xl">
             {/* Header */}
-            <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
+            <div className="p-6 bg-gradient-to-r from-brand-700 to-brand-900 shadow-lg">
                 <h3 className="text-2xl font-bold mb-1 text-white">ExamCoach</h3>
-                <p className="text-sm text-blue-100 flex items-center gap-2">
+                <p className="text-sm text-brand-50 flex items-center gap-2">
                     {role === 'admin' ? (
                         <><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>Admin Portal</>
                     ) : (
@@ -71,7 +72,7 @@ const Sidebar = ({ role }) => {
                                     className={`
                                         flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
                                         ${active
-                                            ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg transform scale-105'
+                                            ? 'bg-gradient-to-r from-brand-700 to-brand-900 text-white shadow-lg transform scale-105'
                                             : 'text-gray-300 hover:bg-gray-700 hover:text-white hover:translate-x-1'
                                         }
                                     `}
@@ -88,7 +89,7 @@ const Sidebar = ({ role }) => {
             {/* Footer */}
             <div className="p-6 border-t border-gray-700 bg-gray-900">
                 <div className="flex items-center gap-3 mb-4 p-3 bg-gray-800 rounded-lg">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                    <div className="w-10 h-10 bg-gradient-to-br from-brand-700 to-brand-900 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
                         {user?.name?.charAt(0) || 'U'}
                     </div>
                     <div className="flex-1 min-w-0">

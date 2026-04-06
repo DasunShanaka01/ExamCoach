@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import { quizAPI } from '../services/api';
 
 const CreateQuiz = () => {
@@ -74,41 +75,24 @@ const CreateQuiz = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+        <div className="flex min-h-screen bg-gradient-to-br from-brand-50 to-gray-100">
             <Sidebar role="teacher" />
-            <div className="flex-1 ml-64">
+            <div className="flex-1 ml-64 bg-brand-50 pb-12">
                 <TopNavbar role="teacher" pageName="Create Quiz" />
                 
-                {/* Hero Section */}
-                <div className="relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600">
-                    <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-20"></div>
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-                    
-                    <div className="relative p-8">
-                        <div className="max-w-4xl mx-auto">
-                            <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white shadow-lg">
-                                    <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white">Create Quiz</h1>
-                                    <p className="text-white/80 mt-1">Fill in the details and add questions to create a new quiz.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <PageHeader 
+                    icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                    title="Create Quiz"
+                    subtitle="Fill in the details and add questions to create a new quiz"
+                />
 
                 <div className="p-8">
-                    <div className="max-w-4xl mx-auto">
+                    <div className="max-w-4xl mx-auto relative z-10 -mt-8">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Quiz Details */}
                             <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 border border-gray-100">
                                 <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-brand-700 to-brand-900 rounded-lg flex items-center justify-center text-white">
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
@@ -123,7 +107,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
-                                            <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all" placeholder="Enter quiz title" required />
+                                            <input type="text" value={formData.title} onChange={(e) => setFormData({...formData, title: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none transition-all" placeholder="Enter quiz title" required />
                                         </div>
                                     </div>
                                     <div>
@@ -132,7 +116,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                             </svg>
-                                            <input type="text" value={formData.subject} onChange={(e) => setFormData({...formData, subject: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none transition-all" placeholder="Enter subject" required />
+                                            <input type="text" value={formData.subject} onChange={(e) => setFormData({...formData, subject: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none transition-all" placeholder="Enter subject" required />
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +126,7 @@ const CreateQuiz = () => {
                                         <svg className="absolute left-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                                         </svg>
-                                        <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none resize-y" rows="3" placeholder="Enter quiz description" />
+                                        <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none resize-y" rows="3" placeholder="Enter quiz description" />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -152,7 +136,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <input type="number" value={formData.timeLimit} onChange={(e) => setFormData({...formData, timeLimit: parseInt(e.target.value)})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" min="1" />
+                                            <input type="number" value={formData.timeLimit} onChange={(e) => setFormData({...formData, timeLimit: parseInt(e.target.value)})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" min="1" />
                                         </div>
                                     </div>
                                     <div>
@@ -161,7 +145,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                             </svg>
-                                            <input type="number" value={formData.maxAttempts} onChange={(e) => setFormData({...formData, maxAttempts: parseInt(e.target.value) || 1})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" min="1" required />
+                                            <input type="number" value={formData.maxAttempts} onChange={(e) => setFormData({...formData, maxAttempts: parseInt(e.target.value) || 1})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" min="1" required />
                                         </div>
                                         <p className="text-xs text-gray-500 mt-1.5">Number of times a student can attempt this quiz</p>
                                     </div>
@@ -171,7 +155,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                                             </svg>
-                                            <input type="text" value={formData.enrollmentKey} onChange={(e) => setFormData({...formData, enrollmentKey: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" placeholder="e.g. QUIZ-2026-001" required />
+                                            <input type="text" value={formData.enrollmentKey} onChange={(e) => setFormData({...formData, enrollmentKey: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" placeholder="e.g. QUIZ-2026-001" required />
                                         </div>
                                     </div>
                                 </div>
@@ -182,7 +166,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                             </svg>
-                                            <input type="text" value={formData.quizPassword} onChange={(e) => setFormData({...formData, quizPassword: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" placeholder="Password for students" required />
+                                            <input type="text" value={formData.quizPassword} onChange={(e) => setFormData({...formData, quizPassword: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" placeholder="Password for students" required />
                                         </div>
                                     </div>
                                     <div>
@@ -191,7 +175,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                             </svg>
-                                            <input type="datetime-local" value={formData.enrollmentStartTime} onChange={(e) => setFormData({...formData, enrollmentStartTime: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" required />
+                                            <input type="datetime-local" value={formData.enrollmentStartTime} onChange={(e) => setFormData({...formData, enrollmentStartTime: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" required />
                                         </div>
                                     </div>
                                     <div>
@@ -200,7 +184,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <input type="datetime-local" value={formData.enrollmentEndTime} onChange={(e) => setFormData({...formData, enrollmentEndTime: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" required />
+                                            <input type="datetime-local" value={formData.enrollmentEndTime} onChange={(e) => setFormData({...formData, enrollmentEndTime: e.target.value})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" required />
                                         </div>
                                     </div>
                                 </div>
@@ -209,7 +193,7 @@ const CreateQuiz = () => {
                             {/* Add Question */}
                             <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 border border-gray-100">
                                 <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-white">
+                                    <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-brand-700 rounded-lg flex items-center justify-center text-white">
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                         </svg>
@@ -222,7 +206,7 @@ const CreateQuiz = () => {
                                         <svg className="absolute left-3 top-3 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        <input type="text" name="question" value={currentQuestion.question} onChange={handleQuestionChange} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" placeholder="Enter the question" />
+                                        <input type="text" name="question" value={currentQuestion.question} onChange={handleQuestionChange} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" placeholder="Enter the question" />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -231,7 +215,7 @@ const CreateQuiz = () => {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">Option {index + 1} <span className="text-red-500">*</span></label>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center text-xs font-bold text-gray-600">{String.fromCharCode(65 + index)}</span>
-                                                <input type="text" name={`option-${index}`} value={option} onChange={handleQuestionChange} className="w-full pl-12 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" placeholder={`Option ${index + 1}`} />
+                                                <input type="text" name={`option-${index}`} value={option} onChange={handleQuestionChange} className="w-full pl-12 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" placeholder={`Option ${index + 1}`} />
                                             </div>
                                         </div>
                                     ))}
@@ -243,7 +227,7 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <select name="correctAnswer" value={currentQuestion.correctAnswer} onChange={(e) => setCurrentQuestion({...currentQuestion, correctAnswer: parseInt(e.target.value)})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none bg-white">
+                                            <select name="correctAnswer" value={currentQuestion.correctAnswer} onChange={(e) => setCurrentQuestion({...currentQuestion, correctAnswer: parseInt(e.target.value)})} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none bg-white">
                                                 {currentQuestion.options.map((_, index) => (
                                                     <option key={index} value={index}>Option {index + 1} ({String.fromCharCode(65 + index)})</option>
                                                 ))}
@@ -256,11 +240,11 @@ const CreateQuiz = () => {
                                             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
-                                            <input type="text" name="explanation" value={currentQuestion.explanation} onChange={handleQuestionChange} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none" placeholder="Why is this correct?" />
+                                            <input type="text" name="explanation" value={currentQuestion.explanation} onChange={handleQuestionChange} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none" placeholder="Why is this correct?" />
                                         </div>
                                     </div>
                                 </div>
-                                <button type="button" onClick={addQuestion} className="px-6 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-lg hover:from-green-600 hover:to-emerald-700 transition-all font-semibold flex items-center gap-2">
+                                <button type="button" onClick={addQuestion} className="px-6 py-2.5 bg-gradient-to-r from-green-500 to-brand-700 text-white rounded-xl hover:shadow-lg hover:from-green-600 hover:to-brand-900 transition-all font-semibold flex items-center gap-2">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                                     </svg>
@@ -292,13 +276,13 @@ const CreateQuiz = () => {
                                                 <div className="flex justify-between items-start gap-4">
                                                     <div className="flex-1">
                                                         <p className="font-semibold text-gray-800 flex items-center gap-2">
-                                                            <span className="w-7 h-7 bg-gradient-to-br from-violet-500 to-indigo-600 text-white rounded-lg flex items-center justify-center text-sm font-bold">{index + 1}</span>
+                                                            <span className="w-7 h-7 bg-gradient-to-br from-brand-700 to-brand-900 text-white rounded-lg flex items-center justify-center text-sm font-bold">{index + 1}</span>
                                                             {q.question}
                                                         </p>
                                                         <ul className="mt-3 space-y-1.5 pl-9">
                                                             {q.options.map((opt, i) => (
-                                                                <li key={i} className={`text-sm flex items-center gap-2 ${i === q.correctAnswer ? 'text-emerald-600 font-semibold' : 'text-gray-600'}`}>
-                                                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${i === q.correctAnswer ? 'bg-emerald-100' : 'bg-gray-100'}`}>
+                                                                <li key={i} className={`text-sm flex items-center gap-2 ${i === q.correctAnswer ? 'text-brand-700 font-semibold' : 'text-gray-600'}`}>
+                                                                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${i === q.correctAnswer ? 'bg-brand-50' : 'bg-gray-100'}`}>
                                                                         {i === q.correctAnswer ? '✓' : String.fromCharCode(65 + i)}
                                                                     </span>
                                                                     {opt}
@@ -326,7 +310,7 @@ const CreateQuiz = () => {
                                     </svg>
                                     Cancel
                                 </button>
-                                <button type="submit" disabled={loading} className="px-8 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl hover:shadow-xl hover:from-violet-700 hover:to-indigo-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2">
+                                <button type="submit" disabled={loading} className="px-8 py-3 bg-gradient-to-r from-brand-700 to-brand-900 text-white rounded-xl hover:shadow-xl hover:from-brand-900 hover:to-brand-900 font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2">
                                     {loading ? (
                                         <>
                                             <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">

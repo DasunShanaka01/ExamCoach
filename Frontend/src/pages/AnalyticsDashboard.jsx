@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import StudentLayout from '../layouts/StudentLayout';
+import PageHeader from '../components/PageHeader';
 import { FiTrendingUp, FiClock, FiTarget, FiBook, FiRefreshCw, FiCalendar } from 'react-icons/fi';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
@@ -31,7 +32,7 @@ const AnalyticsDashboard = () => {
         
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -159,13 +160,13 @@ const AnalyticsDashboard = () => {
         });
     };
 
-    const COLORS = ['#3B82F6', '#8B5CF6', '#EC4899', '#F59E0B', '#10B981', '#EF4444', '#6366F1', '#14B8A6'];
+    const COLORS = ['#088395', '#09637E', '#7AB2B2', '#EBF4F6', '#0a7a96', '#06566e', '#5a9a9a', '#c3e0e8'];
 
     if (loading) {
         return (
             <StudentLayout>
                 <div className="flex justify-center items-center p-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                 </div>
             </StudentLayout>
         );
@@ -174,7 +175,7 @@ const AnalyticsDashboard = () => {
     if (!plan || !plan.timetable || !plan.timetable.dailySchedule) {
         return (
             <StudentLayout>
-                <div className="bg-yellow-50 border-l-4 border-yellow-500 text-yellow-700 px-4 py-3 rounded-md">
+                <div className="bg-brand-50 border-l-4 border-brand-700 text-brand-900 px-4 py-3 rounded-md">
                     No timetable data found. Your study plan needs a timetable to show analytics.
                 </div>
             </StudentLayout>
@@ -182,26 +183,29 @@ const AnalyticsDashboard = () => {
     }
 
     return (
-        <StudentLayout>
-            <div>
-                <div className="mb-8 flex justify-between items-center">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">Analytics Dashboard</h1>
-                        <p className="text-gray-500 mt-2">Track your study progress and performance</p>
-                    </div>
+        <StudentLayout
+            header={
+                <PageHeader
+                    icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    title="Analytics Dashboard"
+                    subtitle="Track your study progress and performance"
+                >
                     <button
                         onClick={() => fetchAnalytics(true)}
                         disabled={refreshing}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl transition-all disabled:opacity-50"
                     >
                         <FiRefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                         {refreshing ? 'Refreshing...' : 'Refresh'}
                     </button>
-                </div>
+                </PageHeader>
+            }
+        >
+            <div>                <div className="mt-8">
 
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl p-6 text-white shadow-lg">
                         <div className="flex items-center justify-between mb-4">
                             <FiClock className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -209,10 +213,10 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.totalStudyHours}h</p>
-                        <p className="text-blue-100 text-sm">Total Planned Hours</p>
+                        <p className="text-brand-50 text-sm">Total Planned Hours</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-brand-300 to-brand-700 rounded-2xl p-6 text-white shadow-lg">
                         <div className="flex items-center justify-between mb-4">
                             <FiTrendingUp className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -220,10 +224,10 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.completedHours}h</p>
-                        <p className="text-green-100 text-sm">Hours Completed</p>
+                        <p className="text-brand-50 text-sm">Hours Completed</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl p-6 text-white shadow-lg">
                         <div className="flex items-center justify-between mb-4">
                             <FiTarget className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -231,10 +235,10 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.overallCompletion}%</p>
-                        <p className="text-purple-100 text-sm">Overall Completion</p>
+                        <p className="text-brand-50 text-sm">Overall Completion</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-brand-900 to-gray-900 rounded-2xl p-6 text-white shadow-lg">
                         <div className="flex items-center justify-between mb-4">
                             <FiBook className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -242,16 +246,16 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.completedTasks}/{analytics.totalTasks}</p>
-                        <p className="text-orange-100 text-sm">Tasks Completed</p>
+                        <p className="text-brand-50 text-sm">Tasks Completed</p>
                     </div>
                 </div>
 
                 {/* Charts Section */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Study Hours Trend - Line Chart */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-3 mb-6">
-                            <FiTrendingUp className="text-2xl text-blue-600" />
+                            <FiTrendingUp className="text-2xl text-brand-700" />
                             <h2 className="text-xl font-bold text-gray-800">Study Hours Trend</h2>
                         </div>
                         <ResponsiveContainer width="100%" height={300}>
@@ -288,19 +292,19 @@ const AnalyticsDashboard = () => {
                                 <Line 
                                     type="monotone" 
                                     dataKey="planned" 
-                                    stroke="#3B82F6" 
+                                    stroke="#088395" 
                                     strokeWidth={2}
                                     name="Planned"
-                                    dot={{ fill: '#3B82F6', r: 4 }}
+                                    dot={{ fill: '#088395', r: 4 }}
                                     activeDot={{ r: 6 }}
                                 />
                                 <Line 
                                     type="monotone" 
                                     dataKey="completed" 
-                                    stroke="#10B981" 
+                                    stroke="#7AB2B2" 
                                     strokeWidth={2}
                                     name="Completed"
-                                    dot={{ fill: '#10B981', r: 4 }}
+                                    dot={{ fill: '#7AB2B2', r: 4 }}
                                     activeDot={{ r: 6 }}
                                 />
                             </LineChart>
@@ -308,9 +312,9 @@ const AnalyticsDashboard = () => {
                     </div>
 
                     {/* Subject Time Distribution - Pie Chart */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-3 mb-6">
-                            <FiCalendar className="text-2xl text-purple-600" />
+                            <FiCalendar className="text-2xl text-brand-700" />
                             <h2 className="text-xl font-bold text-gray-800">Subject Time Distribution</h2>
                         </div>
                         <ResponsiveContainer width="100%" height={300}>
@@ -356,9 +360,9 @@ const AnalyticsDashboard = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                     {/* Subject Completion - Smaller Bar Chart */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-3 mb-6">
-                            <FiBook className="text-2xl text-green-600" />
+                            <FiBook className="text-2xl text-brand-700" />
                             <h2 className="text-xl font-bold text-gray-800">Completion Per Subject</h2>
                         </div>
                         <ResponsiveContainer width="100%" height={250}>
@@ -391,7 +395,7 @@ const AnalyticsDashboard = () => {
                                 />
                                 <Bar 
                                     dataKey="completion" 
-                                    fill="#3B82F6"
+                                    fill="#088395"
                                     radius={[0, 8, 8, 0]}
                                     label={{ 
                                         position: 'right', 
@@ -403,7 +407,7 @@ const AnalyticsDashboard = () => {
                                     {analytics.subjectCompletion.map((entry, index) => (
                                         <Cell 
                                             key={`cell-${index}`} 
-                                            fill={entry.completion >= 75 ? '#10B981' : entry.completion >= 50 ? '#3B82F6' : entry.completion >= 25 ? '#F59E0B' : '#EF4444'} 
+                                            fill={entry.completion >= 75 ? '#088395' : entry.completion >= 50 ? '#7AB2B2' : entry.completion >= 25 ? '#09637E' : '#EF4444'} 
                                         />
                                     ))}
                                 </Bar>
@@ -412,22 +416,22 @@ const AnalyticsDashboard = () => {
                     </div>
 
                     {/* Exam Readiness Score */}
-                    <div className="bg-white rounded-xl shadow-lg p-6">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                         <div className="flex items-center gap-3 mb-6">
-                            <FiTarget className="text-2xl text-indigo-600" />
+                            <FiTarget className="text-2xl text-brand-700" />
                             <h2 className="text-xl font-bold text-gray-800">Exam Readiness Score</h2>
                         </div>
                         <div className="space-y-4">
                             {analytics.examReadiness.map((subject, index) => {
                                 const scoreColor = 
-                                    subject.score >= 80 ? 'text-green-600' :
-                                    subject.score >= 60 ? 'text-blue-600' :
+                                    subject.score >= 80 ? 'text-brand-700' :
+                                    subject.score >= 60 ? 'text-brand-700' :
                                     subject.score >= 40 ? 'text-yellow-600' :
                                     'text-red-600';
                                 
                                 const bgColor = 
                                     subject.score >= 80 ? 'bg-green-50 border-green-200' :
-                                    subject.score >= 60 ? 'bg-blue-50 border-blue-200' :
+                                    subject.score >= 60 ? 'bg-brand-50 border-brand-300' :
                                     subject.score >= 40 ? 'bg-yellow-50 border-yellow-200' :
                                     'bg-red-50 border-red-200';
 
@@ -454,6 +458,7 @@ const AnalyticsDashboard = () => {
                         </div>
                     </div>
                 </div>
+                </div>{/* end mt-8 */}
             </div>
         </StudentLayout>
     );

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import TopNavbar from '../components/TopNavbar';
+import PageHeader from '../components/PageHeader';
 import LessonView from '../components/LessonView'; // Imported LessonView
 
-const api = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const api = import.meta.env.VITE_API_URL || 'https://examcoach-backend-mnoy.onrender.com';
 
 const AdminCoursePortal = () => {
 	const token = localStorage.getItem('token');
@@ -14,6 +15,7 @@ const AdminCoursePortal = () => {
 	const [error, setError] = useState('');
 	const [subjectForm, setSubjectForm] = useState({ name: '', stream: '', teacher: '', description: '' });
 	const [editingId, setEditingId] = useState('');
+	const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
 	// New State for Lesson Management
 	const [viewingSubject, setViewingSubject] = useState(null);
 	const [lessons, setLessons] = useState([]);
@@ -222,10 +224,17 @@ const AdminCoursePortal = () => {
 			}
 			setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
 			setEditingId('');
+			setIsSubjectModalOpen(false);
 			setError('');
 		} catch (err) {
 			setError(err.message);
 		}
+	};
+
+	const handleOpenCreateSubject = () => {
+		setEditingId('');
+		setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
+		setIsSubjectModalOpen(true);
 	};
 
 	const handleEditClick = (subj) => {
@@ -236,6 +245,7 @@ const AdminCoursePortal = () => {
 			teacher: subj.teacher?._id || subj.teacher || '',
 			description: subj.description || ''
 		});
+		setIsSubjectModalOpen(true);
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
@@ -268,47 +278,53 @@ const AdminCoursePortal = () => {
 	}, [subjects]);
 
 	return (
-		<div className="flex min-h-screen bg-gray-50">
+		<div className="flex min-h-screen bg-brand-50">
 			<Sidebar role="admin" />
-			<div className="flex-1 ml-64">
+			<div className="flex-1 ml-64 bg-brand-50 pb-12">
 				<TopNavbar role="admin" pageName="Course Management" />
+
+				<PageHeader 
+					icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+					title={viewingSubject ? `Lessons: ${viewingSubject.name}` : 'Course Management'}
+					subtitle={viewingSubject 
+						? `Manage lessons and materials for ${viewingSubject.name}` 
+						: 'Create streams, subjects, and assign teachers.'}
+				>
+					{!viewingSubject && (
+						<button
+							onClick={handleOpenCreateSubject}
+							className="px-6 py-2.5 bg-white text-brand-800 rounded-xl font-semibold hover:bg-brand-50 shadow-md transition-all whitespace-nowrap"
+						>
+							+ Create Subject
+						</button>
+					)}
+					{viewingSubject && (
+						<button
+							onClick={() => { setViewingSubject(null); setLessons([]); setError(''); }}
+							className="px-6 py-2.5 bg-white/20 text-white rounded-xl shadow-md font-semibold hover:bg-white/30 transition-all whitespace-nowrap border border-white/30"
+						>
+							← Back to Courses
+						</button>
+					)}
+				</PageHeader>
+
 				<div className="p-8">
-					<div className="max-w-7xl mx-auto">
-						<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-							<div>
-								<h1 className="text-3xl font-bold text-gray-800">
-									{viewingSubject ? `Lessons: ${viewingSubject.name}` : 'Course Management'}
-								</h1>
-								<p className="text-gray-600">
-									{viewingSubject 
-										? `Manage lessons and materials for ${viewingSubject.name}` 
-										: 'Create streams, subjects, and assign teachers.'}
-								</p>
-							</div>
-							{viewingSubject && (
-								<button
-									onClick={() => { setViewingSubject(null); setLessons([]); setError(''); }}
-									className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-								>
-									← Back to Courses
-								</button>
-							)}
-						</div>
+					<div className="max-w-7xl mx-auto relative z-10 -mt-10">
 
 						{error && (
-							<div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-md mb-6">
+							<div className="bg-red-50 border-l-4 border-red-500 text-red-700 px-4 py-3 rounded-xl mb-6">
 								<p className="font-medium">{error}</p>
 							</div>
 						)}
 
 						{loading ? (
 							<div className="flex justify-center items-center h-64">
-								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+								<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
 							</div>
 						) : viewingSubject ? (
 							<div className="grid grid-cols-1 gap-6">
 								{/* Lesson Creator */}
-								<div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
+								<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 									<h2 className="text-xl font-semibold text-gray-800 mb-4">{editingLessonId ? 'Edit Lesson' : 'Add New Lesson'}</h2>
 									<form className="grid grid-cols-1 gap-4" onSubmit={handleLessonSubmit}>
 										<div>
@@ -318,7 +334,7 @@ const AdminCoursePortal = () => {
 												value={lessonForm.title}
 												onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
 												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
 												placeholder="Week 1: Introduction"
 											/>
 										</div>
@@ -328,7 +344,7 @@ const AdminCoursePortal = () => {
 												value={lessonForm.description}
 												onChange={(e) => setLessonForm({ ...lessonForm, description: e.target.value })}
 												rows="2"
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
 												placeholder="Overview of the lesson..."
 											/>
 										</div>
@@ -352,7 +368,7 @@ const AdminCoursePortal = () => {
 													type="url"
 													value={lessonForm.link}
 													onChange={(e) => setLessonForm({ ...lessonForm, link: e.target.value })}
-													className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+													className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
 													placeholder="https://zoom.us/..."
 												/>
 											</div>
@@ -367,7 +383,7 @@ const AdminCoursePortal = () => {
 													Cancel
 												</button>
 											)}
-											<button type="submit" className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition">
+											<button type="submit" className="px-6 py-2.5 bg-brand-700 text-white rounded-lg hover:bg-brand-900 font-medium transition">
 												{editingLessonId ? 'Update Lesson' : 'Add Lesson'}
 											</button>
 										</div>
@@ -382,80 +398,10 @@ const AdminCoursePortal = () => {
 							</div>
 						) : (
 							<div className="grid grid-cols-1 gap-6">
-								{/* Subject creator */}
-								<div className="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-									<h2 className="text-xl font-semibold text-gray-800 mb-4">Create Subject</h2>
-									<form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubjectSubmit}>
-										<div className="md:col-span-2">
-											<label className="block text-sm font-semibold text-gray-700 mb-2">Subject Name</label>
-											<input
-												type="text"
-												value={subjectForm.name}
-												onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
-												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-												placeholder="Chemistry"
-											/>
-										</div>
+								<div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+							
 
-										<div>
-											<label className="block text-sm font-semibold text-gray-700 mb-2">Stream</label>
-											<select
-												value={subjectForm.stream}
-												onChange={(e) => setSubjectForm({ ...subjectForm, stream: e.target.value })}
-												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-											>
-												<option value="">Select Stream</option>
-												{streams.map((stream) => (
-													<option key={stream._id} value={stream._id}>{stream.name}</option>
-												))}
-											</select>
-										</div>
-
-										<div>
-											<label className="block text-sm font-semibold text-gray-700 mb-2">Assign Teacher</label>
-											<select
-												value={subjectForm.teacher}
-												onChange={(e) => setSubjectForm({ ...subjectForm, teacher: e.target.value })}
-												required
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-											>
-												<option value="">Select Teacher</option>
-												{teachers.map((teacher) => (
-													<option key={teacher._id} value={teacher._id}>{teacher.name} ({teacher.user?.email})</option>
-												))}
-											</select>
-										</div>
-
-										<div className="md:col-span-2">
-											<label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-											<textarea
-												value={subjectForm.description}
-												onChange={(e) => setSubjectForm({ ...subjectForm, description: e.target.value })}
-												rows="3"
-												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-												placeholder="Brief about syllabus coverage"
-											/>
-										</div>
-
-										<div className="md:col-span-2 flex justify-end gap-3">
-											{editingId && (
-												<button
-													type="button"
-													onClick={() => { setEditingId(''); setSubjectForm({ name: '', stream: '', teacher: '', description: '' }); }}
-													className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-												>
-													Cancel
-												</button>
-											)}
-											<button type="submit" className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-												{editingId ? 'Update Subject' : 'Create Subject'}
-											</button>
-										</div>
-									</form>
-
-									<div className="mt-8">
+									<div>
 										<h3 className="text-lg font-semibold text-gray-800 mb-3">Subjects by Stream</h3>
 										{Object.keys(groupedSubjects).length === 0 ? (
 											<p className="text-gray-500 text-sm">No subjects created yet.</p>
@@ -484,7 +430,7 @@ const AdminCoursePortal = () => {
 																			</button>
 																			<button
 																				onClick={() => handleEditClick(subj)}
-																				className="px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 hover:bg-blue-100"
+																				className="px-3 py-1 text-sm rounded bg-brand-50 text-brand-900 hover:bg-brand-50"
 																			>
 																				Edit
 																			</button>
@@ -504,6 +450,99 @@ const AdminCoursePortal = () => {
 											</div>
 										)}
 									</div>
+								</div>
+							</div>
+						)}
+
+						{!viewingSubject && isSubjectModalOpen && (
+							<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+								<div className="w-full max-w-3xl bg-white rounded-xl shadow-2xl border border-gray-100 p-6 max-h-[90vh] overflow-y-auto">
+									<div className="flex items-center justify-between mb-4">
+										<h2 className="text-xl font-semibold text-gray-800">{editingId ? 'Edit Subject' : 'Create Subject'}</h2>
+										<button
+											type="button"
+											onClick={() => {
+												setIsSubjectModalOpen(false);
+												setEditingId('');
+												setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
+											}}
+											className="text-gray-500 hover:text-gray-700 text-2xl leading-none"
+										>
+											&times;
+										</button>
+									</div>
+
+									<form className="grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubjectSubmit}>
+										<div className="md:col-span-2">
+											<label className="block text-sm font-semibold text-gray-700 mb-2">Subject Name</label>
+											<input
+												type="text"
+												value={subjectForm.name}
+												onChange={(e) => setSubjectForm({ ...subjectForm, name: e.target.value })}
+												required
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
+												placeholder="Chemistry"
+											/>
+										</div>
+
+										<div>
+											<label className="block text-sm font-semibold text-gray-700 mb-2">Stream</label>
+											<select
+												value={subjectForm.stream}
+												onChange={(e) => setSubjectForm({ ...subjectForm, stream: e.target.value })}
+												required
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
+											>
+												<option value="">Select Stream</option>
+												{streams.map((stream) => (
+													<option key={stream._id} value={stream._id}>{stream.name}</option>
+												))}
+											</select>
+										</div>
+
+										<div>
+											<label className="block text-sm font-semibold text-gray-700 mb-2">Assign Teacher</label>
+											<select
+												value={subjectForm.teacher}
+												onChange={(e) => setSubjectForm({ ...subjectForm, teacher: e.target.value })}
+												required
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
+											>
+												<option value="">Select Teacher</option>
+												{teachers.map((teacher) => (
+													<option key={teacher._id} value={teacher._id}>{teacher.name} ({teacher.user?.email})</option>
+												))}
+											</select>
+										</div>
+
+										<div className="md:col-span-2">
+											<label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+											<textarea
+												value={subjectForm.description}
+												onChange={(e) => setSubjectForm({ ...subjectForm, description: e.target.value })}
+												rows="3"
+												className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent"
+												placeholder="Brief about syllabus coverage"
+											/>
+										</div>
+
+										<div className="md:col-span-2 flex justify-end gap-3 mt-2">
+											<button
+												type="button"
+												onClick={() => {
+													setIsSubjectModalOpen(false);
+													setEditingId('');
+													setSubjectForm({ name: '', stream: '', teacher: '', description: '' });
+												}}
+												className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+											>
+												Cancel
+											</button>
+											<button type="submit" className="px-6 py-3 bg-brand-900 text-white rounded-lg hover:bg-green-700 transition">
+												{editingId ? 'Update Subject' : 'Create Subject'}
+											</button>
+										</div>
+									</form>
 								</div>
 							</div>
 						)}

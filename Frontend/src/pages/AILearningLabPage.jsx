@@ -1,23 +1,18 @@
 import StudentNavbar from '../components/StudentNavbar';
 import Footer from '../components/Footer';
 import AILearningLab from '../components/AILearningLab';
+import PageHeader from '../components/PageHeader';
 
 const AILearningLabPage = () => {
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-brand-50 flex flex-col">
             <StudentNavbar />
-            <div className="max-w-7xl mx-auto px-8 py-12 flex-1">
-                <header className="mb-12">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                        
-                        AI Learning Lab
-
-                    </h1>
-                    <p className="text-gray-600">
-                        Use the power of AI to summarize your study materials and enhance your learning.
-                    </p>
-                </header>
-
+            <PageHeader
+                icon="M13 10V3L4 14h7v7l9-11h-7z"
+                title="AI Learning Lab"
+                subtitle="Use the power of AI to summarize your study materials and enhance your learning."
+            />
+            <div className="max-w-screen-2xl mx-auto px-8 py-10 flex-1">
                 <AILearningLab />
             </div>
             <Footer />

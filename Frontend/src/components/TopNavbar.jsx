@@ -15,7 +15,7 @@ const TopNavbar = ({ role, pageName }) => {
                 // Determine API endpoint based on role
                 let endpoint = '';
                 if (role === 'teacher') {
-                    endpoint = `http://localhost:5000/api/teachers/profile/${user.id}`;
+                    endpoint = `https://examcoach-backend-mnoy.onrender.com/api/teachers/profile/${user.id}`;
                 } else if (role === 'admin') {
                     // Admins don't have a profile picture endpoint, so skip
                     return;
@@ -80,7 +80,7 @@ const TopNavbar = ({ role, pageName }) => {
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold">
+                                <div className="w-full h-full bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center text-white font-semibold">
                                     {user?.name?.charAt(0) || 'U'}
                                 </div>
                             )}

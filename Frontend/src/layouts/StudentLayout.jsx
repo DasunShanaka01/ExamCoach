@@ -1,10 +1,11 @@
 import StudentNavbar from '../components/StudentNavbar';
 
-const StudentLayout = ({ children }) => {
+const StudentLayout = ({ children, header }) => {
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-brand-50 flex flex-col">
             <StudentNavbar />
-            <main className="p-8">
+            {header && header}
+            <main className="flex-1 p-4 sm:p-6 lg:p-8">
                 <div className="max-w-7xl mx-auto">
                     {children}
                 </div>

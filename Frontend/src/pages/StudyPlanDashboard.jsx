@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import StudentLayout from '../layouts/StudentLayout';
+import PageHeader from '../components/PageHeader';
 import { FiClock, FiCalendar, FiCheckCircle, FiAlertCircle, FiRefreshCw, FiArrowRight } from 'react-icons/fi';
 import GoogleCalendarConnect from '../components/GoogleCalendarConnect';
 
@@ -19,9 +20,9 @@ const StudyPlanDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             const [planRes, progRes, timetableProgRes] = await Promise.all([
-                fetch('http://localhost:5000/api/study-plan', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch('http://localhost:5000/api/study-plan/today-progress', { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch('http://localhost:5000/api/study-plan/progress', { headers: { 'Authorization': `Bearer ${token}` } })
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan', { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/today-progress', { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/progress', { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
 
             const planData = await planRes.json();
@@ -41,7 +42,7 @@ const StudyPlanDashboard = () => {
     const handleToggleTask = async (day, taskIndex) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/study-plan/timetable/task/${day}/${taskIndex}`, {
+            await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/task/${day}/${taskIndex}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -55,7 +56,7 @@ const StudyPlanDashboard = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/study-plan/log-time', {
+            const response = await fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/log-time', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -82,7 +83,7 @@ const StudyPlanDashboard = () => {
                 <p className="text-gray-600 mb-8">Start your journey by creating a personalized study plan.</p>
                 <button
                     onClick={() => window.location.href = '/student/create-plan'}
-                    className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all"
+                    className="bg-gradient-to-r from-brand-700 to-brand-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-brand-900 transition-all"
                 >
                     Create My First Plan
                 </button>
@@ -94,33 +95,30 @@ const StudyPlanDashboard = () => {
     const daysLeft = Math.ceil((new Date(nextExam.examDate) - new Date()) / (1000 * 3600 * 24));
 
     return (
-        <StudentLayout>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <StudentLayout
+            header={
+                <PageHeader
+                    icon="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    title="My Study Progress"
+                    subtitle="Keep up the great work! You're one step closer to your goals."
+                >
+                    <div className="flex gap-4">
+                        <div className="bg-white/20 rounded-xl px-4 py-2 text-center">
+                            <p className="text-xs text-white/70 uppercase tracking-wider">Overall</p>
+                            <p className="text-2xl font-black text-white">{timetableProgress?.overall?.completionPercentage || 0}%</p>
+                        </div>
+                        <div className="bg-white/20 rounded-xl px-4 py-2 text-center">
+                            <p className="text-xs text-white/70 uppercase tracking-wider">Tasks Done</p>
+                            <p className="text-2xl font-black text-white">{timetableProgress?.overall?.completedTasks || 0}/{timetableProgress?.overall?.totalTasks || 0}</p>
+                        </div>
+                    </div>
+                </PageHeader>
+            }
+        >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
 
                 {/* Left Column: Stats & Progress */}
                 <div className="lg:col-span-2 space-y-8">
-                    {/* Hero Section / Welcome */}
-                    <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden">
-                        <div className="relative z-10">
-                            <h1 className="text-3xl font-bold mb-2">My Study Progress</h1>
-                            <p className="opacity-90">Keep up the great work! You're one step closer to your goals.</p>
-
-                            <div className="mt-8 flex gap-6">
-                                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex-1">
-                                    <p className="text-xs uppercase tracking-wider font-bold opacity-70 mb-1">Overall Progress</p>
-                                    <p className="text-2xl font-bold">{timetableProgress?.overall?.completionPercentage || 0}%</p>
-                                </div>
-                                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 flex-1">
-                                    <p className="text-xs uppercase tracking-wider font-bold opacity-70 mb-1">Tasks Done</p>
-                                    <p className="text-2xl font-bold">{timetableProgress?.overall?.completedTasks || 0}/{timetableProgress?.overall?.totalTasks || 0}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {/* Decorative background elements */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-500/20 rounded-full -ml-10 -mb-10 blur-2xl"></div>
-                    </div>
-
                     {/* Today's Tasks */}
                     <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
                         <div className="flex justify-between items-center mb-6">
@@ -130,7 +128,7 @@ const StudyPlanDashboard = () => {
                             </h2>
                             <button
                                 onClick={() => window.location.href = '/student/timetable'}
-                                className="text-blue-600 text-sm font-bold flex items-center gap-1 hover:underline"
+                                className="text-brand-700 text-sm font-bold flex items-center gap-1 hover:underline"
                             >
                                 View Full Timetable <FiArrowRight />
                             </button>
@@ -144,7 +142,7 @@ const StudyPlanDashboard = () => {
                                         className={`p-4 bg-gray-50 rounded-2xl transition-all border ${
                                             task.isCompleted 
                                                 ? 'border-green-200 bg-green-50' 
-                                                : 'border-transparent hover:border-blue-100 hover:bg-white hover:shadow-md'
+                                                : 'border-transparent hover:border-brand-50 hover:bg-white hover:shadow-md'
                                         }`}
                                     >
                                         <div className="flex items-start gap-3">
@@ -153,11 +151,11 @@ const StudyPlanDashboard = () => {
                                                 className="flex-shrink-0 mt-1"
                                             >
                                                 {task.isCompleted ? (
-                                                    <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                                                    <div className="w-5 h-5 bg-brand-700 rounded-full flex items-center justify-center">
                                                         <FiCheckCircle className="w-3 h-3 text-white" />
                                                     </div>
                                                 ) : (
-                                                    <div className="w-5 h-5 border-2 border-gray-300 rounded-full hover:border-blue-500 transition-colors"></div>
+                                                    <div className="w-5 h-5 border-2 border-gray-300 rounded-full hover:border-brand-700 transition-colors"></div>
                                                 )}
                                             </button>
                                             <div className="flex-1">
@@ -167,8 +165,8 @@ const StudyPlanDashboard = () => {
                                                     </h3>
                                                     <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
                                                         task.type === 'study' 
-                                                            ? 'bg-blue-100 text-blue-700' 
-                                                            : 'bg-purple-100 text-purple-700'
+                                                            ? 'bg-brand-50 text-brand-900' 
+                                                            : 'bg-brand-50 text-brand-900'
                                                     }`}>
                                                         {task.type === 'study' ? 'Study' : 'Revision'}
                                                     </span>
@@ -184,16 +182,16 @@ const StudyPlanDashboard = () => {
                                 ))}
                                 
                                 {/* Progress for today */}
-                                <div className="mt-4 p-4 bg-blue-50 rounded-xl">
+                                <div className="mt-4 p-4 bg-brand-50 rounded-xl">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="text-sm font-semibold text-blue-900">Today's Progress</span>
-                                        <span className="text-sm font-bold text-blue-900">
+                                        <span className="text-sm font-semibold text-brand-900">Today's Progress</span>
+                                        <span className="text-sm font-bold text-brand-900">
                                             {timetableProgress.todaySchedule.completedMinutes}/{timetableProgress.todaySchedule.totalMinutes} min
                                         </span>
                                     </div>
-                                    <div className="bg-blue-200 rounded-full h-2 overflow-hidden">
+                                    <div className="bg-brand-300 rounded-full h-2 overflow-hidden">
                                         <div 
-                                            className="bg-blue-600 h-full transition-all duration-500"
+                                            className="bg-brand-700 h-full transition-all duration-500"
                                             style={{ 
                                                 width: `${(timetableProgress.todaySchedule.completedMinutes / timetableProgress.todaySchedule.totalMinutes) * 100}%` 
                                             }}
@@ -204,10 +202,10 @@ const StudyPlanDashboard = () => {
                         ) : (
                             <div className="space-y-4">
                                 {plan.generatedPlan.slice(0, 3).map((subPlan, idx) => (
-                                    <div key={idx} className="p-4 bg-gray-50 rounded-2xl group hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-blue-100">
+                                    <div key={idx} className="p-4 bg-gray-50 rounded-2xl group hover:bg-white hover:shadow-md transition-all border border-transparent hover:border-brand-50">
                                         <div className="flex items-center justify-between mb-2">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-blue-600 font-bold">
+                                                <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-700 font-bold">
                                                     {idx + 1}
                                                 </div>
                                                 <div>
@@ -217,7 +215,7 @@ const StudyPlanDashboard = () => {
                                             </div>
                                             <div className="flex items-center gap-3">
                                                 <span className="text-xs font-bold text-gray-400 opacity-0 group-hover:opacity-100 transition-all uppercase tracking-tighter">View Details</span>
-                                                <div className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-blue-500 group-hover:text-blue-500 transition-all">
+                                                <div className="w-8 h-8 rounded-full border-2 border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-brand-700 group-hover:text-brand-700 transition-all">
                                                     <FiArrowRight />
                                                 </div>
                                             </div>
@@ -227,7 +225,7 @@ const StudyPlanDashboard = () => {
                                                 <p className="text-xs font-semibold text-gray-500 mb-2">Topics to cover:</p>
                                                 <div className="flex flex-wrap gap-1">
                                                     {plan.subjects.find(s => s.name === subPlan.subject).topics.slice(0, 3).map((topic, tidx) => (
-                                                        <span key={tidx} className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">
+                                                        <span key={tidx} className="text-xs bg-brand-50 text-brand-900 px-2 py-1 rounded-full">
                                                             {topic}
                                                         </span>
                                                     ))}
@@ -307,7 +305,7 @@ const StudyPlanDashboard = () => {
                     {/* Google Calendar Widget */}
                     <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
                         <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                            <FiCalendar className="text-blue-500" />
+                            <FiCalendar className="text-brand-700" />
                             Calendar Sync
                         </h2>
                         <GoogleCalendarConnect />

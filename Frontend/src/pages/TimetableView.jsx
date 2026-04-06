@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StudentLayout from '../layouts/StudentLayout';
+import PageHeader from '../components/PageHeader';
 import { FiCheckCircle, FiCircle, FiCalendar, FiClock, FiTrendingUp, FiBook, FiRefreshCw } from 'react-icons/fi';
 
 const TimetableView = () => {
@@ -29,10 +30,10 @@ const TimetableView = () => {
         try {
             const token = localStorage.getItem('token');
             const [timetableRes, progressRes] = await Promise.all([
-                fetch('http://localhost:5000/api/study-plan/timetable', {
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }),
-                fetch('http://localhost:5000/api/study-plan/progress', {
+                fetch('https://examcoach-backend-mnoy.onrender.com/api/study-plan/progress', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
             ]);
@@ -60,7 +61,7 @@ const TimetableView = () => {
     const handleToggleTask = async (day, taskIndex) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/study-plan/timetable/task/${day}/${taskIndex}`, {
+            await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/task/${day}/${taskIndex}`, {
                 method: 'PATCH',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -80,7 +81,7 @@ const TimetableView = () => {
         setSavingNote(true);
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/study-plan/timetable/note/${selectedDay}`, {
+            const response = await fetch(`https://examcoach-backend-mnoy.onrender.com/api/study-plan/timetable/note/${selectedDay}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -110,8 +111,8 @@ const TimetableView = () => {
     const getProgressColor = (percentage) => {
         if (percentage <= 25) return 'bg-red-500';
         if (percentage <= 50) return 'bg-yellow-500';
-        if (percentage <= 75) return 'bg-blue-500';
-        return 'bg-green-500';
+        if (percentage <= 75) return 'bg-brand-700';
+        return 'bg-brand-700';
     };
 
     const getMotivationalMessage = (percentage) => {
@@ -126,7 +127,7 @@ const TimetableView = () => {
         return (
             <StudentLayout>
                 <div className="flex justify-center items-center p-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-700"></div>
                 </div>
             </StudentLayout>
         );
@@ -140,7 +141,7 @@ const TimetableView = () => {
                     <p className="text-gray-600 mb-8">Create a study plan to generate your personalized timetable.</p>
                     <button
                         onClick={() => navigate('/student/create-plan')}
-                        className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 transition-all"
+                        className="bg-gradient-to-r from-brand-700 to-brand-900 text-white px-8 py-3 rounded-xl font-bold hover:bg-brand-900 transition-all"
                     >
                         Create Study Plan
                     </button>
@@ -158,53 +159,28 @@ const TimetableView = () => {
         : timetable.schedule;
 
     return (
-        <StudentLayout>
-            <div className="space-y-8">
-                {/* Header with Progress */}
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-[2rem] p-8 text-white shadow-2xl relative overflow-hidden">
-                    <div className="relative z-10">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <h1 className="text-3xl font-bold mb-2">My Study Timetable</h1>
-                                <p className="opacity-90">{getMotivationalMessage(completionPercentage)}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-xs uppercase tracking-wider opacity-70 mb-1">Overall Progress</p>
-                                <p className="text-4xl font-black">{completionPercentage}%</p>
-                            </div>
-                        </div>
-
-                        {/* Progress Bar */}
-                        <div className="bg-white/20 rounded-full h-4 overflow-hidden backdrop-blur-sm">
-                            <div 
-                                className={`h-full transition-all duration-500 ${getProgressColor(completionPercentage).replace('bg-', 'bg-')}`}
-                                style={{ width: `${completionPercentage}%` }}
-                            ></div>
-                        </div>
-
-                        {/* Stats */}
-                        <div className="grid grid-cols-4 gap-4 mt-6">
-                            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3">
-                                <p className="text-xs opacity-70 mb-1">Total Days</p>
-                                <p className="text-2xl font-bold">{timetable.totalDays}</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3">
-                                <p className="text-xs opacity-70 mb-1">Current Day</p>
-                                <p className="text-2xl font-bold">{progress?.overall?.currentDay || 1}</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3">
-                                <p className="text-xs opacity-70 mb-1">Completed</p>
-                                <p className="text-2xl font-bold">{progress?.overall?.completedTasks || 0}/{progress?.overall?.totalTasks || 0}</p>
-                            </div>
-                            <div className="bg-white/10 backdrop-blur-md rounded-xl p-3">
-                                <p className="text-xs opacity-70 mb-1">Time Studied</p>
-                                <p className="text-2xl font-bold">{Math.floor((progress?.overall?.completedMinutes || 0) / 60)}h</p>
-                            </div>
-                        </div>
+        <StudentLayout
+            header={
+                <PageHeader
+                    icon="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    title="My Study Timetable"
+                    subtitle={getMotivationalMessage(completionPercentage)}
+                >
+                    <div className="bg-white/20 rounded-xl px-4 py-2 text-center">
+                        <p className="text-xs text-white/70 uppercase tracking-wider">Progress</p>
+                        <p className="text-2xl font-black text-white">{completionPercentage}%</p>
                     </div>
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl"></div>
-                </div>
-
+                    <button
+                        onClick={fetchData}
+                        className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white font-semibold rounded-xl transition-all"
+                    >
+                        <FiRefreshCw className="w-4 h-4" />
+                        Refresh
+                    </button>
+                </PageHeader>
+            }
+        >
+            <div className="space-y-8">
                 {/* View Mode Toggle */}
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2">
@@ -212,7 +188,7 @@ const TimetableView = () => {
                             onClick={() => setViewMode('week')}
                             className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                                 viewMode === 'week' 
-                                    ? 'bg-blue-600 text-white' 
+                                    ? 'bg-brand-700 text-white' 
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                         >
@@ -222,7 +198,7 @@ const TimetableView = () => {
                             onClick={() => setViewMode('all')}
                             className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                                 viewMode === 'all' 
-                                    ? 'bg-blue-600 text-white' 
+                                    ? 'bg-brand-700 text-white' 
                                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                         >
@@ -243,7 +219,7 @@ const TimetableView = () => {
                     <div className="lg:col-span-1">
                         <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-4">
                             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <FiCalendar className="text-blue-500" />
+                                <FiCalendar className="text-brand-700" />
                                 Select Day
                             </h2>
                             <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -260,13 +236,13 @@ const TimetableView = () => {
                                             onClick={() => setSelectedDay(day.day)}
                                             className={`w-full text-left p-4 rounded-xl transition-all ${
                                                 isSelected 
-                                                    ? 'bg-blue-50 border-2 border-blue-500' 
+                                                    ? 'bg-brand-50 border-2 border-brand-700' 
                                                     : 'bg-gray-50 border-2 border-transparent hover:border-gray-200'
                                             }`}
                                         >
                                             <div className="flex items-center justify-between mb-2">
                                                 <div className="flex items-center gap-2">
-                                                    <span className={`font-bold ${isSelected ? 'text-blue-600' : 'text-gray-800'}`}>
+                                                    <span className={`font-bold ${isSelected ? 'text-brand-700' : 'text-gray-800'}`}>
                                                         Day {day.day}
                                                     </span>
                                                     {isCurrent && (
@@ -332,7 +308,7 @@ const TimetableView = () => {
                                 </div>
                                 <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
                                     <div 
-                                        className="bg-blue-500 h-full transition-all duration-500"
+                                        className="bg-brand-700 h-full transition-all duration-500"
                                         style={{ width: `${(currentDaySchedule.completedMinutes / currentDaySchedule.totalMinutes) * 100}%` }}
                                     ></div>
                                 </div>
@@ -355,11 +331,11 @@ const TimetableView = () => {
                                             className="flex-shrink-0 mt-1"
                                         >
                                             {task.isCompleted ? (
-                                                <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                                                <div className="w-6 h-6 bg-brand-700 rounded-full flex items-center justify-center">
                                                     <FiCheckCircle className="w-4 h-4 text-white" />
                                                 </div>
                                             ) : (
-                                                <div className="w-6 h-6 border-2 border-gray-300 rounded-full hover:border-blue-500 transition-colors"></div>
+                                                <div className="w-6 h-6 border-2 border-gray-300 rounded-full hover:border-brand-700 transition-colors"></div>
                                             )}
                                         </button>
 
@@ -373,8 +349,8 @@ const TimetableView = () => {
                                                         </h3>
                                                         <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
                                                             task.type === 'study' 
-                                                                ? 'bg-blue-100 text-blue-700' 
-                                                                : 'bg-purple-100 text-purple-700'
+                                                                ? 'bg-brand-50 text-brand-900' 
+                                                                : 'bg-brand-50 text-brand-900'
                                                         }`}>
                                                             {task.type === 'study' ? '📚 Study' : '🔄 Revision'}
                                                         </span>
@@ -393,7 +369,7 @@ const TimetableView = () => {
                                             </div>
 
                                             {task.isCompleted && task.completedAt && (
-                                                <p className="text-xs text-green-600 mt-2">
+                                                <p className="text-xs text-brand-700 mt-2">
                                                     ✓ Completed on {new Date(task.completedAt).toLocaleDateString()}
                                                 </p>
                                             )}
@@ -415,7 +391,7 @@ const TimetableView = () => {
                                         <div key={index} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
                                             <div className="flex justify-between items-center mb-2">
                                                 <div className="flex items-center gap-2">
-                                                    <FiBook className="text-blue-500" />
+                                                    <FiBook className="text-brand-700" />
                                                     <span className="font-semibold text-gray-800">{subject.subject}</span>
                                                 </div>
                                                 <span className="text-sm font-bold text-gray-600">
@@ -441,7 +417,7 @@ const TimetableView = () => {
                         {/* Day Note */}
                         <div className="bg-white rounded-2xl shadow-lg p-6">
                             <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                <FiBook className="text-purple-500" />
+                                <FiBook className="text-brand-700" />
                                 Day Note
                             </h3>
                             {currentDaySchedule.note && currentDaySchedule.note.trim() !== '' ? (
@@ -449,7 +425,7 @@ const TimetableView = () => {
                                     <p className="text-gray-700 whitespace-pre-wrap">{currentDaySchedule.note}</p>
                                     <button
                                         onClick={() => navigate('/student/journal')}
-                                        className="text-xs text-blue-600 hover:text-blue-800 mt-3 flex items-center gap-1"
+                                        className="text-xs text-brand-700 hover:text-brand-900 mt-3 flex items-center gap-1"
                                     >
                                         <FiBook className="w-3 h-3" />
                                         Edit this note in Study Journal
