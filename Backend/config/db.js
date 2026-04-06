@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
+    // Skip real DB connection in test environment
+    if (process.env.NODE_ENV === 'test') {
+        return;
+    }
     try {
         const conn = await mongoose.connect(process.env.MONGO_URI, {
             family: 4
