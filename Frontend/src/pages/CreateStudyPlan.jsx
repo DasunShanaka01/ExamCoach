@@ -123,6 +123,15 @@ const CreateStudyPlan = () => {
             return;
         }
 
+        const selectedDate = new Date(currentSubject.examDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (selectedDate < today) {
+            setError('Exam date cannot be in the past');
+            return;
+        }
+
         if (!currentSubject.pdfFile) {
             setError('Please upload a PDF file');
             return;
@@ -272,6 +281,7 @@ const CreateStudyPlan = () => {
                                         <label className="block text-xs font-semibold text-gray-500 mb-1">Exam Date</label>
                                         <input
                                             type="date"
+                                            min={new Date().toISOString().split('T')[0]}
                                             value={currentSubject.examDate}
                                             onChange={(e) => setCurrentSubject({ ...currentSubject, examDate: e.target.value })}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
