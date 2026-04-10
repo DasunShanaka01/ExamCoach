@@ -281,7 +281,7 @@ const CreateStudyPlan = () => {
                                         <label className="block text-xs font-semibold text-gray-500 mb-1">Exam Date</label>
                                         <input
                                             type="date"
-                                            min={new Date().toISOString().split('T')[0]}
+                                            min={new Date().toLocaleDateString('en-CA')}
                                             value={currentSubject.examDate}
                                             onChange={(e) => setCurrentSubject({ ...currentSubject, examDate: e.target.value })}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
