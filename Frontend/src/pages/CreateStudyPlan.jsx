@@ -17,6 +17,7 @@ const CreateStudyPlan = () => {
     const [currentSubject, setCurrentSubject] = useState({
         name: '',
         examDate: '',
+        examTime: '',
         isWeak: false,
         pdfFile: null
     });
@@ -35,7 +36,7 @@ const CreateStudyPlan = () => {
             const { studyHoursPerDay, subjects } = location.state.plan;
             const formattedSubjects = subjects.map(s => ({
                 name: s.name,
-                examDate: new Date(s.examDate).toISOString().split('T')[0],
+                examDate: s.examDate,
                 isWeak: s.isWeak,
                 topics: s.topics || []
             }));
@@ -118,8 +119,8 @@ const CreateStudyPlan = () => {
             return;
         }
         
-        if (!currentSubject.name.trim() || !currentSubject.examDate) {
-            setError('Please provide subject name and exam date');
+        if (!currentSubject.name.trim() || !currentSubject.examDate || !currentSubject.examTime) {
+            setError('Please provide subject name, exam date, and time');
             return;
         }
 
@@ -133,11 +134,15 @@ const CreateStudyPlan = () => {
             return;
         }
 
+        // Create properly combined ISO date from local date & time
+        const combinedExamDate = new Date(`${currentSubject.examDate}T${currentSubject.examTime}`).toISOString();
+
         setFormData({
             ...formData,
             subjects: [...formData.subjects, { 
                 ...currentSubject, 
                 name: currentSubject.name.trim(),
+                examDate: combinedExamDate,
                 topics: extractedTopics
             }]
         });
@@ -146,6 +151,7 @@ const CreateStudyPlan = () => {
         setCurrentSubject({
             name: '',
             examDate: '',
+            examTime: '',
             isWeak: false,
             pdfFile: null
         });
@@ -161,9 +167,17 @@ const CreateStudyPlan = () => {
     };
 
     const handleEditSubject = (subject) => {
+        let eDate = '';
+        let eTime = '';
+        if (subject.examDate) {
+            const d = new Date(subject.examDate);
+            eDate = d.toLocaleDateString('en-CA'); // YYYY-MM-DD in local time
+            eTime = d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // HH:mm in local time
+        }
         setCurrentSubject({
             name: subject.name,
-            examDate: new Date(subject.examDate).toISOString().split('T')[0],
+            examDate: eDate,
+            examTime: eTime,
             isWeak: subject.isWeak,
             pdfFile: subject.pdfFile || null
         });
@@ -257,7 +271,7 @@ const CreateStudyPlan = () => {
                                 </h3>
 
                             <div className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                     <div>
                                         <label className="block text-xs font-semibold text-gray-500 mb-1">Subject Name</label>
                                         <input
@@ -272,8 +286,18 @@ const CreateStudyPlan = () => {
                                         <label className="block text-xs font-semibold text-gray-500 mb-1">Exam Date</label>
                                         <input
                                             type="date"
+                                            min={new Date().toLocaleDateString('en-CA')}
                                             value={currentSubject.examDate}
                                             onChange={(e) => setCurrentSubject({ ...currentSubject, examDate: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-500 mb-1">Exam Time</label>
+                                        <input
+                                            type="time"
+                                            value={currentSubject.examTime}
+                                            onChange={(e) => setCurrentSubject({ ...currentSubject, examTime: e.target.value })}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-700"
                                         />
                                     </div>
@@ -383,7 +407,7 @@ const CreateStudyPlan = () => {
                                                             <span className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-semibold">Weak Area</span>
                                                         )}
                                                     </div>
-                                                    <p className="text-sm text-gray-500">Exam: {new Date(subject.examDate).toLocaleDateString()}</p>
+                                                    <p className="text-sm text-gray-500">Exam: {new Date(subject.examDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                                     {subject.topics && subject.topics.length > 0 && (
                                                         <p className="text-xs text-brand-700 mt-1">{subject.topics.length} topics extracted</p>
                                                     )}
