@@ -35,7 +35,12 @@ const createStudyPlan = async (req, res) => {
 
         // Calculate daysUntilExam for each subject (needed for timetable generation)
         const subjectsWithDays = subjects.map(sub => {
-            const exam = new Date(sub.examDate + 'T00:00:00+05:30'); // Parse as Sri Lanka time
+            let exam;
+            if (sub.examDate.includes('T')) {
+                exam = new Date(sub.examDate);
+            } else {
+                exam = new Date(sub.examDate + 'T00:00:00+05:30'); // Backward compatibility: Parse as Sri Lanka time
+            }
             const examLocal = new Date(exam.getFullYear(), exam.getMonth(), exam.getDate());
             const daysUntilExam = Math.max(1, Math.ceil((examLocal - localToday) / (1000 * 60 * 60 * 24)));
             
