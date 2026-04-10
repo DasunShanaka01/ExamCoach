@@ -124,19 +124,20 @@ const StudyJournal = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
                     {journal.map((entry) => {
                         const isEditing = editingDay === entry.day;
-                        const stickyColors = [
-                            'bg-yellow-100 border-yellow-300',
-                            'bg-brand-50 border-brand-300',
-                            'bg-brand-50 border-brand-300',
-                            'bg-green-100 border-green-300',
-                            'bg-brand-50 border-brand-300'
+                        const stickyStyles = [
+                            { color: 'bg-yellow-200 border-yellow-300', transform: '-rotate-1 hover:rotate-0' },
+                            { color: 'bg-pink-200 border-pink-300', transform: 'rotate-1 hover:rotate-0' },
+                            { color: 'bg-green-200 border-green-300', transform: '-rotate-2 hover:rotate-0' },
+                            { color: 'bg-cyan-200 border-cyan-300', transform: 'rotate-2 hover:rotate-0' },
+                            { color: 'bg-purple-200 border-purple-300', transform: '-rotate-1 hover:rotate-0' },
+                            { color: 'bg-orange-200 border-orange-300', transform: 'rotate-1 hover:rotate-0' }
                         ];
-                        const colorClass = stickyColors[entry.day % stickyColors.length];
+                        const styleConfig = stickyStyles[entry.day % stickyStyles.length];
 
                         return (
                             <div 
                                 key={entry.day} 
-                                className={`${colorClass} border-2 rounded-lg p-5 shadow-md hover:shadow-xl transition-shadow relative overflow-hidden`}
+                                className={`${styleConfig.color} ${styleConfig.transform} border border-opacity-50 rounded-sm p-5 shadow-lg hover:shadow-xl transition-all relative overflow-hidden`}
                                 style={{ minHeight: '200px', maxHeight: '400px' }}
                             >
                                 {/* Sticky Note Header */}
