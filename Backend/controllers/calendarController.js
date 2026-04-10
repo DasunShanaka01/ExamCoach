@@ -26,7 +26,7 @@ const handleCallback = async (req, res) => {
         const { code, state } = req.query;
 
         if (!code) {
-            return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/calendar-callback?error=no_code`);
+            return res.redirect(`${process.env.FRONTEND_URL || 'https://exam-coach-sigma.vercel.app'}/calendar-callback?error=no_code`);
         }
 
         // Exchange code for tokens
@@ -36,13 +36,13 @@ const handleCallback = async (req, res) => {
         const studentId = state;
 
         if (!studentId) {
-            return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/calendar-callback?error=no_student`);
+            return res.redirect(`${process.env.FRONTEND_URL || 'https://exam-coach-sigma.vercel.app'}/calendar-callback?error=no_student`);
         }
 
         // Update student with tokens
         const student = await Student.findById(studentId);
         if (!student) {
-            return res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/calendar-callback?error=student_not_found`);
+            return res.redirect(`${process.env.FRONTEND_URL || 'https://exam-coach-sigma.vercel.app'}/calendar-callback?error=student_not_found`);
         }
 
         student.googleCalendarConnected = true;
@@ -52,10 +52,10 @@ const handleCallback = async (req, res) => {
         await student.save();
 
         // Redirect to success page
-        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/calendar-callback?success=true`);
+        res.redirect(`${process.env.FRONTEND_URL || 'https://exam-coach-sigma.vercel.app'}/calendar-callback?success=true`);
     } catch (error) {
         console.error('Error handling callback:', error);
-        res.redirect(`${process.env.FRONTEND_URL || 'http://localhost:5173'}/calendar-callback?error=auth_failed`);
+        res.redirect(`${process.env.FRONTEND_URL || 'https://exam-coach-sigma.vercel.app'}/calendar-callback?error=auth_failed`);
     }
 };
 
