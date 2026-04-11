@@ -1,48 +1,64 @@
-﻿# ExamCoach
+<div align="center">
 
-SE3040 - Application Frameworks (2026)  
-BSc (Hons) in Information Technology - Software Engineering  
-Year 03 Group Project (Full Stack Application Development)
+# 🎓 ExamCoach
 
-ExamCoach is a full-stack MERN application that helps students prepare for standardized exams using AI-powered tools, structured study planning, and real-time assessment monitoring.
+**AI-Powered Exam Preparation Platform**
+
+[![React](https://img.shields.io/badge/React-Vite-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://vitejs.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongodb.com/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-Real--Time-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
+
+[![Backend Live](https://img.shields.io/badge/Backend-Live%20on%20Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://examcoach-backend-mnoy.onrender.com)
+[![Frontend Live](https://img.shields.io/badge/Frontend-Live%20on%20Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://exam-coach-sigma.vercel.app)
+
+*SE3040 — Application Frameworks (2026)*  
+*BSc (Hons) in Information Technology — Software Engineering | Year 03 Group Project*
+
+</div>
 
 ---
 
-## Table of Contents
+## 📋 Table of Contents
 
-1. Project Overview
-2. Functional Components and Requirements
-3. System Architecture
-4. Technology Stack
-5. Setup Instructions
-6. API Endpoint Documentation
-7. Authentication and Authorization
-8. Deployment Report
-9. Testing Instruction Report
-10. Features
-11. Folder Structure
-12. Contributors
-13. Screenshots and Evidence
+| # | Section |
+|---|---------|
+| 1 | [Project Overview](#1-project-overview) |
+| 2 | [Functional Components & Requirements](#2-functional-components-and-requirements) |
+| 3 | [System Architecture](#3-system-architecture) |
+| 4 | [Technology Stack](#4-technology-stack) |
+| 5 | [Setup Instructions](#5-setup-instructions) |
+| 6 | [API Endpoint Documentation](#6-api-endpoint-documentation) |
+| 7 | [Authentication & Authorization](#7-authentication-and-authorization) |
+| 8 | [Deployment Report](#8-deployment-report) |
+| 9 | [Testing Instruction Report](#9-testing-instruction-report) |
+| 10 | [Features](#10-features) |
+| 11 | [Folder Structure](#11-folder-structure) |
+| 12 | [Contributors](#12-contributors) |
 
 ---
 
 ## 1. Project Overview
 
-ExamCoach is designed as an intelligent exam-preparation platform where students can summarize learning materials, practice quizzes, build study plans, and track performance. Teachers and administrators can manage educational content, monitor quiz activities, and maintain platform quality.
+**ExamCoach** is an intelligent, full-stack MERN exam-preparation platform where students can summarize learning materials, practice quizzes, build study plans, and track performance. Teachers and administrators can manage educational content, monitor quiz activities, and maintain platform quality.
 
-### Main Features
+### 🌟 Main Features
 
-- AI Learning Lab for summarization and related learning resources
-- Practice quizzes and assessment workflows
-- Study plan generation and analytics dashboards
-- Course management using streams, subjects, and lessons
-- Real-time cheating detection with Socket.io tab-switch alerts
+| Feature | Description |
+|---------|-------------|
+| 🤖 AI Learning Lab | Summarization of materials + related learning resources |
+| 📝 Quiz & Assessment | Practice quizzes with real-time invigilation |
+| 📅 Study Plans | AI-generated personalized study timetables |
+| 📚 Course Management | Streams, subjects, and lesson management |
+| 🔍 Cheating Detection | Real-time tab-switch alerts via Socket.io |
 
-### User Roles
+### 👥 User Roles
 
-- Student: Access AI tools, attempt quizzes, generate study plans, track progress
-- Teacher: Manage lessons and quizzes
-- Admin: Manage users, subjects, and platform-level analytics
+| Role | Capabilities |
+|------|-------------|
+| 🎓 **Student** | Access AI tools, attempt quizzes, generate study plans, track progress |
+| 👩‍🏫 **Teacher** | Manage lessons and quizzes |
+| 🛡️ **Admin** | Manage users, subjects, and platform-level analytics |
 
 ---
 
@@ -50,139 +66,169 @@ ExamCoach is designed as an intelligent exam-preparation platform where students
 
 The backend is organized into multiple functional components, each with clear responsibilities and REST endpoints.
 
-### Component 1: Authentication and User Management
+<details>
+<summary><strong>📦 Component 1 — Authentication & User Management</strong></summary>
 
 - Student registration and login
 - OTP verification and password reset flow
 - Profile retrieval for logged-in users
 - Role assignment and protected route access
 
-### Component 2: AI Learning Lab
+</details>
+
+<details>
+<summary><strong>🤖 Component 2 — AI Learning Lab</strong></summary>
 
 - AI summarization from text or uploaded files
 - Save summary history with related resources
 - View and manage user summary history
-- Third-party AI integration using Google Gemini
+- Third-party AI integration using **Google Gemini**
 
-### Component 3: Quiz and Assessment
+</details>
+
+<details>
+<summary><strong>📝 Component 3 — Quiz & Assessment</strong></summary>
 
 - Quiz creation and listing
 - Enrollment-key and password-protected access
 - Quiz attempt submission and score calculation
-- Real-time invigilation support via Socket.io events
+- Real-time invigilation support via **Socket.io** events
 
-### Component 4: Study Plan and Analytics
+</details>
+
+<details>
+<summary><strong>📅 Component 4 — Study Plan & Analytics</strong></summary>
 
 - Personalized study plan generation
 - Daily timetable and progress tracking
 - Study-time logging and missed-goal handling
 - Student analytics and journaling
 
-### Component 5: Course Management
+</details>
+
+<details>
+<summary><strong>📚 Component 5 — Course Management</strong></summary>
 
 - Subject creation and retrieval
 - Lesson creation and retrieval per subject
 - Learning material upload and link management
 
-All components follow REST principles, proper HTTP methods, validation, and error handling.
+</details>
+
+> All components follow REST principles, proper HTTP methods, validation, and error handling.
 
 ---
 
 ## 3. System Architecture
 
-ExamCoach follows a client-server architecture with REST APIs and real-time sockets.
+ExamCoach follows a **client-server architecture** with REST APIs and real-time sockets.
 
-- Frontend (React + Vite) communicates with backend over HTTP/HTTPS
-- Backend (Express) exposes REST endpoints for CRUD and business logic
-- MongoDB stores users, subjects, lessons, quizzes, attempts, and study plans
-- Socket.io provides real-time monitoring events for quiz behavior
-- External services provide AI, media storage, and calendar synchronization
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        CLIENT (React + Vite)                    │
+│                    http://localhost:5173                         │
+└────────────────────────────┬────────────────────────────────────┘
+                             │ HTTP/HTTPS + Socket.io
+┌────────────────────────────▼────────────────────────────────────┐
+│                      BACKEND (Express.js)                       │
+│                    http://localhost:5000                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────────────┐  │
+│  │  Controllers │  │  Middleware  │  │       Routes         │  │
+│  └──────────────┘  └──────────────┘  └──────────────────────┘  │
+└───────┬──────────────┬──────────────┬──────────────────────────┘
+        │              │              │
+┌───────▼──────┐ ┌─────▼──────┐ ┌────▼──────────────────────────┐
+│   MongoDB    │ │ Socket.io  │ │   External Integrations       │
+│  (Mongoose)  │ │  Real-Time │ │  Gemini AI · Cloudinary       │
+│              │ │  Events    │ │  Google Calendar API          │
+└──────────────┘ └────────────┘ └───────────────────────────────┘
+```
 
-### Architecture Summary
+### ⚡ Real-Time Socket Events
 
-- Frontend: React functional components, hooks-based state flow
-- Backend: Express controllers, middleware, routes, services
-- Database: MongoDB with Mongoose schema modeling
-- Integrations:
-  - Google Gemini AI
-  - Cloudinary
-  - Google Calendar API
-
-### Real-Time Events
-
-- join-quiz
-- join-teacher-monitor
-- tab-switch
-- student-tab-switch
-
-REST API handles standard operations, while Socket.io handles real-time cheating detection alerts.
+```
+join-quiz          →  Student joins a quiz room
+join-teacher-monitor →  Teacher starts monitoring
+tab-switch         →  Triggered on suspicious tab switching
+student-tab-switch →  Broadcast to teacher monitor
+```
 
 ---
 
 ## 4. Technology Stack
 
-### Frontend
+<table>
+<tr>
+<td valign="top" width="50%">
 
-- React (Vite)
-- JavaScript (ES6+)
+### 🖥️ Frontend
+- **React** (Vite)
+- **JavaScript** (ES6+)
 - CSS and UI component styling
 
-### Backend
+### ⚙️ Backend
+- **Node.js**
+- **Express.js**
+- **Socket.io**
 
-- Node.js
-- Express.js
-- Socket.io
+### 🗄️ Database
+- **MongoDB**
+- **Mongoose**
 
-### Database
+</td>
+<td valign="top" width="50%">
 
-- MongoDB
-- Mongoose
+### 🧪 Testing
+- **Jest** — Unit testing
+- **Postman** — Integration/API testing
+- **Artillery** — Performance testing
 
-### Testing
+### 🔌 External APIs & Services
+- **Google Gemini AI**
+- **Cloudinary**
+- **Google Calendar API**
 
-- Jest (unit testing)
-- Postman (integration/API testing)
-- Artillery (performance testing)
-
-### External APIs and Services
-
-- Google Gemini AI
-- Cloudinary
-- Google Calendar API
+</td>
+</tr>
+</table>
 
 ---
 
 ## 5. Setup Instructions
 
-## Prerequisites
+### ✅ Prerequisites
 
-- Node.js 18 or higher
-- npm 9 or higher
-- MongoDB Atlas URI or local MongoDB
-- API keys for Gemini and Cloudinary
+| Tool | Version |
+|------|---------|
+| Node.js | 18 or higher |
+| npm | 9 or higher |
+| MongoDB | Atlas URI or local |
+| API Keys | Gemini + Cloudinary |
 
-## Backend Setup
+---
 
-1. Clone the repository:
+### ⚙️ Backend Setup
+
+**1. Clone the repository:**
 
 ```bash
 git clone https://github.com/<your-username-or-org>/ExamCoach.git
 cd ExamCoach
 ```
 
-2. Move to backend folder:
+**2. Move to backend folder:**
 
 ```bash
 cd Backend
 ```
 
-3. Install dependencies:
+**3. Install dependencies:**
 
 ```bash
 npm install
 ```
 
-4. Create a .env file in Backend and configure:
+**4. Create `.env` in `/Backend`:**
 
 ```env
 PORT=5000
@@ -197,73 +243,76 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:5000/api/calendar/callback
 ```
 
-5. Run the backend:
+**5. Run the backend:**
 
 ```bash
 npm run dev
 ```
 
-6. Verify backend:
+**6. Verify** — visit `http://localhost:5000` → Expected: `ExamCoach API is running`
 
-- URL: http://localhost:5000
-- Expected: ExamCoach API is running
+---
 
-## Frontend Setup
+### 🌐 Frontend Setup
 
-1. Open a new terminal and navigate to frontend:
+**1. Navigate to the frontend:**
 
 ```bash
 cd Frontend
 ```
 
-2. Install dependencies:
+**2. Install dependencies:**
 
 ```bash
 npm install
 ```
 
-3. Create a .env file in Frontend:
+**3. Create `.env` in `/Frontend`:**
 
 ```env
 VITE_API_URL=http://localhost:5000
 ```
 
-4. Run frontend:
+**4. Run frontend:**
 
 ```bash
 npm run dev
 ```
 
-5. Open frontend URL (default):
+**5. Open** → `http://localhost:5173`
 
-- http://localhost:5173
+---
 
-## Run Full System Locally
+### 🚀 Run Full System Locally
 
-- Terminal 1: Backend (npm run dev)
-- Terminal 2: Frontend (npm run dev)
+```bash
+# Terminal 1 — Backend
+cd Backend && npm run dev
+
+# Terminal 2 — Frontend
+cd Frontend && npm run dev
+```
 
 ---
 
 ## 6. API Endpoint Documentation
 
-Base URL (Local): http://localhost:5000  
-Base URL (Production): https://examcoach-backend-mnoy.onrender.com
+| Environment | Base URL |
+|-------------|----------|
+| 🏠 Local | `http://localhost:5000` |
+| 🌐 Production | `https://examcoach-backend-mnoy.onrender.com` |
 
-All major endpoints below include method, URL, description, request body, response, and auth requirement.
+---
 
-### 6.1 Authentication
+### 6.1 🔐 Authentication
 
-### POST /api/auth/register
+<details>
+<summary><code>POST</code> <strong>/api/auth/register</strong> — Register a new student</summary>
 
-- Method: POST
-- URL: /api/auth/register
-- Implementation Note: Backend currently implements this as /api/auth/register-student
-- Description: Register a new student account
-- Authentication: Not required
+> ⚠️ Backend implements this as `/api/auth/register-student`  
+> 🔓 Authentication: Not required
 
-Request body:
-
+**Request Body:**
 ```json
 {
   "firstName": "Nimal",
@@ -273,8 +322,7 @@ Request body:
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -283,15 +331,14 @@ Response example:
 }
 ```
 
-### POST /api/auth/login
+</details>
 
-- Method: POST
-- URL: /api/auth/login
-- Description: Authenticate user and return JWT token
-- Authentication: Not required
+<details>
+<summary><code>POST</code> <strong>/api/auth/login</strong> — Authenticate user & return JWT</summary>
 
-Request body:
+> 🔓 Authentication: Not required
 
+**Request Body:**
 ```json
 {
   "email": "nimal.perera@example.com",
@@ -299,8 +346,7 @@ Request body:
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -314,17 +360,18 @@ Response example:
 }
 ```
 
-### 6.2 AI Learning Lab
+</details>
 
-### POST /api/ai/summarize
+---
 
-- Method: POST
-- URL: /api/ai/summarize
-- Description: Generate summary and related resources from text or uploaded files
-- Authentication: Not required in current implementation
+### 6.2 🤖 AI Learning Lab
 
-Request body (JSON mode):
+<details>
+<summary><code>POST</code> <strong>/api/ai/summarize</strong> — Generate summary from text or file</summary>
 
+> 🔓 Authentication: Not required (current implementation)
+
+**Request Body:**
 ```json
 {
   "text": "Photosynthesis converts light energy into chemical energy.",
@@ -332,11 +379,10 @@ Request body (JSON mode):
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
-  "summary": "Photosynthesis converts sunlight, water, and carbon dioxide into glucose and oxygen.",
+  "summary": "Photosynthesis converts sunlight, water, and CO2 into glucose and oxygen.",
   "relatedResources": [
     {
       "title": "Khan Academy Photosynthesis",
@@ -352,15 +398,14 @@ Response example:
 }
 ```
 
-### POST /api/ai/save
+</details>
 
-- Method: POST
-- URL: /api/ai/save
-- Description: Save generated AI summary to user history
-- Authentication: Not required in current implementation
+<details>
+<summary><code>POST</code> <strong>/api/ai/save</strong> — Save AI summary to user history</summary>
 
-Request body:
+> 🔓 Authentication: Not required (current implementation)
 
+**Request Body:**
 ```json
 {
   "title": "Photosynthesis Notes",
@@ -370,17 +415,12 @@ Request body:
   "userId": "67f8f66a2b4e7d7bcf06f128",
   "summaryType": "paragraph",
   "relatedResources": [
-    {
-      "title": "Biology LibreTexts",
-      "link": "https://bio.libretexts.org/",
-      "type": "website"
-    }
+    { "title": "Biology LibreTexts", "link": "https://bio.libretexts.org/", "type": "website" }
   ]
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "_id": "6800bb3f5c2a2ed8f012a900",
@@ -392,21 +432,19 @@ Response example:
 }
 ```
 
-### GET /api/ai/history/:userId
+</details>
 
-- Method: GET
-- URL: /api/ai/history/:userId
-- Description: Get summary history for a user
-- Authentication: Not required in current implementation
+<details>
+<summary><code>GET</code> <strong>/api/ai/history/:userId</strong> — Get summary history for a user</summary>
 
-Request body:
+> 🔓 Authentication: Not required (current implementation)
 
+**Request Body:**
 ```json
 {}
 ```
 
-Response example:
-
+**Response:**
 ```json
 [
   {
@@ -421,40 +459,35 @@ Response example:
 ]
 ```
 
-### DELETE /api/ai/history/:id
+</details>
 
-- Method: DELETE
-- URL: /api/ai/history/:id
-- Description: Delete one AI history item
-- Authentication: Not required in current implementation
+<details>
+<summary><code>DELETE</code> <strong>/api/ai/history/:id</strong> — Delete a history item</summary>
 
-Request body:
+> 🔓 Authentication: Not required (current implementation)
 
+**Request Body:**
 ```json
-{
-  "userId": "67f8f66a2b4e7d7bcf06f128"
-}
+{ "userId": "67f8f66a2b4e7d7bcf06f128" }
 ```
 
-Response example:
-
+**Response:**
 ```json
-{
-  "message": "History item deleted successfully"
-}
+{ "message": "History item deleted successfully" }
 ```
 
-### 6.3 Course Management
+</details>
 
-### POST /api/subjects
+---
 
-- Method: POST
-- URL: /api/subjects
-- Description: Create a new subject
-- Authentication: Required (Admin)
+### 6.3 📚 Course Management
 
-Request body:
+<details>
+<summary><code>POST</code> <strong>/api/subjects</strong> — Create a new subject</summary>
 
+> 🔒 Authentication: Required (Admin)
+
+**Request Body:**
 ```json
 {
   "name": "Advanced Biology",
@@ -464,8 +497,7 @@ Request body:
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -477,21 +509,19 @@ Response example:
 }
 ```
 
-### GET /api/subjects
+</details>
 
-- Method: GET
-- URL: /api/subjects
-- Description: Retrieve all subjects
-- Authentication: Not required
+<details>
+<summary><code>GET</code> <strong>/api/subjects</strong> — Retrieve all subjects</summary>
 
-Request body:
+> 🔓 Authentication: Not required
 
+**Request Body:**
 ```json
 {}
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -505,22 +535,20 @@ Response example:
 }
 ```
 
-### GET /api/lessons/:subjectId
+</details>
 
-- Method: GET
-- URL: /api/lessons/:subjectId
-- Implementation Note: Current backend route is /api/subjects/:subjectId/lessons
-- Description: Retrieve lessons for a given subject
-- Authentication: Not required
+<details>
+<summary><code>GET</code> <strong>/api/lessons/:subjectId</strong> — Get lessons for a subject</summary>
 
-Request body:
+> ⚠️ Backend route: `/api/subjects/:subjectId/lessons`  
+> 🔓 Authentication: Not required
 
+**Request Body:**
 ```json
 {}
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -534,17 +562,18 @@ Response example:
 }
 ```
 
-### 6.4 Quiz
+</details>
 
-### POST /api/quizzes
+---
 
-- Method: POST
-- URL: /api/quizzes
-- Description: Create a quiz with questions, timing, and access controls
-- Authentication: Currently not enforced by middleware for creation in this route; recommended Teacher/Admin protection
+### 6.4 📝 Quiz
 
-Request body:
+<details>
+<summary><code>POST</code> <strong>/api/quizzes</strong> — Create a quiz</summary>
 
+> ⚠️ Auth not enforced by middleware currently; Teacher/Admin protection recommended
+
+**Request Body:**
 ```json
 {
   "title": "Cell Biology Revision Quiz",
@@ -565,8 +594,7 @@ Request body:
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -580,21 +608,19 @@ Response example:
 }
 ```
 
-### GET /api/quizzes
+</details>
 
-- Method: GET
-- URL: /api/quizzes
-- Description: Retrieve active quizzes
-- Authentication: Not required
+<details>
+<summary><code>GET</code> <strong>/api/quizzes</strong> — Retrieve active quizzes</summary>
 
-Request body:
+> 🔓 Authentication: Not required
 
+**Request Body:**
 ```json
 {}
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -610,17 +636,18 @@ Response example:
 }
 ```
 
-### 6.5 Study Plan
+</details>
 
-### POST /api/study-plan
+---
 
-- Method: POST
-- URL: /api/study-plan
-- Description: Create personalized study plan and timetable
-- Authentication: Required (Student)
+### 6.5 📅 Study Plan
 
-Request body:
+<details>
+<summary><code>POST</code> <strong>/api/study-plan</strong> — Create personalized study plan</summary>
 
+> 🔒 Authentication: Required (Student)
+
+**Request Body:**
 ```json
 {
   "studyHoursPerDay": 3,
@@ -641,8 +668,7 @@ Request body:
 }
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
@@ -650,40 +676,31 @@ Response example:
     "_id": "6800c7705c2a2ed8f012e111",
     "studyHoursPerDay": 3,
     "daysUntilNextExam": 39,
-    "timetable": {
-      "totalDays": 30
-    }
+    "timetable": { "totalDays": 30 }
   }
 }
 ```
 
-### GET /api/study-plan
+</details>
 
-- Method: GET
-- URL: /api/study-plan
-- Description: Retrieve logged-in student study plan
-- Authentication: Required (Student)
+<details>
+<summary><code>GET</code> <strong>/api/study-plan</strong> — Retrieve student's study plan</summary>
 
-Request body:
+> 🔒 Authentication: Required (Student)
 
+**Request Body:**
 ```json
 {}
 ```
 
-Response example:
-
+**Response:**
 ```json
 {
   "success": true,
   "data": {
     "_id": "6800c7705c2a2ed8f012e111",
     "studyHoursPerDay": 3,
-    "subjects": [
-      {
-        "name": "Biology",
-        "isWeak": true
-      }
-    ],
+    "subjects": [{ "name": "Biology", "isWeak": true }],
     "dailyLogs": [
       {
         "date": "2026-04-11T00:00:00.000Z",
@@ -695,258 +712,221 @@ Response example:
 }
 ```
 
-### API Documentation Tooling
+</details>
 
-- Postman collection: Use project Postman workspace/collection for endpoint validation
-- Optional: Swagger documentation can be added to expose interactive API docs
+> 📬 **API Documentation Tooling** — Use the project Postman collection for endpoint validation. Swagger documentation can optionally be added for interactive API docs.
 
 ---
 
 ## 7. Authentication and Authorization
 
-ExamCoach uses JWT-based authentication for protected endpoints.
+ExamCoach uses **JWT-based authentication** for all protected endpoints.
 
-### JWT Flow
+### 🔄 JWT Flow
 
-1. User logs in using /api/auth/login
+```
+1. User logs in via POST /api/auth/login
 2. Server returns a signed JWT
-3. Frontend stores token (session/local storage strategy)
+3. Frontend stores token (session/local storage)
 4. Frontend includes token in Authorization header
 5. Backend protect middleware verifies token
 6. authorize middleware applies role checks
+```
 
-### Authorization Header Format
+### 📌 Authorization Header Format
 
 ```http
 Authorization: Bearer <token>
 ```
 
-### Protected Route Examples
+### 🛡️ Protected Route Examples
 
-- Admin-only: POST /api/subjects
-- Student-only: POST /api/study-plan, GET /api/study-plan
-- Mixed role routes: Teacher/Admin lesson management
+| Route | Access Level |
+|-------|-------------|
+| `POST /api/subjects` | 🔴 Admin only |
+| `POST /api/study-plan` | 🟡 Student only |
+| `GET /api/study-plan` | 🟡 Student only |
+| Lesson management | 🟠 Teacher / Admin |
 
 ---
 
 ## 8. Deployment Report
 
-### Backend Deployment
+### ⚙️ Backend — Render
 
-- Platform: Render
-- Live URL: https://examcoach-backend-mnoy.onrender.com
+| | |
+|---|---|
+| **Platform** | Render |
+| **Live URL** | https://examcoach-backend-mnoy.onrender.com |
 
-#### Backend Deployment Steps
+**Deployment Steps:**
 
 1. Push latest backend code to GitHub
-2. Create a Web Service in Render
-3. Set root directory to Backend
-4. Set build command:
-
-```bash
-npm install
-```
-
-5. Set start command:
-
-```bash
-npm start
-```
-
+2. Create a **Web Service** in Render
+3. Set root directory to `Backend`
+4. Set build command: `npm install`
+5. Set start command: `npm start`
 6. Configure environment variables in Render dashboard
 
-### Frontend Deployment
+---
 
-- Platform: Vercel
-- Live URL: https://exam-coach-sigma.vercel.app
+### 🌐 Frontend — Vercel
 
-#### Frontend Deployment Steps
+| | |
+|---|---|
+| **Platform** | Vercel |
+| **Live URL** | https://exam-coach-sigma.vercel.app |
+
+**Deployment Steps:**
 
 1. Import repository into Vercel
-2. Set root directory to Frontend
+2. Set root directory to `Frontend`
 3. Configure environment variables:
+   ```env
+   VITE_API_URL=https://examcoach-backend-mnoy.onrender.com
+   ```
+4. Build and deploy from `main` branch
 
-```env
-VITE_API_URL=https://examcoach-backend-mnoy.onrender.com
-```
+---
 
-4. Build and deploy from main branch
+### 🔑 Environment Variables Reference
 
-### Environment Variables (No Secrets Exposed)
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Backend server port |
+| `MONGO_URI` | MongoDB connection string |
+| `JWT_SECRET` | JWT signing secret |
+| `JWT_EXPIRES_IN` | Token lifetime |
+| `GEMINI_API_KEY` | Gemini AI key |
+| `CLOUDINARY_URL` | Cloudinary connection URL |
+| `FRONTEND_URL` | Frontend URL for CORS and callbacks |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
+| `GOOGLE_REDIRECT_URI` | Google OAuth callback URL |
+| `VITE_API_URL` | Frontend API base URL |
 
-| Variable             | Description                         |
-| -------------------- | ----------------------------------- |
-| PORT                 | Backend server port                 |
-| MONGO_URI            | MongoDB connection string           |
-| JWT_SECRET           | JWT signing secret                  |
-| JWT_EXPIRES_IN       | Token lifetime                      |
-| GEMINI_API_KEY       | Gemini AI key                       |
-| CLOUDINARY_URL       | Cloudinary connection URL           |
-| FRONTEND_URL         | Frontend URL for CORS and callbacks |
-| GOOGLE_CLIENT_ID     | Google OAuth client id              |
-| GOOGLE_CLIENT_SECRET | Google OAuth client secret          |
-| GOOGLE_REDIRECT_URI  | Google OAuth callback URL           |
-| VITE_API_URL         | Frontend API base URL               |
+---
 
-### Deployment Evidence
+### 📸 Deployment Screenshots
 
-Include screenshots in this README or docs/screenshots for:
+#### Backend Deployment — Render (Build Logs)
 
-- Backend deployment success (Render dashboard)
-- Frontend deployment success (Vercel dashboard)
-- Live API health-check response
-- Working frontend home page using deployed backend
+<img width="1600" height="898" alt="Render Build Logs" src="https://github.com/user-attachments/assets/62d41d68-a179-4291-813d-17459d58336b" />
 
-### Deployment Screenshots
+#### Backend Deployment — Render (Service Live)
 
-#### Backend Deployment - Render (Build Logs)
+<img width="1600" height="862" alt="Render Service Live" src="https://github.com/user-attachments/assets/05716a0f-3820-4364-a6a8-c6a5fbbb0da6" />
 
-![Render Build Logs](docs/screenshots/render-backend-build-logs.png)
+#### Frontend Deployment — Vercel (Production Ready)
 
-#### Backend Deployment - Render (Service Live)
-
-![Render Service Live](docs/screenshots/render-backend-live.png)
-
-#### Frontend Deployment - Vercel (Production Ready)
-
-![Vercel Production Deployment](docs/screenshots/vercel-frontend-production-ready.png)
+<img width="1600" height="900" alt="Vercel Production Deployment" src="https://github.com/user-attachments/assets/8d53b2b8-06ab-4da3-b870-a038622b288e" />
 
 ---
 
 ## 9. Testing Instruction Report
 
-Run all testing commands from the `Backend` directory.
+> Run all testing commands from the `Backend` directory.
 
-### 9.1 Study Plan Testing
-
-#### Unit Test
+### 9.1 📅 Study Plan Testing
 
 ```bash
+# Unit Test
 npx jest test/unit/studyPlan.test.js --verbose
-```
 
-#### Integration Test
-
-```bash
+# Integration Test
 npx jest test/integration/studyPlan.test.js --verbose
-```
 
-#### Performance Test
-
-```bash
+# Performance Test
 npx artillery run test/performance/performance-studyplan.yml
 ```
 
-### 9.2 AI Learning Lab Testing
-
-#### Unit Test
+### 9.2 🤖 AI Learning Lab Testing
 
 ```bash
+# Unit Test
 npx --yes jest@29.7.0 --runInBand --testMatch "**/test/unit/aiLab.test.js"
-```
 
-#### Integration Test
-
-```bash
+# Integration Test
 npx --yes jest@29.7.0 --runInBand --testMatch "**/test/integration/aiLab.test.js"
-```
 
-#### Performance Test
-
-```bash
+# Performance Test
 npx artillery run test/performance/performance-ailab.yml --quiet --output test/performance/ailab-result.json
 ```
 
-### 9.3 Course Management Testing
-
-#### Unit Test
+### 9.3 📚 Course Management Testing
 
 ```bash
+# Unit Test
 npx --yes jest@29.7.0 --runInBand --testMatch "**/test/unit/course.test.js"
-```
 
-#### Integration Test
-
-```bash
+# Integration Test
 npx --yes jest@29.7.0 --runInBand --testMatch "**/test/integration/course.test.js"
-```
 
-#### Performance Test
-
-```bash
+# Performance Test
 npx artillery run test/performance/performance-course.yml --quiet --output test/performance/course-result.json
 ```
 
-### 9.4 AI Quiz Generator Testing
-
-#### Unit Test
+### 9.4 🎯 AI Quiz Generator Testing
 
 ```bash
+# Unit Test
 npx jest test/unit/aiquizgen.test.js --verbose
-```
 
-#### Integration Test
-
-```bash
+# Integration Test
 npx jest test/integration/aiquizgen.test.js --verbose
-```
 
-#### Performance Test
-
-```bash
+# Performance Test
 npx artillery run test/performance/performance-aiquiz.yml --output test/performance/aiquiz-result.json
 ```
 
-### 9.5 User Management Testing
-
-#### Unit Test
+### 9.5 👤 User Management Testing
 
 ```bash
+# Unit Test
 npx jest test/unit/usercom.test.js --verbose
-```
 
-#### Integration Test
-
-```bash
+# Integration Test
 npx jest test/integration/usercom.test.js --verbose
-```
 
-#### Performance Test
-
-```bash
+# Performance Test
 npx artillery run test/performance/performance-registerstudent.yml --output test/performance/registerstudent-result.json
 ```
 
-### 9.6 Testing Environment Configuration
+### 9.6 ⚙️ Testing Environment Configuration
 
-- Node.js and npm installed
-- Backend dependencies installed (`npm install`)
-- MongoDB accessible for integration scenarios
-- Backend server running for API and performance tests where required
+| Requirement | Details |
+|-------------|---------|
+| Node.js & npm | Must be installed |
+| Backend dependencies | Run `npm install` in `/Backend` |
+| MongoDB | Accessible for integration scenarios |
+| Backend server | Running for API and performance tests |
 
 ---
 
 ## 10. Features
 
-- Full RESTful API with CRUD operations
-- Role-based access control and protected routes
-- AI summary generation and resource suggestions
-- AI quiz generation and analytics support
-- Study plan generation with progress tracking
-- Subject and lesson management workflows
-- Real-time cheating detection using Socket.io
-- Cloud media handling with Cloudinary
-- Calendar integration support
-- Deployed frontend and backend services
+| Feature | Details |
+|---------|---------|
+| ✅ Full RESTful API | Complete CRUD operations across all resources |
+| 🛡️ Role-based Access Control | Protected routes per user role |
+| 🤖 AI Summarization | Text/file summarization + resource suggestions |
+| 🎯 AI Quiz Generation | Auto-generated quizzes with analytics |
+| 📅 Study Plan Generation | Personalized plans with progress tracking |
+| 📚 Content Management | Subject and lesson workflow management |
+| 🔍 Real-time Detection | Socket.io-based cheating detection |
+| ☁️ Cloud Media | Cloudinary integration for file storage |
+| 📆 Calendar Integration | Google Calendar sync support |
+| 🚀 Production Deployed | Live frontend and backend services |
 
 ---
 
 ## 11. Folder Structure
 
-```text
+```
 ExamCoach/
-├── README.md
-├── Backend/
+├── 📄 README.md
+│
+├── 📁 Backend/
 │   ├── index.js
 │   ├── package.json
 │   ├── config/
@@ -960,7 +940,8 @@ ExamCoach/
 │   │   ├── integration/
 │   │   └── performance/
 │   └── uploads/
-└── Frontend/
+│
+└── 📁 Frontend/
     ├── package.json
     ├── index.html
     ├── src/
@@ -977,42 +958,23 @@ ExamCoach/
 
 ## 12. Contributors
 
-Replace the placeholders below with final team details.
-
-| Name      | Student ID | Contribution Area            |
-| --------- | ---------- | ---------------------------- |
-| Member 01 | ITxxxxxxxx | Backend and API              |
-| Member 02 | ITxxxxxxxx | Frontend and UI              |
-| Member 03 | ITxxxxxxxx | Testing and QA               |
-| Member 04 | ITxxxxxxxx | Deployment and Documentation |
+| Name | Student ID | Contribution Area |
+|------|------------|-------------------|
+| T.D.S Peiris | IT23241800 | AI Learning Lab & Course Management |
+| B. P. L. Fernando | IT23268258 | Frontend & UI |
+|T.G.D.L Munidasa | IT23291546 | Testing & QA |
+| D.M.R.W Dissanayake | IT23166660 | Deployment & Documentation |
 
 ---
 
-## 13. Screenshots and Evidence
+<div align="center">
 
-Add evidence files and update image paths.
+## 📌 Final Notes
 
-### 13.1 UI Screenshots
-
-![Login Page](docs/screenshots/ui-login.png)
-![Dashboard](docs/screenshots/ui-dashboard.png)
-
-### 13.2 API Testing Screenshots
-
-![Postman Auth Test](docs/screenshots/postman-auth.png)
-![Postman Study Plan Test](docs/screenshots/postman-study-plan.png)
-
-### 13.3 Performance Testing Screenshots
-
-![Artillery Report](docs/screenshots/artillery-report.png)
-
-### 13.4 Deployment Screenshots
-
-![Render Deployment](docs/screenshots/render-deployment.png)
-![Vercel Deployment](docs/screenshots/vercel-deployment.png)
+This project satisfies the full-stack assignment requirements by combining **secure REST API development**, **React frontend integration**, **role-based security**, **external API usage**, **deployment**, and **multi-level testing**.
 
 ---
 
-## Final Notes
 
-This project satisfies the full-stack assignment requirements by combining secure REST API development, React frontend integration, role-based security, external API usage, deployment, and multi-level testing.
+
+</div>
