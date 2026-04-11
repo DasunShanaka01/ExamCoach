@@ -961,9 +961,9 @@ ExamCoach/
 | Name | Student ID | Contribution Area |
 |------|------------|-------------------|
 | T.D.S Peiris | IT23241800 | AI Learning Lab & Course Management |
-| B. P. L. Fernando | IT23268258 | Frontend & UI |
-|T.G.D.L Munidasa | IT23291546 | Testing & QA |
-| D.M.R.W Dissanayake | IT23166660 | Deployment & Documentation |
+| B. P. L. Fernando | IT23268258 | AI Quiz & User Managemant |
+|T.G.D.L Munidasa | IT23291546 | Study Plans & Admin analytics |
+| D.M.R.W Dissanayake | IT23166660 | Teacher Quiz & Cheating Detection |
 
 ---
 
