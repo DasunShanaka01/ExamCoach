@@ -12,6 +12,7 @@
     "test:unit": "jest test/unit --verbose",
     "test:integration": "jest test/integration --verbose",
     "test:coverage": "jest --coverage",
+    "test:perf-teacher": "artillery run test/performance/performance-teacherquiz.yml",
     "dev": "nodemon index.js"
   },
   "dependencies": {
