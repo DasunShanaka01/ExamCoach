@@ -797,6 +797,20 @@ Include screenshots in this README or docs/screenshots for:
 - Live API health-check response
 - Working frontend home page using deployed backend
 
+### Deployment Screenshots
+
+#### Backend Deployment - Render (Build Logs)
+
+![Render Build Logs](docs/screenshots/render-backend-build-logs.png)
+
+#### Backend Deployment - Render (Service Live)
+
+![Render Service Live](docs/screenshots/render-backend-live.png)
+
+#### Frontend Deployment - Vercel (Production Ready)
+
+![Vercel Production Deployment](docs/screenshots/vercel-frontend-production-ready.png)
+
 ---
 
 ## 9. Testing Instruction Report
