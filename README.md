@@ -10,19 +10,19 @@ ExamCoach is a full-stack MERN application that helps students prepare for stand
 
 ## Table of Contents
 
-1. Project Overview  
-2. Functional Components and Requirements  
-3. System Architecture  
-4. Technology Stack  
-5. Setup Instructions  
-6. API Endpoint Documentation  
-7. Authentication and Authorization  
-8. Deployment Report  
-9. Testing Instruction Report  
-10. Features  
-11. Folder Structure  
-12. Contributors  
-13. Screenshots and Evidence  
+1. Project Overview
+2. Functional Components and Requirements
+3. System Architecture
+4. Technology Stack
+5. Setup Instructions
+6. API Endpoint Documentation
+7. Authentication and Authorization
+8. Deployment Report
+9. Testing Instruction Report
+10. Features
+11. Folder Structure
+12. Contributors
+13. Screenshots and Evidence
 
 ---
 
@@ -774,19 +774,19 @@ VITE_API_URL=https://examcoach-backend-mnoy.onrender.com
 
 ### Environment Variables (No Secrets Exposed)
 
-| Variable | Description |
-| --- | --- |
-| PORT | Backend server port |
-| MONGO_URI | MongoDB connection string |
-| JWT_SECRET | JWT signing secret |
-| JWT_EXPIRES_IN | Token lifetime |
-| GEMINI_API_KEY | Gemini AI key |
-| CLOUDINARY_URL | Cloudinary connection URL |
-| FRONTEND_URL | Frontend URL for CORS and callbacks |
-| GOOGLE_CLIENT_ID | Google OAuth client id |
-| GOOGLE_CLIENT_SECRET | Google OAuth client secret |
-| GOOGLE_REDIRECT_URI | Google OAuth callback URL |
-| VITE_API_URL | Frontend API base URL |
+| Variable             | Description                         |
+| -------------------- | ----------------------------------- |
+| PORT                 | Backend server port                 |
+| MONGO_URI            | MongoDB connection string           |
+| JWT_SECRET           | JWT signing secret                  |
+| JWT_EXPIRES_IN       | Token lifetime                      |
+| GEMINI_API_KEY       | Gemini AI key                       |
+| CLOUDINARY_URL       | Cloudinary connection URL           |
+| FRONTEND_URL         | Frontend URL for CORS and callbacks |
+| GOOGLE_CLIENT_ID     | Google OAuth client id              |
+| GOOGLE_CLIENT_SECRET | Google OAuth client secret          |
+| GOOGLE_REDIRECT_URI  | Google OAuth callback URL           |
+| VITE_API_URL         | Frontend API base URL               |
 
 ### Deployment Evidence
 
@@ -801,69 +801,114 @@ Include screenshots in this README or docs/screenshots for:
 
 ## 9. Testing Instruction Report
 
-### 9.1 Unit Testing
+Run all testing commands from the `Backend` directory.
 
-- Tool: Jest
-- Location: Backend/test/unit
+### 9.1 Study Plan Testing
 
-Run:
-
-```bash
-cd Backend
-npm test
-```
-
-Optional commands:
+#### Unit Test
 
 ```bash
-npm run test:unit
-npm run test:coverage
+npx jest test/unit/studyPlan.test.js --verbose
 ```
 
-### 9.2 Integration Testing
-
-- Tools: Postman and Jest integration tests
-- Scope:
-  - Controller and route integration
-  - Middleware and database behavior
-  - Success and error scenarios
-
-Run Jest integration tests:
+#### Integration Test
 
 ```bash
-cd Backend
-npm run test:integration
+npx jest test/integration/studyPlan.test.js --verbose
 ```
 
-Postman testing setup:
-
-1. Set baseUrl = http://localhost:5000 or production URL
-2. Authenticate with login endpoint
-3. Save JWT token in environment variable
-4. Execute protected and public endpoint test cases
-5. Validate status codes and response structures
-
-### 9.3 Performance Testing
-
-- Tool: Artillery
-- Goal: Measure API response time and concurrency behavior
-
-Install and run from Backend:
+#### Performance Test
 
 ```bash
-npm install
-artillery run test/performance/performance-course.yml
-artillery run test/performance/performance-aiquiz.yml
-artillery run test/performance/performance-ailab.yml
-artillery run test/performance/performance-registerstudent.yml
+npx artillery run test/performance/performance-studyplan.yml
 ```
 
-### 9.4 Testing Environment Configuration
+### 9.2 AI Learning Lab Testing
+
+#### Unit Test
+
+```bash
+npx --yes jest@29.7.0 --runInBand --testMatch "**/test/unit/aiLab.test.js"
+```
+
+#### Integration Test
+
+```bash
+npx --yes jest@29.7.0 --runInBand --testMatch "**/test/integration/aiLab.test.js"
+```
+
+#### Performance Test
+
+```bash
+npx artillery run test/performance/performance-ailab.yml --quiet --output test/performance/ailab-result.json
+```
+
+### 9.3 Course Management Testing
+
+#### Unit Test
+
+```bash
+npx --yes jest@29.7.0 --runInBand --testMatch "**/test/unit/course.test.js"
+```
+
+#### Integration Test
+
+```bash
+npx --yes jest@29.7.0 --runInBand --testMatch "**/test/integration/course.test.js"
+```
+
+#### Performance Test
+
+```bash
+npx artillery run test/performance/performance-course.yml --quiet --output test/performance/course-result.json
+```
+
+### 9.4 AI Quiz Generator Testing
+
+#### Unit Test
+
+```bash
+npx jest test/unit/aiquizgen.test.js --verbose
+```
+
+#### Integration Test
+
+```bash
+npx jest test/integration/aiquizgen.test.js --verbose
+```
+
+#### Performance Test
+
+```bash
+npx artillery run test/performance/performance-aiquiz.yml --output test/performance/aiquiz-result.json
+```
+
+### 9.5 User Management Testing
+
+#### Unit Test
+
+```bash
+npx jest test/unit/usercom.test.js --verbose
+```
+
+#### Integration Test
+
+```bash
+npx jest test/integration/usercom.test.js --verbose
+```
+
+#### Performance Test
+
+```bash
+npx artillery run test/performance/performance-registerstudent.yml --output test/performance/registerstudent-result.json
+```
+
+### 9.6 Testing Environment Configuration
 
 - Node.js and npm installed
-- Backend running with test-safe configuration
-- MongoDB reachable
-- Optional test database or in-memory database for isolation
+- Backend dependencies installed (`npm install`)
+- MongoDB accessible for integration scenarios
+- Backend server running for API and performance tests where required
 
 ---
 
@@ -920,11 +965,11 @@ ExamCoach/
 
 Replace the placeholders below with final team details.
 
-| Name | Student ID | Contribution Area |
-| --- | --- | --- |
-| Member 01 | ITxxxxxxxx | Backend and API |
-| Member 02 | ITxxxxxxxx | Frontend and UI |
-| Member 03 | ITxxxxxxxx | Testing and QA |
+| Name      | Student ID | Contribution Area            |
+| --------- | ---------- | ---------------------------- |
+| Member 01 | ITxxxxxxxx | Backend and API              |
+| Member 02 | ITxxxxxxxx | Frontend and UI              |
+| Member 03 | ITxxxxxxxx | Testing and QA               |
 | Member 04 | ITxxxxxxxx | Deployment and Documentation |
 
 ---
