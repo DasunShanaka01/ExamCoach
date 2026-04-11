@@ -160,7 +160,7 @@ const AnalyticsDashboard = () => {
         });
     };
 
-    const COLORS = ['#088395', '#09637E', '#7AB2B2', '#EBF4F6', '#0a7a96', '#06566e', '#5a9a9a', '#c3e0e8'];
+    const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#F9D56E', '#FF8C42', '#9B5DE5', '#00BBF9', '#F15BB5'];
 
     if (loading) {
         return (
@@ -205,7 +205,7 @@ const AnalyticsDashboard = () => {
 
                 {/* Key Metrics Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-6 text-white shadow-lg transform transition hover:scale-105">
                         <div className="flex items-center justify-between mb-4">
                             <FiClock className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -213,10 +213,10 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.totalStudyHours}h</p>
-                        <p className="text-brand-50 text-sm">Total Planned Hours</p>
+                        <p className="text-blue-100 text-sm">Total Planned Hours</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-brand-300 to-brand-700 rounded-2xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl p-6 text-white shadow-lg transform transition hover:scale-105">
                         <div className="flex items-center justify-between mb-4">
                             <FiTrendingUp className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -224,10 +224,10 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.completedHours}h</p>
-                        <p className="text-brand-50 text-sm">Hours Completed</p>
+                        <p className="text-emerald-100 text-sm">Hours Completed</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl p-6 text-white shadow-lg transform transition hover:scale-105">
                         <div className="flex items-center justify-between mb-4">
                             <FiTarget className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -235,10 +235,10 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.overallCompletion}%</p>
-                        <p className="text-brand-50 text-sm">Overall Completion</p>
+                        <p className="text-amber-100 text-sm">Overall Completion</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-brand-900 to-gray-900 rounded-2xl p-6 text-white shadow-lg">
+                    <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-lg transform transition hover:scale-105">
                         <div className="flex items-center justify-between mb-4">
                             <FiBook className="text-3xl opacity-80" />
                             <div className="bg-white bg-opacity-20 rounded-lg px-3 py-1">
@@ -246,7 +246,7 @@ const AnalyticsDashboard = () => {
                             </div>
                         </div>
                         <p className="text-4xl font-bold mb-1">{analytics.completedTasks}/{analytics.totalTasks}</p>
-                        <p className="text-brand-50 text-sm">Tasks Completed</p>
+                        <p className="text-purple-100 text-sm">Tasks Completed</p>
                     </div>
                 </div>
 
@@ -292,19 +292,19 @@ const AnalyticsDashboard = () => {
                                 <Line 
                                     type="monotone" 
                                     dataKey="planned" 
-                                    stroke="#088395" 
+                                    stroke="#9B5DE5" 
                                     strokeWidth={2}
                                     name="Planned"
-                                    dot={{ fill: '#088395', r: 4 }}
+                                    dot={{ fill: '#9B5DE5', r: 4 }}
                                     activeDot={{ r: 6 }}
                                 />
                                 <Line 
                                     type="monotone" 
                                     dataKey="completed" 
-                                    stroke="#7AB2B2" 
+                                    stroke="#4ECDC4" 
                                     strokeWidth={2}
                                     name="Completed"
-                                    dot={{ fill: '#7AB2B2', r: 4 }}
+                                    dot={{ fill: '#4ECDC4', r: 4 }}
                                     activeDot={{ r: 6 }}
                                 />
                             </LineChart>
@@ -395,7 +395,7 @@ const AnalyticsDashboard = () => {
                                 />
                                 <Bar 
                                     dataKey="completion" 
-                                    fill="#088395"
+                                    fill="#4ECDC4"
                                     radius={[0, 8, 8, 0]}
                                     label={{ 
                                         position: 'right', 
@@ -407,7 +407,7 @@ const AnalyticsDashboard = () => {
                                     {analytics.subjectCompletion.map((entry, index) => (
                                         <Cell 
                                             key={`cell-${index}`} 
-                                            fill={entry.completion >= 75 ? '#088395' : entry.completion >= 50 ? '#7AB2B2' : entry.completion >= 25 ? '#09637E' : '#EF4444'} 
+                                            fill={entry.completion >= 75 ? '#4ECDC4' : entry.completion >= 50 ? '#F9D56E' : entry.completion >= 25 ? '#FF8C42' : '#FF6B6B'} 
                                         />
                                     ))}
                                 </Bar>
