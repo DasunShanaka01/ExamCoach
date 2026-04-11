@@ -13,7 +13,7 @@
 [![Frontend Live](https://img.shields.io/badge/Frontend-Live%20on%20Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://exam-coach-sigma.vercel.app)
 
 *SE3040 — Application Frameworks (2026)*  
-*BSc (Hons) in Information Technology — Software Engineering | Year 03 Group Project*
+*BSc (Hons) in Information Technology — Software Engineering *
 
 </div>
 
