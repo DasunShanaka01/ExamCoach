@@ -51,6 +51,7 @@
 | 📅 Study Plans | AI-generated personalized study timetables |
 | 📚 Course Management | Streams, subjects, and lesson management |
 | 🔍 Cheating Detection | Real-time tab-switch alerts via Socket.io |
+| 🎯 AI Quiz Generator | AI-powered quiz generation from documents and text |
 
 ### 👥 User Roles
 
@@ -112,6 +113,16 @@ The backend is organized into multiple functional components, each with clear re
 - Subject creation and retrieval
 - Lesson creation and retrieval per subject
 - Learning material upload and link management
+
+</details>
+
+<details>
+<summary><strong>🎯 Component 6 — AI Quiz Generator</strong></summary>
+
+- AI-powered quiz generation from text or multiple PDFs
+- Save and review completed quiz history
+- Automatic evaluation and scoring with timers
+- "Explain Simpler" (ELI5) functionality for incorrect answers
 
 </details>
 
@@ -709,6 +720,67 @@ cd Frontend && npm run dev
       }
     ]
   }
+}
+```
+
+</details>
+
+---
+
+### 6.6 🎯 AI Quiz Generator
+
+<details>
+<summary><code>POST</code> <strong>/api/quiz/generate</strong> — Generate quiz from text/PDFs</summary>
+
+> 🔒 Authentication: Required (Student)
+
+**Request Body:** (multipart/form-data)
+- `files`: Array of PDFs (optional)
+- `text`: Text content (optional)
+- `topic`: Topic for the quiz
+- `difficulty`: e.g., 'Medium'
+- `questionCount`: e.g., '10'
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "title": "Generated Quiz Topic",
+    "timeLimit": 15,
+    "questions": [
+      {
+        "type": "mcq",
+        "question": "Sample question?",
+        "options": ["A", "B", "C", "D"],
+        "correctAnswer": "A",
+        "explanation": "Because it is correct."
+      }
+    ]
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><code>POST</code> <strong>/api/quiz/explain</strong> — Explain a concept simply (ELI5)</summary>
+
+> 🔒 Authentication: Required (Student)
+
+**Request Body:**
+```json
+{
+  "concept": "Photosynthesis",
+  "context": "The student got a question wrong about how plants make food."
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "explanation": "Imagine you are baking a cake..."
 }
 ```
 
